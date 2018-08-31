@@ -1,8 +1,11 @@
+# PXDataset.py : ppx
+
 import xml.etree.ElementTree as ET
 from urllib.request import urlopen
 from warnings import warn
 from os.path import join, isfile, isdir
 from os import makedirs
+
 
 def _getNodes(xml, XPath):
     """Retreive the 'value' attribute from a set of XML nodes.
@@ -19,8 +22,8 @@ def _getNodes(xml, XPath):
     -------
     list of str
         A list containing the 'value' attribute for each node found
-    """
 
+    """
     root = xml.getroot()
     nodes = root.findall(XPath)
 
@@ -29,6 +32,12 @@ def _getNodes(xml, XPath):
         links.append(node.attrib["value"])
 
     return(links)
+
+
+def _vprint(x, v):
+    """Print x if v is true."""
+    if v:
+        print(x)
 
 
 class PXDataset:
@@ -50,9 +59,11 @@ class PXDataset:
 
     data : xml.etree.ElementTree.ElementTree
         The parsed XML data returned by the ProteomeXchange server.
+
     """
 
     def __init__(self, id):
+        """Instantiate a PXDataset object."""
         url = ("http://proteomecentral.proteomexchange.org/cgi/GetDataset?ID="
                + id + "&outputMode=XML&test=no")
 
@@ -68,8 +79,6 @@ class PXDataset:
         if self.id != id:
             warn("The identifier, " + id + ", was not found. Retrieved "
                  + self.id + " instead.")
-
-
 
     def pxurl(cls):
         """Retrieve the URL for the data files of a PXDataset.
@@ -89,15 +98,13 @@ class PXDataset:
         str or None
             The URL of the data files. Returns None if no
             FTP location is listed.
-        """
 
+        """
         links = _getNodes(cls.data, ".//cvParam[@accession='PRIDE:0000411']")
         if len(links) == 0:
             warn("No FTP URL found for " + cls.id + ".")
 
         return(links[0])
-
-
 
     def pxtax(cls):
         """Retrieve the sample taxonomies listed for a PXDataset.
@@ -111,15 +118,13 @@ class PXDataset:
         list of str or None
             The species or other taxonimies list in a PXDataset
             submission. If not provided, returns None.
-        """
 
+        """
         tax = _getNodes(cls.data, ".//cvParam[@accession = 'MS:1001469']")
         if len(tax) == 0:
             warn("No taxonomies reported for " + cls.id + ".")
 
         return(tax)
-
-
 
     def pxref(cls):
         """Retrieve references associated with a PXDataset.
@@ -133,8 +138,8 @@ class PXDataset:
         list of str or None
             Both current and pending references are returned. Returns
             None if no references are found.
-        """
 
+        """
         currRef = _getNodes(cls.data,
                             ".//cvParam[@accession = 'PRIDE:0000400']")
         pendRef = _getNodes(cls.data,
@@ -146,10 +151,8 @@ class PXDataset:
 
         return(allRef)
 
-
-
     def pxfiles(cls):
-        """Lists files available from the PRIDE FTP URL of a PXDataset.
+        """List files available from the PRIDE FTP URL of a PXDataset.
 
         Parameters
         ----------
@@ -160,6 +163,7 @@ class PXDataset:
         list of str or None
             Returns a list of available files. Returns None if there is
             no PRIDE FTP location or no files at the location.
+
         """
         url = cls.pxurl()
         if url is None:
@@ -172,11 +176,9 @@ class PXDataset:
             files.append(line.split()[-1])
         return(files)
 
-
-
     def pxget(cls, files=None, destDir=".",
               force_=False, verbose=True):
-        """Downloads PXDataset files from the PRIDE FTP location.
+        """Download PXDataset files from the PRIDE FTP location.
 
         By default, pxget() will not download files that have a file
         with a matching name in the destination directory, destDir.
@@ -204,6 +206,7 @@ class PXDataset:
         Returns
         -------
         None
+
         """
         if files is None:
             files = cls.pxfiles()
@@ -218,12 +221,14 @@ class PXDataset:
             path = join(destDir, file)
 
             if isfile(path) and not force_:
-                if verbose: print(path + " exists. Skipping file...")
+                _vprint(path + " exists. Skipping file...", verbose)
+
                 continue
 
-            if verbose: print("Downloading " + file + "...")
+            _vprint("Downloading " + file + "...", verbose)
+
             dat = urlopen(url + "/" + file).read()
             with open(path, "wb") as f:
                 f.write(dat)
 
-        if verbose: print("Done!")
+        _vprint("Done!", verbose)
