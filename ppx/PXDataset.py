@@ -67,8 +67,6 @@ class PXDataset:
         url = ("http://proteomecentral.proteomexchange.org/cgi/GetDataset?ID="
                + id + "&outputMode=XML&test=no")
 
-        # TODO: Error checking
-
         xml = ET.parse(urlopen(url))
         root = xml.getroot()
 
@@ -103,6 +101,7 @@ class PXDataset:
         links = _getNodes(cls.data, ".//cvParam[@accession='PRIDE:0000411']")
         if len(links) == 0:
             warn("No FTP URL found for " + cls.id + ".")
+            return(None)
 
         return(links[0])
 
@@ -123,6 +122,7 @@ class PXDataset:
         tax = _getNodes(cls.data, ".//cvParam[@accession = 'MS:1001469']")
         if len(tax) == 0:
             warn("No taxonomies reported for " + cls.id + ".")
+            return(None)
 
         return(tax)
 
@@ -148,6 +148,7 @@ class PXDataset:
         allRef = currRef + pendRef
         if len(allRef) == 0:
             warn("No references reported for " + cls.id + ".")
+            return(None)
 
         return(allRef)
 
@@ -175,6 +176,10 @@ class PXDataset:
         for line in lines:
             files.append(line.split()[-1])
         return(files)
+
+        if len(file) == 0:
+            warn("No files were found at " + url + ".")
+            return(None)
 
     def pxget(cls, files=None, destDir=".",
               force_=False, verbose=True):
