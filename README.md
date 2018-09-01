@@ -1,5 +1,6 @@
-# ppx  
-## A Python interface to the ProteomeXchange Repository  
+[![Build Status](https://travis-ci.org/wfondrie/ppx.svg?branch=master)](https://travis-ci.org/wfondrie/ppx)  
+
+# ppx: A Python interface to the ProteomeXchange Repository  
 
 ## Overview  
 The `ppx` package provides a simple means to access the [ProteomeXchange](http://www.proteomexchange.org/) repository from Python. Using ProteomeXchange identifiers, the user can retrieve metadata associated with a project and download project files from [PRIDE](https://www.ebi.ac.uk/pride/archive/).
