@@ -119,7 +119,7 @@ class PXDataset:
             submission. If not provided, returns None.
 
         """
-        tax = _getNodes(cls.data, ".//cvParam[@accession = 'MS:1001469']")
+        tax = _getNodes(cls.data, ".//cvParam[@accession='MS:1001469']")
         if len(tax) == 0:
             warn("No taxonomies reported for " + cls.id + ".")
             return(None)
@@ -141,9 +141,9 @@ class PXDataset:
 
         """
         currRef = _getNodes(cls.data,
-                            ".//cvParam[@accession = 'PRIDE:0000400']")
+                            ".//cvParam[@accession='PRIDE:0000400']")
         pendRef = _getNodes(cls.data,
-                            ".//cvParam[@accession = 'PRIDE:0000432']")
+                            ".//cvParam[@accession='PRIDE:0000432']")
 
         allRef = currRef + pendRef
         if len(allRef) == 0:
