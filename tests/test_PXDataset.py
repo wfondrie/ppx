@@ -33,7 +33,7 @@ def test_files():
     assert dat.pxfiles() == files
 
 def test_download(tmpdir, capsys):
-    dest = os.path.join(tmpdir, "test")
+    dest = os.path.join(tmpdir.strpath, "test")
 
     # Verify download works
     dat.pxget(files = "README.txt", destDir = dest)
