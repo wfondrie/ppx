@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/wfondrie/ppx.svg?branch=master)](https://travis-ci.org/wfondrie/ppx)  
+[![Build Status](https://travis-ci.org/wfondrie/ppx.svg?branch=master)](https://travis-ci.org/wfondrie/ppx) [![Documentation Status](https://readthedocs.org/projects/ppx/badge/?version=latest)](https://ppx.readthedocs.io/en/latest/?badge=latest)  
+
 
 # ppx: A Python interface to the ProteomeXchange Repository  
 

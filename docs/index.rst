@@ -11,6 +11,10 @@ A Python interface to the ProteomeXchange Repository
 .. image:: https://travis-ci.org/wfondrie/ppx.svg?branch=master
    :target: https://travis-ci.org/wfondrie/ppx
 
+.. image:: https://readthedocs.org/projects/ppx/badge/?version=latest
+:target: https://ppx.readthedocs.io/en/latest/?badge=latest
+:alt: Documentation Status
+
 
 
 The :code:`ppx` package provides a simple means to access the ProteomeXchange
