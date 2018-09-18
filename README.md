@@ -14,7 +14,7 @@ For full documentation and examples, visit: https://ppx.readthedocs.io
 While `ppx` has not been released on the Python Package Index, you can install the development version directly from GitHub. The `ppx` package is only available for Python 3 and has only been tested with Python 3.5+. The `ppx` package only depends on packages in the Python Standard Library.
 
 ```
-pip install git+git://github.com/wfondrie/ppx.git  
+pip3 install ppx
 ```
 
 ## Examples  
