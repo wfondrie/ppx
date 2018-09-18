@@ -15,8 +15,6 @@ A Python interface to the ProteomeXchange Repository
     :target: https://ppx.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-
-
 The :code:`ppx` package provides a simple means to access the ProteomeXchange
 [1]_ repository from Python. Using ProteomeXchange identifiers, the user can
 retrieve metadata associated with a project and download project files from
