@@ -12,8 +12,8 @@ A Python interface to the ProteomeXchange Repository
    :target: https://travis-ci.org/wfondrie/ppx
 
 .. image:: https://readthedocs.org/projects/ppx/badge/?version=latest
-:target: https://ppx.readthedocs.io/en/latest/?badge=latest
-:alt: Documentation Status
+    :target: https://ppx.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
 
 
 
