@@ -11,7 +11,7 @@ The `ppx` package provides a simple means to access the [ProteomeXchange](http:/
 For full documentation and examples, visit: https://ppx.readthedocs.io
 
 ## Installation  
-While `ppx` has not been released on the Python Package Index, you can install the development version directly from GitHub. The `ppx` package is only available for Python 3 and has only been tested with Python 3.5+. The `ppx` package only depends on packages in the Python Standard Library.
+`ppx` is `pip` installable. The `ppx` package is only available for Python 3 and has only been tested with Python 3.5+. The `ppx` package only depends on packages in the Python Standard Library.
 
 ```
 pip3 install ppx
