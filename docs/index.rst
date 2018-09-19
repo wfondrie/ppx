@@ -34,11 +34,6 @@ release version of :code:`ppx` can be installed with :code:`pip` (or
 
     pip install ppx
 
-Alternatively, the development version of :code:`ppx` can be installed from
-GitHub::
-
-    pip install git+git://github.com/wfondrie/ppx.git
-
 License
 -------
 :code:`ppx` is distributed under the MIT license.
