@@ -7,4 +7,4 @@ build:
 upload:
 	twine upload dist/*
 
-.PHONY: clean, build, upload
+.PHONY: clean build upload
