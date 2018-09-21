@@ -20,15 +20,15 @@ The :code:`ppx` package provides a simple means to access the ProteomeXchange
 retrieve metadata associated with a project and download project files from
 the PRIDE Archive [2]_ .
 
-:code:`ppx` is a heavily based on the :code:`rpx` R package by Laurent Gatto
-[3]_. My intent is that :code:`ppx` would provide an efficient method to reuse
+:code:`ppx` is based on the :code:`rpx` R package by Laurent Gatto
+[3]_. Our intent is that :code:`ppx` would provide an efficient method to reuse
 proteomics data from ProteomeXchange, allowing easier access for those
 developing proteomics tools and analyses in Python.
 
 Installation
 ------------
 :code:`ppx` was developed and tested for Python 3.5+, and only requires
-packages that are dirstributed as part of the Python Standard Library. The
+packages that are distributed as part of the Python Standard Library. The
 release version of :code:`ppx` can be installed with :code:`pip` (or
 :code:`pip3`)::
 
