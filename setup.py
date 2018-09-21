@@ -1,9 +1,10 @@
 import setuptools
+import os.path
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-with open("VERSION", "r") as fh:
+with open(os.path.join("ppx", "VERSION"), "r") as fh:
     version_num = fh.read().strip()
 
 setuptools.setup(
