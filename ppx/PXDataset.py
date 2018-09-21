@@ -228,14 +228,10 @@ class PXDataset:
 
             if isfile(path) and not force_:
                 _vprint(path + " exists. Skipping file...", verbose)
-
                 continue
 
             _vprint("Downloading " + file + "...", verbose)
 
-            #dat = urlopen(url + "/" + file).read()
-            #with open(path, "wb") as f:
-            #    f.write(dat)
             with urlopen(url + "/" + file) as dat, open(path, 'wb') as fout:
                 shutil.copyfileobj(dat, fout)
 
