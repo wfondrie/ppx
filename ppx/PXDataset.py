@@ -5,6 +5,7 @@ from urllib.request import urlopen
 from warnings import warn
 from os.path import join, isfile, isdir
 from os import makedirs
+import shutil
 
 
 def _getNodes(xml, XPath):
@@ -232,8 +233,10 @@ class PXDataset:
 
             _vprint("Downloading " + file + "...", verbose)
 
-            dat = urlopen(url + "/" + file).read()
-            with open(path, "wb") as f:
-                f.write(dat)
+            #dat = urlopen(url + "/" + file).read()
+            #with open(path, "wb") as f:
+            #    f.write(dat)
+            with urlopen(url + "/" + file) as dat, open(path, 'wb') as fout:
+                shutil.copyfileobj(dat, fout)
 
         _vprint("Done!", verbose)
