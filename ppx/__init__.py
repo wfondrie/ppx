@@ -7,7 +7,4 @@ name = "ppx"
 
 from .PXDataset import PXDataset
 
-with open("VERSION", "r") as fh:
-    version_num = fh.read().strip()
-
-__version__ = version_num
+__version__ = "0.1.3"

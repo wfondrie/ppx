@@ -1,2 +1,2 @@
 recursive-include ppx *.py
-include ppx/VERSION, README.md
+include README.md

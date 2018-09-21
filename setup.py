@@ -1,17 +1,12 @@
 import setuptools
-import os.path
-
-root = os.path.dirname(os.path.abspath(__file__))
+import ppx
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-with open(os.path.join(root, "ppx", "VERSION"), "r") as fh:
-    version_num = fh.read().strip()
-
 setuptools.setup(
     name="ppx",
-    version=version_num,
+    version=ppx.__version__,
     author="William E Fondrie",
     author_email="fondriew@gmail.com",
     description="A Python interface to the ProteomeXchange Repository",
