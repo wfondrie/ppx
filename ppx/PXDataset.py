@@ -50,7 +50,22 @@ def _openurl(url):
     """
     req = urllib.request.Request(url)
     req.add_header("user-agent", "ppx (https://pypi.org/project/ppx/)")
-    return urllib.request.urlopen(req, timeout = 1000)
+
+    max_retry = 5
+    retries = 0
+    success = False
+    while not success:
+        retries += 1
+        try:
+            dat = urllib.request.urlopen(req, timeout = 50)
+            success = True
+        except urllib.error.URLError:
+            if retries <= max_retry:
+                sleep(3)
+            else:
+                raise
+
+    return dat
 
 class PXDataset:
     """Information about a ProteomeXchange dataset.
