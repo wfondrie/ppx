@@ -50,7 +50,7 @@ def _openurl(url):
     """
     req = urllib.request.Request(url)
     req.add_header("user-agent", "ppx (https://pypi.org/project/ppx/)")
-    return urllib.request.urlopen(req)
+    return urllib.request.urlopen(req, timeout = 60)
 
 class PXDataset:
     """Information about a ProteomeXchange dataset.
