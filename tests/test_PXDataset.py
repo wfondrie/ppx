@@ -25,8 +25,10 @@ def test_files():
              "PRIDE_Exp_Complete_Ac_22134.xml.gz",
              "PRIDE_Exp_mzData_Ac_22134.xml.gz",
              "PXD000001_mztab.txt", "README.txt",
-             "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML",
-             "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzXML",
+             ("TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_"
+              "60min_01-20141210.mzML"),
+             ("TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_"
+              "60min_01-20141210.mzXML"),
              "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML",
              "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw",
              "erwinia_carotovora.fasta", "generated"]

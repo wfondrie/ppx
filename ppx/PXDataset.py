@@ -1,13 +1,10 @@
 # PXDataset.py : ppx
-# TODO: PX ID error checking.
-
 import xml.etree.ElementTree as ET
 import urllib.request
 import logging
 import os
 import shutil
 import time
-
 
 def _getNodes(xml, XPath):
     """Retreive the 'value' attribute from a set of XML nodes.
@@ -30,7 +27,8 @@ def _getNodes(xml, XPath):
 
 def _openurl(url):
     """
-    Open a URL using the ppx user-agent
+    Open a URL using the ppx user-agent. If an URLError is raised,
+    such as by a timeout, the request will retry up to 5 times.
 
     Parameters
     ----------
@@ -84,9 +82,19 @@ class PXDataset:
         The parsed XML data returned by the ProteomeXchange server.
 
     """
-
     def __init__(self, id):
         """Instantiate a PXDataset object."""
+        # Error checking the identifier
+        id = id.upper()
+        pxid_conditions = [isinstance(id, str),
+                           len(id) == 9,
+                           id[0:3] == "PXD" or id[0:3] == "PRD",
+                           id[3:9].isdigit()]
+        print(pxid_conditions)
+        if not all(pxid_conditions):
+            raise Exception("Malformed ProteomeXchange identifier.")
+
+        # Construct PXDataset
         url = ("http://proteomecentral.proteomexchange.org/cgi/GetDataset?ID="
                + id + "&outputMode=XML&test=no")
         logging.debug(url)
