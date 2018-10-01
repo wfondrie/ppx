@@ -207,7 +207,7 @@ class PXDataset:
 
         url = self.pxurl()
         if not os.path.isdir(dest_dir):
-            os.path.makedirs(dest_dir)
+            os.makedirs(dest_dir)
 
         for file in files:
             path = os.path.join(dest_dir, file)
