@@ -3,7 +3,7 @@
 # TODO: PX ID error checking.
 
 import xml.etree.ElementTree as ET
-from urllib.request import urlopen
+import urllib.request
 import logging
 import os
 import shutil
@@ -34,6 +34,23 @@ def _getNodes(xml, XPath):
         links.append(node.attrib["value"])
 
     return links
+
+def _openurl(url):
+    """
+    Open a URL using the ppx user-agent
+
+    Parameters
+    ----------
+    url : str
+        The URL to open.
+
+    Return
+    ------
+    Whatever urllib.request.urlopen() would return.
+    """
+    req = urllib.request.Request(url)
+    req.add_header("user-agent", "ppx (https://pypi.org/project/ppx/)")
+    return urllib.request.urlopen(req)
 
 class PXDataset:
     """Information about a ProteomeXchange dataset.
@@ -66,7 +83,7 @@ class PXDataset:
                + id + "&outputMode=XML&test=no")
         logging.debug(url)
 
-        xml = ET.parse(urlopen(url))
+        xml = ET.parse(_openurl(url))
         root = xml.getroot()
 
         self.formatVersion = root.attrib["formatVersion"]
@@ -161,7 +178,7 @@ class PXDataset:
         if url is None:
             return None
 
-        lines = urlopen(url + "/").read().decode("UTF-8").splitlines()
+        lines = _openurl(url + "/").read().decode("UTF-8").splitlines()
 
         files = []
         for line in lines:
@@ -218,7 +235,7 @@ class PXDataset:
 
             logging.info("Downloading " + file + "...")
 
-            with urlopen(url + "/" + file) as dat, open(path, 'wb') as fout:
+            with _openurl(url + "/" + file) as dat, open(path, 'wb') as fout:
                 shutil.copyfileobj(dat, fout)
 
         logging.info("Done!")
