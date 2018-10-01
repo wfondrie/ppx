@@ -1,10 +1,11 @@
 # PXDataset.py : ppx
+# TODO: List comprehensions
+# TODO: PX ID error checking.
 
 import xml.etree.ElementTree as ET
 from urllib.request import urlopen
-from warnings import warn
-from os.path import join, isfile, isdir
-from os import makedirs
+import logging
+import os
 import shutil
 
 
@@ -32,14 +33,7 @@ def _getNodes(xml, XPath):
     for node in nodes:
         links.append(node.attrib["value"])
 
-    return(links)
-
-
-def _vprint(x, v):
-    """Print x if v is true."""
-    if v:
-        print(x)
-
+    return links
 
 class PXDataset:
     """Information about a ProteomeXchange dataset.
@@ -51,9 +45,12 @@ class PXDataset:
 
     Attributes
     ----------
-    id : str
+    return_id : str
         The ProteomeXchange identifier returned by the server. There
         are cases where this may differ from the query identifier.
+
+    query_id : str
+        The query ProteomeXchange identifier.
 
     formatVersion : str
         The XML schema version.
@@ -67,19 +64,24 @@ class PXDataset:
         """Instantiate a PXDataset object."""
         url = ("http://proteomecentral.proteomexchange.org/cgi/GetDataset?ID="
                + id + "&outputMode=XML&test=no")
+        logging.debug(url)
 
         xml = ET.parse(urlopen(url))
         root = xml.getroot()
 
         self.formatVersion = root.attrib["formatVersion"]
-        self.id = root.attrib["id"]
+        self.return_id = root.attrib["id"]
+        self.query_id = id
         self.data = xml
 
-        if self.id != id:
-            warn("The identifier, " + id + ", was not found. Retrieved "
-                 + self.id + " instead.")
+        if self.return_id != id:
+            logging.warning("The identifier, "
+                            + id
+                            + ", was not found. Retrieved "
+                            + self.return_id
+                            + " instead.")
 
-    def pxurl(cls):
+    def pxurl(self):
         """Retrieve the URL for the data files of a PXDataset.
 
         Some ProteomeXchange submissions have data files that are
@@ -88,10 +90,6 @@ class PXDataset:
         that not all ProteomeXchange submissions have corresponding
         depositions in PRIDE.
 
-        Parameters
-        ----------
-        None
-
         Returns
         -------
         str or None
@@ -99,19 +97,15 @@ class PXDataset:
             FTP location is listed.
 
         """
-        links = _getNodes(cls.data, ".//cvParam[@accession='PRIDE:0000411']")
+        links = _getNodes(self.data, ".//cvParam[@accession='PRIDE:0000411']")
         if len(links) == 0:
-            warn("No FTP URL found for " + cls.id + ".")
-            return(None)
+            logging.warning("No FTP URL found for " + self.return_id + ".")
+            return None
 
-        return(links[0])
+        return links[0]
 
-    def pxtax(cls):
+    def pxtax(self):
         """Retrieve the sample taxonomies listed for a PXDataset.
-
-        Parameters
-        ----------
-        None
 
         Returns
         -------
@@ -120,19 +114,17 @@ class PXDataset:
             submission. If not provided, returns None.
 
         """
-        tax = _getNodes(cls.data, ".//cvParam[@accession='MS:1001469']")
+        tax = _getNodes(self.data, ".//cvParam[@accession='MS:1001469']")
         if len(tax) == 0:
-            warn("No taxonomies reported for " + cls.id + ".")
-            return(None)
+            logging.warning("No taxonomies reported for "
+                            + self.return_id
+                            + ".")
+            return None
+        else:
+            return tax
 
-        return(tax)
-
-    def pxref(cls):
+    def pxref(self):
         """Retrieve references associated with a PXDataset.
-
-        Parameters
-        ----------
-        None
 
         Returns
         -------
@@ -141,24 +133,22 @@ class PXDataset:
             None if no references are found.
 
         """
-        currRef = _getNodes(cls.data,
-                            ".//cvParam[@accession='PRIDE:0000400']")
-        pendRef = _getNodes(cls.data,
-                            ".//cvParam[@accession='PRIDE:0000432']")
+        curr_ref = _getNodes(self.data,
+                             ".//cvParam[@accession='PRIDE:0000400']")
+        pend_ref = _getNodes(self.data,
+                             ".//cvParam[@accession='PRIDE:0000432']")
 
-        allRef = currRef + pendRef
-        if len(allRef) == 0:
-            warn("No references reported for " + cls.id + ".")
-            return(None)
+        all_ref = curr_ref + pend_ref
+        if len(all_ref) == 0:
+            logging.warning("No references reported for "
+                            + self.return_id
+                            + ".")
+            return None
 
-        return(allRef)
+        return all_ref
 
-    def pxfiles(cls):
+    def pxfiles(self):
         """List files available from the PRIDE FTP URL of a PXDataset.
-
-        Parameters
-        ----------
-        None
 
         Returns
         -------
@@ -167,27 +157,27 @@ class PXDataset:
             no PRIDE FTP location or no files at the location.
 
         """
-        url = cls.pxurl()
+        url = self.pxurl()
         if url is None:
-            return(None)
+            return None
 
         lines = urlopen(url + "/").read().decode("UTF-8").splitlines()
 
         files = []
         for line in lines:
             files.append(line.split()[-1])
-        return(files)
 
         if len(file) == 0:
-            warn("No files were found at " + url + ".")
-            return(None)
+            logging.warning("No files were found at " + url + ".")
+            return None
+        else:
+            return files
 
-    def pxget(cls, files=None, destDir=".",
-              force_=False, verbose=True):
+    def pxget(self, files=None, dest_dir=".", force_=False):
         """Download PXDataset files from the PRIDE FTP location.
 
         By default, pxget() will not download files that have a file
-        with a matching name in the destination directory, destDir.
+        with a matching name in the destination directory, dest_dir.
 
         Parameters
         ----------
@@ -195,19 +185,15 @@ class PXDataset:
             Specifies the files to be downloaded. The default, None,
             downloads all files found with PXDataset.pxfiles().
 
-        destDir : string
+        dest_dir : string
             Specifies the directory to download files into. If the
             directory does not exist, it will be created. The default
             is the current working directory.
 
         force_ : bool
-            When False, files with matching name is destDir will not be
+            When False, files with matching name is dest_dir will not be
             downloaded again. True overides this, overwriting the
             matching file.
-
-        verbose : bool
-            Controls whether messages about download progress are
-            printed.
 
         Returns
         -------
@@ -215,24 +201,24 @@ class PXDataset:
 
         """
         if files is None:
-            files = cls.pxfiles()
+            files = self.pxfiles()
         elif isinstance(files, str):
             files = (files,)
 
-        url = cls.pxurl()
-        if not isdir(destDir):
-            makedirs(destDir)
+        url = self.pxurl()
+        if not os.path.isdir(dest_dir):
+            os.path.makedirs(dest_dir)
 
         for file in files:
-            path = join(destDir, file)
+            path = os.path.join(dest_dir, file)
 
-            if isfile(path) and not force_:
-                _vprint(path + " exists. Skipping file...", verbose)
+            if os.path.isfile(path) and not force_:
+                logging.info(path + " exists. Skipping file...")
                 continue
 
-            _vprint("Downloading " + file + "...", verbose)
+            logging.info("Downloading " + file + "...")
 
             with urlopen(url + "/" + file) as dat, open(path, 'wb') as fout:
                 shutil.copyfileobj(dat, fout)
 
-        _vprint("Done!", verbose)
+        logging.info("Done!")
