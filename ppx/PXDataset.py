@@ -1,5 +1,4 @@
 # PXDataset.py : ppx
-# TODO: List comprehensions
 # TODO: PX ID error checking.
 
 import xml.etree.ElementTree as ET
@@ -27,14 +26,7 @@ def _getNodes(xml, XPath):
         A list containing the 'value' attribute for each node found
 
     """
-    root = xml.getroot()
-    nodes = root.findall(XPath)
-
-    links = []
-    for node in nodes:
-        links.append(node.attrib["value"])
-
-    return links
+    return [node.attrib["value"] for node in xml.getroot().findall(XPath)]
 
 def _openurl(url):
     """
@@ -195,10 +187,7 @@ class PXDataset:
             return None
 
         lines = _openurl(url + "/").read().decode("UTF-8").splitlines()
-
-        files = []
-        for line in lines:
-            files.append(line.split()[-1])
+        files = [line.split()[-1] for line in lines]
 
         if len(files) == 0:
             logging.warning("No files were found at " + url + ".")
