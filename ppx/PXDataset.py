@@ -48,7 +48,7 @@ def _openurl(url):
     while not success:
         retries += 1
         try:
-            dat = urllib.request.urlopen(req, timeout = 10)
+            dat = urllib.request.urlopen(req, timeout = 3)
             success = True
         except urllib.error.URLError:
             if retries <= max_retry:
