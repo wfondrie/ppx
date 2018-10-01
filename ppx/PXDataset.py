@@ -7,6 +7,7 @@ import urllib.request
 import logging
 import os
 import shutil
+import time
 
 
 def _getNodes(xml, XPath):
@@ -61,7 +62,7 @@ def _openurl(url):
             success = True
         except urllib.error.URLError:
             if retries <= max_retry:
-                sleep(3)
+                time.sleep(3)
             else:
                 raise
 
