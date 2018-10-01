@@ -48,9 +48,10 @@ def _openurl(url):
     while not success:
         retries += 1
         try:
-            dat = urllib.request.urlopen(req, timeout = 3)
+            dat = urllib.request.urlopen(req, timeout = 100)
             success = True
         except urllib.error.URLError:
+            logging.debug("Attempt " + retries + " download failed...")
             if retries <= max_retry:
                 time.sleep(3)
             else:
@@ -90,7 +91,7 @@ class PXDataset:
                            len(id) == 9,
                            id[0:3] == "PXD" or id[0:3] == "PRD",
                            id[3:9].isdigit()]
-        print(pxid_conditions)
+
         if not all(pxid_conditions):
             raise Exception("Malformed ProteomeXchange identifier.")
 
