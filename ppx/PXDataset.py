@@ -167,7 +167,7 @@ class PXDataset:
         for line in lines:
             files.append(line.split()[-1])
 
-        if len(file) == 0:
+        if len(files) == 0:
             logging.warning("No files were found at " + url + ".")
             return None
         else:
