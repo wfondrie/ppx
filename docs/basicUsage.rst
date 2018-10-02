@@ -57,7 +57,7 @@ retrieved with the :code:`pxfiles()` method:
 
 Finally, we can use the :code:`pxget()` method to download all or some of the
 files available at the FTP URL. If we want updates on download progress,
-we can change the level for reporting in the `logging` package:
+we can change the level for reporting in the :code:`logging` package:
 
     >>> import logging
     >>> logging.getLogger().setLevel(logging.INFO)

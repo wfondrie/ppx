@@ -29,7 +29,7 @@ Installation
 ------------
 :code:`ppx` was developed and tested for Python 3.5+, and only requires
 packages that are distributed as part of the Python Standard Library. The
-release version of :code:`ppx` can be installed with :code:`pip` (or
+release version of :code:`ppx` can be installed with :code:`pip` (or 
 :code:`pip3`)::
 
     pip install ppx
