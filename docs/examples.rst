@@ -89,7 +89,7 @@ the Thermo raw files for each dataset. In this case, we could do::
     for dat in pxdat:
         rawFiles = list(filter(rawTest.search, dat.pxfiles()))
         dirName = dat.id + "_data"
-        #dat.pxget(files = rawFiles, destDir = dirName)
+        #dat.pxget(files = rawFiles, dest_dir = dirName)
         print(rawFiles)
 
 .. caution::
@@ -106,7 +106,7 @@ is much smaller)::
     for dat in pxdat:
         readmeFiles = list(filter(readmeTest.search, dat.pxfiles()))
         dirName = dat.id + "_data"
-        dat.pxget(files = readmeFiles, destDir = dirName)
+        dat.pxget(files = readmeFiles, dest_dir = dirName)
 
 
 .. [1] Vizcaíno JA, et al. *2016 update of the PRIDE database and related

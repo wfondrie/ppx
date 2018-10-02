@@ -14,7 +14,7 @@ To begin, first import the package::
 Then we can create a :code:`PXDataset` object for a ProteomeXchange dataset::
 
     >>> dat = PXDataset("PXD000001")
-    >>> print(dat.id)
+    >>> print(dat.return_id)
     PXD000001
 
 We can then use the :code:`PXDataset` methods to access information about the
@@ -56,11 +56,14 @@ retrieved with the :code:`pxfiles()` method:
     'erwinia_carotovora.fasta', 'generated']
 
 Finally, we can use the :code:`pxget()` method to download all or some of the
-files available at the FTP URL:
+files available at the FTP URL. If we want updates on download progress,
+we can change the level for reporting in the `logging` package:
 
-    >>> dat.pxget(files = "README.txt", destDir = "test")
-    Downloading README.txt...
-    Done!
+    >>> import logging
+    >>> logging.getLogger().setLevel(logging.INFO)
+    >>> dat.pxget(files = "README.txt", dest_dir = "test")
+    INFO:root:Downloading README.txt...
+    INFO:root:Done!
 
 For more information about the :code:`PXDataset` class or any of its methods,
 see the :ref:`API Reference <PXDataset-API>`.
