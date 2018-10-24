@@ -100,7 +100,7 @@ class PXDataset:
 
         # Construct PXDataset
         url = ("http://proteomecentral.proteomexchange.org/cgi/GetDataset?ID="
-               + id + "&outputMode=XML&test=no")
+               + pxid + "&outputMode=XML&test=no")
         logging.debug(url)
 
         xml = ET.parse(_openurl(url))
