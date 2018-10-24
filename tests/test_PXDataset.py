@@ -37,7 +37,7 @@ def test_files():
 def test_download(tmpdir, caplog):
     caplog.set_level(logging.INFO)
     dest = os.path.join(tmpdir.strpath, "test")
-    download_msg = "Downloading README.txt"
+    download_msg = "Downloading %s..."
     skip_msg = "exists. Skipping file..."
 
     # Verify download works
