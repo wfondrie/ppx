@@ -49,5 +49,5 @@ dat.pxfiles()
 Lastly, we can download files that we're interested in:
 ```Python
 # Download "README.txt" to the "test" directory
-dat.pxget(files = "README.txt", dest_dir = "test")
+dat.pxget(files="README.txt", dest_dir="test")
 ```

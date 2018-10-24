@@ -1,6 +1,5 @@
 import pytest
 import os
-import re
 import logging
 from ppx import PXDataset
 
