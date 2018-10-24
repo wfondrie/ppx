@@ -9,6 +9,7 @@ import os
 import shutil
 import time
 
+
 def _getnodes(xml, xpath):
     """Retreive the 'value' attribute from a set of XML nodes.
 
@@ -27,6 +28,7 @@ def _getnodes(xml, xpath):
 
     """
     return [node.attrib["value"] for node in xml.getroot().findall(xpath)]
+
 
 def _openurl(url):
     """
@@ -61,6 +63,7 @@ def _openurl(url):
                 raise
 
     return dat
+
 
 class PXDataset:
     """Information about a ProteomeXchange dataset.
@@ -192,7 +195,7 @@ class PXDataset:
             return None
 
         lines = _openurl(url + "/").read().decode("UTF-8").splitlines()
-        files = [line.split()[-1] for line in lines]
+        files = [line.split(maxsplit=8)[-1] for line in lines]
 
         if not files:
             logging.warning("No files were found at %s.", url)
