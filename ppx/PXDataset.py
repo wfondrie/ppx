@@ -1,6 +1,6 @@
 """
 This module contains the PXDataset class and its associated methods,
-are the foundation of the ppx package.
+which are the foundation of the ppx package.
 """
 import xml.etree.ElementTree as ET
 import urllib.request
@@ -47,6 +47,9 @@ def _openurl(url):
     req = urllib.request.Request(url)
     req.add_header("user-agent", "ppx (https://pypi.org/project/ppx/)")
 
+    # Retries were added after Travic-CI build failures. These seem to
+    # have been necessary due to connectivity issues on Travis servers.
+    # Retries may not be needed in normal settings.
     max_retry = 5
     retries = 0
     success = False
@@ -91,7 +94,6 @@ class PXDataset:
     """
     def __init__(self, pxid):
         """Instantiate a PXDataset object."""
-        # Error checking the identifier
         pxid = pxid.upper()
         pxid_conditions = [isinstance(pxid, str),
                            len(pxid) == 9,
@@ -101,7 +103,6 @@ class PXDataset:
         if not all(pxid_conditions):
             raise Exception("Malformed ProteomeXchange identifier.")
 
-        # Construct PXDataset
         url = ("http://proteomecentral.proteomexchange.org/cgi/GetDataset?ID="
                + pxid + "&outputMode=XML&test=no")
         logging.debug(url)
