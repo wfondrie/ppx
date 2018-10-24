@@ -53,3 +53,12 @@ def test_download(tmpdir, caplog):
     # Verify that the force_ argument actually works
     dat.pxget(files="README.txt", dest_dir=dest, force_=True)
     assert download_msg in caplog.records[4].msg
+
+def test_file_whitespace():
+    """
+    Some files contain whitepace, causing pxfiles() in v2.0 and
+    earlier to break. This test verifies that was fixed.
+    """
+    ws_dat = PXDataset("PXD002828")
+    ws_files = ws_dat.pxfiles()
+    assert ws_files[-2] == "Species MB9.raw"
