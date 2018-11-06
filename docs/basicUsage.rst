@@ -1,4 +1,4 @@
-    Basic Usage
+Basic Usage
 ===========
 
 The :code:`ppx` package defines a single class, the :code:`PXDataset`. When
