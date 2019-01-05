@@ -61,7 +61,7 @@ we can change the level for reporting in the :code:`logging` package:
 
     >>> import logging
     >>> logging.getLogger().setLevel(logging.INFO)
-    >>> dat.pxget(files = "README.txt", dest_dir = "test")
+    >>> dat.pxget(files="README.txt", dest_dir="test")
     INFO:root:Downloading README.txt...
     INFO:root:Done!
 

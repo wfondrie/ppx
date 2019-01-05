@@ -40,8 +40,8 @@ find datasets that match out query::
 
     # Find datasets about honey bees (Apis mellifera) that used a Q-Exactive.
     pride = PRIDE()
-    datasets = pride.get_project_list(speciesFilter = "Apis mellifera",
-                                      instrumentFilter = "q exactive")
+    datasets = pride.get_project_list(speciesFilter="Apis mellifera",
+                                      instrumentFilter="q exactive")
 
 Let's see how many datasets we found:
 
@@ -61,18 +61,15 @@ dataset. For example, look at the first element of :code:`datasets`:
     'monohydroxylated residue'], 'instrumentNames': ['Q Exactive'],
     'projectTags': ['Biological']}
 
-Now we can extract use the :code:`'accession'` keys to create a list
+Now we can extract use the :code:`"accession"` keys to create a list
 :code:`PXDataset` objects::
 
-    pxdat = []
-    for dataset in datasets:
-        acc = dataset['accession']
-        pxdat.append(PXDataset(acc))
+    pxdat = [PXDataset(d["accession"]) for d in datasets]
 
 With the `PXDataset` objects made, we can easily list the files to see which
 ones we might want to download. In this case, we'll print first 5 from each:
 
-    >>> for dat in pxdat: print(dat.pxfiles()[0:4])
+    >>> [print(d.pxfiles()[0:4]) for d in pxdat]
     ['ITB2d2.mzxml', 'ITB2d2.pep.xml', 'ITB2d2.raw', 'ITB2d3.mzxml']
     ['ITB-7DB-1.mgf', 'ITB-7DB-1.raw', 'ITB-7DB-2.mgf', 'ITB-7DB-2.raw']
     ['MS160421-XBH-1.raw', 'MS160421-XBH-10.raw', 'MS160421-XBH-11.raw', 'MS160421-XBH-12.raw']
@@ -84,13 +81,13 @@ We could have alternatively used :code:`bioservices.PRIDE.get_file_list()` to
 retrieve a file list. Finally, let's pretend that we want to download all of
 the Thermo raw files for each dataset. In this case, we could do::
 
-    rawTest = re.compile(".*\.raw$", re.IGNORECASE)
+    raw_test = re.compile(".*\.raw$", re.IGNORECASE)
 
     for dat in pxdat:
-        rawFiles = list(filter(rawTest.search, dat.pxfiles()))
-        dirName = dat.id + "_data"
-        #dat.pxget(files = rawFiles, dest_dir = dirName)
-        print(rawFiles)
+        raw_files = list(filter(raw_test.search, dat.pxfiles()))
+        dir_name = dat.id + "_data"
+        #dat.pxget(files=raw_files, dest_dir=dir_name)
+        print(raw_files)
 
 .. caution::
     You probably don't actually want to do this since it would download a lot
@@ -101,12 +98,12 @@ the Thermo raw files for each dataset. In this case, we could do::
 Alternatively, we could just download all of the README files (This download
 is much smaller)::
 
-    readmeTest = re.compile("^README")
+    readme_test = re.compile("^README")
 
     for dat in pxdat:
-        readmeFiles = list(filter(readmeTest.search, dat.pxfiles()))
-        dirName = dat.id + "_data"
-        dat.pxget(files = readmeFiles, dest_dir = dirName)
+        readme_files = list(filter(readme_test.search, dat.pxfiles()))
+        dir_name = dat.id + "_data"
+        dat.pxget(files=readme_files, dest_dir=dir_name)
 
 
 .. [1] Vizcaíno JA, et al. *2016 update of the PRIDE database and related

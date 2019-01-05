@@ -1,4 +1,7 @@
-# PXDataset.py : ppx
+"""
+This module contains the PXDataset class and its associated methods,
+which are the foundation of the ppx package.
+"""
 import xml.etree.ElementTree as ET
 import urllib.request
 import logging
@@ -6,7 +9,8 @@ import os
 import shutil
 import time
 
-def _getNodes(xml, XPath):
+
+def _getnodes(xml, xpath):
     """Retreive the 'value' attribute from a set of XML nodes.
 
     Parameters
@@ -23,7 +27,8 @@ def _getNodes(xml, XPath):
         A list containing the 'value' attribute for each node found
 
     """
-    return [node.attrib["value"] for node in xml.getroot().findall(XPath)]
+    return [node.attrib["value"] for node in xml.getroot().findall(xpath)]
+
 
 def _openurl(url):
     """
@@ -42,22 +47,26 @@ def _openurl(url):
     req = urllib.request.Request(url)
     req.add_header("user-agent", "ppx (https://pypi.org/project/ppx/)")
 
+    # Retries were added after Travic-CI build failures. These seem to
+    # have been necessary due to connectivity issues on Travis servers.
+    # Retries may not be needed in normal settings.
     max_retry = 5
     retries = 0
     success = False
     while not success:
         retries += 1
         try:
-            dat = urllib.request.urlopen(req, timeout = 100)
+            dat = urllib.request.urlopen(req, timeout=100)
             success = True
         except urllib.error.URLError:
-            logging.debug("Attempt " + retries + " download failed...")
+            logging.debug("Attempt %s  download failed...", retries)
             if retries <= max_retry:
                 time.sleep(3)
             else:
                 raise
 
     return dat
+
 
 class PXDataset:
     """Information about a ProteomeXchange dataset.
@@ -83,37 +92,32 @@ class PXDataset:
         The parsed XML data returned by the ProteomeXchange server.
 
     """
-    def __init__(self, id):
+    def __init__(self, pxid):
         """Instantiate a PXDataset object."""
-        # Error checking the identifier
-        id = id.upper()
-        pxid_conditions = [isinstance(id, str),
-                           len(id) == 9,
-                           id[0:3] == "PXD" or id[0:3] == "PRD",
-                           id[3:9].isdigit()]
+        pxid = pxid.upper()
+        pxid_conditions = [isinstance(pxid, str),
+                           len(pxid) == 9,
+                           pxid[0:3] == "PXD" or pxid[0:3] == "PRD",
+                           pxid[3:9].isdigit()]
 
         if not all(pxid_conditions):
             raise Exception("Malformed ProteomeXchange identifier.")
 
-        # Construct PXDataset
         url = ("http://proteomecentral.proteomexchange.org/cgi/GetDataset?ID="
-               + id + "&outputMode=XML&test=no")
+               + pxid + "&outputMode=XML&test=no")
         logging.debug(url)
 
         xml = ET.parse(_openurl(url))
         root = xml.getroot()
 
-        self.formatVersion = root.attrib["formatVersion"]
+        self.format_version = root.attrib["formatVersion"]
         self.return_id = root.attrib["id"]
-        self.query_id = id
+        self.query_id = pxid
         self.data = xml
 
-        if self.return_id != id:
-            logging.warning("The identifier, "
-                            + id
-                            + ", was not found. Retrieved "
-                            + self.return_id
-                            + " instead.")
+        if self.return_id != pxid:
+            logging.warning("The identifier, %s, was not found. Retrieved "
+                            "%s instead.", pxid, self.return_id)
 
     def pxurl(self):
         """Retrieve the URL for the data files of a PXDataset.
@@ -131,9 +135,9 @@ class PXDataset:
             FTP location is listed.
 
         """
-        links = _getNodes(self.data, ".//cvParam[@accession='PRIDE:0000411']")
-        if len(links) == 0:
-            logging.warning("No FTP URL found for " + self.return_id + ".")
+        links = _getnodes(self.data, ".//cvParam[@accession='PRIDE:0000411']")
+        if not links:
+            logging.warning("No FTP URL found for %s.", self.return_id)
             return None
 
         return links[0]
@@ -148,14 +152,12 @@ class PXDataset:
             submission. If not provided, returns None.
 
         """
-        tax = _getNodes(self.data, ".//cvParam[@accession='MS:1001469']")
-        if len(tax) == 0:
-            logging.warning("No taxonomies reported for "
-                            + self.return_id
-                            + ".")
-            return None
-        else:
-            return tax
+        tax = _getnodes(self.data, ".//cvParam[@accession='MS:1001469']")
+        if not tax:
+            logging.warning("No taxonomies reported for %s.", self.return_id)
+            tax = None
+
+        return tax
 
     def pxref(self):
         """Retrieve references associated with a PXDataset.
@@ -167,16 +169,14 @@ class PXDataset:
             None if no references are found.
 
         """
-        curr_ref = _getNodes(self.data,
+        curr_ref = _getnodes(self.data,
                              ".//cvParam[@accession='PRIDE:0000400']")
-        pend_ref = _getNodes(self.data,
+        pend_ref = _getnodes(self.data,
                              ".//cvParam[@accession='PRIDE:0000432']")
 
         all_ref = curr_ref + pend_ref
-        if len(all_ref) == 0:
-            logging.warning("No references reported for "
-                            + self.return_id
-                            + ".")
+        if not all_ref:
+            logging.warning("No references reported for %s.", self.return_id)
             return None
 
         return all_ref
@@ -196,13 +196,13 @@ class PXDataset:
             return None
 
         lines = _openurl(url + "/").read().decode("UTF-8").splitlines()
-        files = [line.split()[-1] for line in lines]
+        files = [line.split(maxsplit=8)[-1] for line in lines]
 
-        if len(files) == 0:
-            logging.warning("No files were found at " + url + ".")
-            return None
-        else:
-            return files
+        if not files:
+            logging.warning("No files were found at %s.", url)
+            files = None
+
+        return files
 
     def pxget(self, files=None, dest_dir=".", force_=False):
         """Download PXDataset files from the PRIDE FTP location.
@@ -244,10 +244,10 @@ class PXDataset:
             path = os.path.join(dest_dir, file)
 
             if os.path.isfile(path) and not force_:
-                logging.info(path + " exists. Skipping file...")
+                logging.info("%s exists. Skipping file...", path)
                 continue
 
-            logging.info("Downloading " + file + "...")
+            logging.info("Downloading %s...", file)
 
             with _openurl(url + "/" + file) as dat, open(path, 'wb') as fout:
                 shutil.copyfileobj(dat, fout)
