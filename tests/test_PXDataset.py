@@ -3,6 +3,8 @@ import os
 import logging
 from ppx import PXDataset
 
+logging.basicConfig(level=logging.DEBUG)
+
 def test_PXDataset_initialization():
     testID = "PXD000001"
     dat = PXDataset(testID)
@@ -31,7 +33,9 @@ def test_files():
              "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML",
              "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw",
              "erwinia_carotovora.fasta", "generated"]
-    assert dat.pxfiles() == files
+
+    retrieved_files = dat.pxfiles()
+    assert retrieved_files == files
 
 def test_download(tmpdir, caplog):
     caplog.set_level(logging.INFO)
