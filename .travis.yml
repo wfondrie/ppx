@@ -9,4 +9,4 @@ sudo: false
 install:
   - pip install -e .
 
-script: pytest
+script: travis_wait pytest
