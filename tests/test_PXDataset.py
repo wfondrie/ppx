@@ -59,7 +59,7 @@ def test_download(tmpdir, caplog):
 
 def test_file_whitespace():
     """
-    Some files contain whitepace, causing pxfiles() in v2.0 and
+    Some files contain whitepace, causing pxfiles() in v0.2.0 and
     earlier to break. This test verifies that was fixed.
     """
     ws_dat = PXDataset("PXD002828")

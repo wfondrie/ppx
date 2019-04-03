@@ -8,7 +8,7 @@ import logging
 import os
 import shutil
 import time
-
+from typing import Union
 
 def _getnodes(xml, xpath):
     """Retreive the 'value' attribute from a set of XML nodes.
@@ -60,7 +60,7 @@ def _openurl(url):
             success = True
         except urllib.error.URLError:
             logging.debug("Attempt %s  download failed...", retries)
-            if retries <= max_retry:
+            if retries <= (max_retry - 1):
                 time.sleep(3)
             else:
                 raise
@@ -92,20 +92,24 @@ class PXDataset:
         The parsed XML data returned by the ProteomeXchange server.
 
     """
-    def __init__(self, pxid):
+    def __init__(self, pxid: str):
         """Instantiate a PXDataset object."""
+
+        if not isinstance(pxid, str):
+            raise TypeError("'pxid' must be a string (str).")
+
         pxid = pxid.upper()
-        pxid_conditions = [isinstance(pxid, str),
-                           len(pxid) == 9,
+        pxid_conditions = [len(pxid) == 9,
                            pxid[0:3] == "PXD" or pxid[0:3] == "PRD",
                            pxid[3:9].isdigit()]
 
         if not all(pxid_conditions):
-            raise Exception("Malformed ProteomeXchange identifier.")
+            raise ValueError("Malformed ProteomeXchange identifier.")
 
-        url = ("http://proteomecentral.proteomexchange.org/cgi/GetDataset?ID="
-               + pxid + "&outputMode=XML&test=no")
-        logging.debug(url)
+        url = (f"http://proteomecentral.proteomexchange.org/cgi/GetDataset?ID="
+               f"{pxid}&outputMode=XML&test=no")
+
+        logging.debug("ProteomeXchange URL is %s", url)
 
         xml = ET.parse(_openurl(url))
         root = xml.getroot()
@@ -119,7 +123,7 @@ class PXDataset:
             logging.warning("The identifier, %s, was not found. Retrieved "
                             "%s instead.", pxid, self.return_id)
 
-    def pxurl(self):
+    def pxurl(self) -> str:
         """Retrieve the URL for the data files of a PXDataset.
 
         Some ProteomeXchange submissions have data files that are
@@ -130,19 +134,17 @@ class PXDataset:
 
         Returns
         -------
-        str or None
-            The URL of the data files. Returns None if no
-            FTP location is listed.
+        str
+            The URL of the data files.
 
         """
         links = _getnodes(self.data, ".//cvParam[@accession='PRIDE:0000411']")
         if not links:
-            logging.warning("No FTP URL found for %s.", self.return_id)
-            return None
+            raise ValueError(f"No FTP URL found for {self.return_id}.")
 
         return links[0]
 
-    def pxtax(self):
+    def pxtax(self) -> list:
         """Retrieve the sample taxonomies listed for a PXDataset.
 
         Returns
@@ -154,20 +156,17 @@ class PXDataset:
         """
         tax = _getnodes(self.data, ".//cvParam[@accession='MS:1001469']")
         if not tax:
-            logging.warning("No taxonomies reported for %s.", self.return_id)
-            tax = None
+            ValueError("No taxonomies reported for {self.return_id}.")
 
         return tax
 
-    def pxref(self):
+    def pxref(self) -> list:
         """Retrieve references associated with a PXDataset.
 
         Returns
         -------
-        list of str or None
-            Both current and pending references are returned. Returns
-            None if no references are found.
-
+        list of str
+            Both current and pending references are returned.
         """
         curr_ref = _getnodes(self.data,
                              ".//cvParam[@accession='PRIDE:0000400']")
@@ -176,35 +175,30 @@ class PXDataset:
 
         all_ref = curr_ref + pend_ref
         if not all_ref:
-            logging.warning("No references reported for %s.", self.return_id)
-            return None
+            ValueError("No references reported for {self.return_id}")
 
         return all_ref
 
-    def pxfiles(self):
+    def pxfiles(self) -> list:
         """List files available from the PRIDE FTP URL of a PXDataset.
 
         Returns
         -------
-        list of str or None
-            Returns a list of available files. Returns None if there is
-            no PRIDE FTP location or no files at the location.
-
+        list of str
+            Returns a list of available files.
         """
         url = self.pxurl()
-        if url is None:
-            return None
 
         lines = _openurl(url + "/").read().decode("UTF-8").splitlines()
         files = [line.split(maxsplit=8)[-1] for line in lines]
 
         if not files:
-            logging.warning("No files were found at %s.", url)
-            files = None
+            ValueError(f"No files were found at {url}.")
 
         return files
 
-    def pxget(self, files=None, dest_dir=".", force_=False):
+    def pxget(self, files: Union[str, list] = None, dest_dir: str = ".",
+              force_: bool = False) -> None:
         """Download PXDataset files from the PRIDE FTP location.
 
         By default, pxget() will not download files that have a file
@@ -212,16 +206,16 @@ class PXDataset:
 
         Parameters
         ----------
-        files : str, list of str, or None
+        files : str, list of str, or None (optional)
             Specifies the files to be downloaded. The default, None,
             downloads all files found with PXDataset.pxfiles().
 
-        dest_dir : string
+        dest_dir : string (optional)
             Specifies the directory to download files into. If the
             directory does not exist, it will be created. The default
             is the current working directory.
 
-        force_ : bool
+        force_ : bool (optional)
             When False, files with matching name is dest_dir will not be
             downloaded again. True overides this, overwriting the
             matching file.
@@ -240,16 +234,16 @@ class PXDataset:
         if not os.path.isdir(dest_dir):
             os.makedirs(dest_dir)
 
-        for file in files:
-            path = os.path.join(dest_dir, file)
+        for fname in files:
+            path = os.path.join(dest_dir, fname)
 
             if os.path.isfile(path) and not force_:
-                logging.info("%s exists. Skipping file...", path)
+                logging.info("%s already exists. Skipping file...", path)
                 continue
 
-            logging.info("Downloading %s...", file)
+            logging.info("Downloading %s...", fname)
 
-            with _openurl(url + "/" + file) as dat, open(path, 'wb') as fout:
+            with _openurl(f"{url}/{fname}") as dat, open(path, 'wb') as fout:
                 shutil.copyfileobj(dat, fout)
 
         logging.info("Done!")
