@@ -10,27 +10,33 @@ import os
 import logging
 import pytest
 from ppx import PXDataset
-#logging.basicConfig(level=logging.DEBUG)
 
-def test_PXDataset_initialization():
+
+def test_initialization():
     """Tests that a PXDataset can be constructed"""
     test_id = "PXD000001"
     test_dat = PXDataset(test_id)
     assert test_dat.return_id == test_id
     assert test_dat.query_id == test_id
 
-dat = PXDataset("PXD000001")
 
-def test_simple_methods():
-    """Checks the basic PXDataset methods"""
+PRD = PXDataset("PXD000001")
+MSV = PXDataset("PXD018973")
+
+
+def test_properties():
+    """Checks the basic PXDataset properties"""
     url = "ftp://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001"
-    ref = [("Gatto L, Christoforou A. Using R and Bioconductor for proteomics "
-            "data analysis. Biochim Biophys Acta. 2014 1844(1 pt a):42-51")]
-    assert dat.pxurl() == url
-    assert dat.pxref() == ref
-    assert dat.pxtax() == ["Erwinia carotovora"]
+    ref = ["Gatto L, Christoforou A. Using R and Bioconductor for proteomics "
+           "data analysis. Biochim Biophys Acta. 2013 May 18. doi:pii: "
+           "S1570-9639(13)00186-6. 10.1016/j.bbapap.2013.04.032"]
 
-@pytest.mark.skip(reason="Travis-CI can't consistently access PRIDE FTP site.")
+    assert PRD.url == url
+    assert PRD.references == ref
+    assert PRD.taxonomies == ["Erwinia carotovora"]
+
+
+#@pytest.mark.skip(reason="Travis-CI can't consistently access PRIDE FTP site.")
 def test_files():
     """Test that file names are retrieved successfully."""
     files = ["F063721.dat", "F063721.dat-mztab.txt",
@@ -43,39 +49,46 @@ def test_files():
               "60min_01-20141210.mzXML"),
              "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML",
              "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw",
-             "erwinia_carotovora.fasta", "generated"]
+             "erwinia_carotovora.fasta"]
 
-    retrieved_files = dat.pxfiles()
+    retrieved_files = PRD.list_files()
     assert retrieved_files == files
 
-@pytest.mark.skip(reason="Travis-CI can't consistently access PRIDE FTP site.")
+    # test a subdirectory too
+    dir_file = ['HELA-DIA-DDA-A2.raw']
+    assert MSV.list_files(path="raw") == dir_file
+
+
+def test_directories():
+    """Test that listing directories works"""
+    dirs = ['ccms_parameters', 'ccms_quant', 'quant_stats', 'raw', 'search']
+    assert MSV.list_dirs() == dirs
+
+
+#@pytest.mark.skip(reason="Travis-CI can't consistently access PRIDE FTP site.")
 def test_download(tmpdir, caplog):
     """Tests downloading a PXDataset file from PRIDE"""
     caplog.set_level(logging.INFO)
     dest = os.path.join(tmpdir.strpath, "test")
     download_msg = "Downloading %s..."
-    skip_msg = "exists. Skipping file..."
 
     # Verify download works
-    dat.pxget(files="README.txt", dest_dir=dest)
+    PRD.download(files="README.txt", dest_dir=dest)
     file = os.path.join(dest, "README.txt")
     assert os.path.isfile(file) is True
     assert download_msg in caplog.records[0].msg
 
-    # Verify that the file isn't downloaded again if it is already present
-    dat.pxget(files="README.txt", dest_dir=dest)
-    assert skip_msg in caplog.records[2].msg
-
     # Verify that the force_ argument actually works
-    dat.pxget(files="README.txt", dest_dir=dest, force_=True)
-    assert download_msg in caplog.records[4].msg
+    PRD.download(files="README.txt", dest_dir=dest, force_=True)
+    assert download_msg in caplog.records[1].msg
 
-@pytest.mark.skip(reason="Travis-CI can't consistently access PRIDE FTP site.")
+
+#@pytest.mark.skip(reason="Travis-CI can't consistently access PRIDE FTP site.")
 def test_file_whitespace():
     """
     Some files contain whitepace, causing pxfiles() in v0.2.0 and
     earlier to break. This test verifies that was fixed.
     """
     ws_dat = PXDataset("PXD002828")
-    ws_files = ws_dat.pxfiles()
+    ws_files = ws_dat.list_files()
     assert ws_files[-2] == "Species MB9.raw"
