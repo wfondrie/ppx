@@ -7,7 +7,7 @@ on:
   pull_request:
     branches: [ master ]
   schedule:
-  - cron: "0 0 0 /1 *" # Run monthly
+  - cron: "0 0 0 1/1 *" # Run monthly
 
 jobs:
   build:
