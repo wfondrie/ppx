@@ -31,9 +31,19 @@ def test_properties():
            "data analysis. Biochim Biophys Acta. 2013 May 18. doi:pii: "
            "S1570-9639(13)00186-6. 10.1016/j.bbapap.2013.04.032"]
 
+
+    name = "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01"
+    desc = ("Expected reporter ion ratios: Erwinia peptides:    1:1:1:1:1:1 "
+            "Enolase spike (sp|P00924|ENO1_YEAST):  10:5:2.5:1:2.5:10 BSA "
+            "spike (sp|P02769|ALBU_BOVIN):  1:2.5:5:10:5:1 PhosB spike "
+            "(sp|P00489|PYGM_RABIT):  2:2:2:2:1:1 Cytochrome C spike "
+            "(sp|P62894|CYC_BOVIN): 1:1:1:1:1:2")
+
     assert PRD.url == url
     assert PRD.references == ref
     assert PRD.taxonomies == ["Erwinia carotovora"]
+    assert PRD.name == name
+    assert PRD.description == desc
 
 
 #@pytest.mark.skip(reason="Travis-CI can't consistently access PRIDE FTP site.")
