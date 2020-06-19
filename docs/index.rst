@@ -1,5 +1,5 @@
-ppx: A Python interface to the ProteomeXchange Repository
-=========================================================
+ppx: A Python interface to ProteomeXchange
+==========================================
 
 .. image:: https://github.com/wfondrie/ppx/workflows/tests/badge.svg?branch=master
    :target: https://github.com/wfondrie/ppx/actions?query=workflow%3Atests
@@ -33,6 +33,16 @@ License
 -------
 ppx is distributed under the MIT license.
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Getting Started
+
+   Overview <self>
+   basicUsage.rst
+   API Reference <PXDataset.rst>
+
+.. examples.rst
+
 
 For R Users
 -----------
@@ -42,22 +52,6 @@ an R user and want many of the same functionalities that ppx offers, check it
 out on `Bioconductor
 <http://bioconductor.org/packages/release/bioc/html/rpx.html>`_. and `GitHub
 <https://github.com/lgatto/rpx>`_.
-
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Getting Started
-
-   self
-   basicUsage.rst
-
-.. examples.rst
-
-.. toctree::
-   :maxdepth: 1
-   :caption: API Reference
-
-   PXDataset.rst
 
 
 .. [1] Vizcaino J.A. et al. *ProteomeXchange: globally co-ordinated proteomics

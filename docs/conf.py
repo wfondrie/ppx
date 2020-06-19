@@ -14,29 +14,25 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath('../'))
-
 import subprocess
+sys.path.insert(0, os.path.abspath('..'))
 
-#import mock
-#MOCK_MODULES = ['numpy', 'scipy', 'joblib', 'networkx', 'cython']
-#for mod_name in MOCK_MODULES:
-#   sys.modules[mod_name] = mock.Mock()
-
-subprocess.call('pip install numpydoc', shell=True)
+try:
+    import numpydoc
+except ModuleNotFoundError:
+    subprocess.run(["pip", "install", "numpydoc"], check=True)
 
 # -- Project information -----------------------------------------------------
 
 project = 'ppx'
-copyright = '2018, William E Fondrie'
+copyright = '2020, William E Fondrie'
 author = 'William E Fondrie'
 
 import ppx
 # The short X.Y version
-version = ppx.__version__
+version = str(ppx.__version__)
 # The full version, including alpha/beta/rc tags
-release = ppx.__version__
+release = str(ppx.__version__)
 
 
 # -- General configuration ---------------------------------------------------
@@ -60,7 +56,8 @@ extensions = [
 ]
 
 autosummary_generate = True
-numpydoc_show_class_members = False
+autodoc_member_order = "bysource"
+numpydoc_show_class_members = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

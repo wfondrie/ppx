@@ -12,25 +12,32 @@ from typing import Union, List, Optional
 
 
 class PXDataset:
-    """Information about a ProteomeXchange dataset.
+    """Retrieve information about a ProteomeXchange project.
 
     Parameters
     ----------
-    id : str
+    pxid : str
         A ProteomeXchange identifier, such as "PXD000001".
 
     Attributes
     ----------
+    name : str
+        The name of the project
+    description : str
+        A description of the project.
+    taxonomies : list of str
+        The species and other taxonomies provided for the project.
+    references : list of str
+         Bibliographic information for the project.
+    url : str
+        The URL of the FTP server associated with the project.
     return_id : str
         The ProteomeXchange identifier returned by the server. There
         are cases where this may differ from the query identifier.
     query_id : str
-        The query ProteomeXchange identifier.
-    formatVersion : str
-        The XML schema version.
+        The queried ProteomeXchange identifier.
     data : xml.etree.ElementTree.ElementTree
         The parsed XML data returned by the ProteomeXchange server.
-
     """
     def __init__(self, pxid: str):
         """Instantiate a PXDataset object."""
@@ -54,14 +61,29 @@ class PXDataset:
         xml = ET.parse(_openurl(url))
         root = xml.getroot()
 
-        self.format_version = root.attrib["formatVersion"]
-        self.return_id = root.attrib["id"]
-        self.query_id = pxid
-        self.data = xml
+        self._format_version = root.attrib["formatVersion"]
+        self._return_id = root.attrib["id"]
+        self._query_id = pxid
+        self._data = xml
 
-        if self.return_id != pxid:
+        if self._return_id != pxid:
             logging.warning("The identifier, %s, was not found. Retrieved "
-                            "%s instead.", pxid, self.return_id)
+                            "%s instead.", pxid, self._return_id)
+
+    @property
+    def return_id(self) -> str:
+        """The id returned by the server"""
+        return self._return_id
+
+    @property
+    def query_id(self) -> str:
+        """The queried id"""
+        return self._query_id
+
+    @property
+    def data(self) -> ET.ElementTree:
+        """The parsed xml data"""
+        return self._data
 
     @property
     def url(self) -> str:
@@ -110,6 +132,24 @@ class PXDataset:
             all_ref = None
 
         return all_ref
+
+    @property
+    def description(self) -> Union[str, None]:
+        """A description of the project"""
+        desc = self.data.getroot().find(".//Description")
+        if desc is None:
+            return None
+
+        return desc.text
+
+    @property
+    def name(self) -> Union[str, None]:
+        """The name of the dataset"""
+        name = self.data.getroot().find(".//RepositoryRecord")
+        if name is None:
+            return None
+
+        return name.attrib["name"]
 
     def list_dirs(self, path: Optional[Union[List, str]] = None) -> List[str]:
         """

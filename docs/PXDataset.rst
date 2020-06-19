@@ -3,5 +3,7 @@
 PXDataset
 =========
 
-.. autoclass:: ppx.PXDataset
-   :members:
+.. currentmodule:: ppx.PXDataset
+
+.. autoclass:: PXDataset
+   :members: list_files, list_dirs, download
