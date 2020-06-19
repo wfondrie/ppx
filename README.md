@@ -1,7 +1,7 @@
 [![tests](https://github.com/wfondrie/ppx/workflows/tests/badge.svg?branch=master)](https://github.com/wfondrie/ppx/actions?query=workflow%3Atests)[![Documentation Status](https://readthedocs.org/projects/ppx/badge/?version=latest)](https://ppx.readthedocs.io/en/latest/?badge=latest)  
 
 
-# ppx: A Python interface to the ProteomeXchange Repository  
+# ppx: A Python interface to ProteomeXchange  
 
 ## Overview  
 ppx provides a simple means to access the

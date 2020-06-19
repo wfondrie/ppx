@@ -260,6 +260,37 @@ class PXDataset:
 
         return out_files
 
+    # Depricated methods:
+    def pxref(self):
+        """Deprecated"""
+        logging.warning("'PXDataset.pxref()' is deprecated. Use "
+                        "'PXDataset.references' instead.")
+        return self.references
+
+    def pxurl(self):
+        """Deprecated"""
+        logging.warning("'PXDataset.pxurl()' is deprecated. Use "
+                        "'PXDataset.url' instead.")
+        return self.url
+
+    def pxtax(self):
+        """Deprecated"""
+        logging.warning("'PXDataset.pxtax()' is deprecated. Use "
+                        "'PXDataset.taxonomies' instead.")
+        return self.references
+
+    def pxfiles(self):
+        """Deprecated"""
+        logging.warning("'PXDataset.pxfiles()' is deprecated. Use "
+                        "'PXDataset.list_files()' instead.")
+        return self.list_files()
+
+    def pxget(self, files, dest_dir="."):
+        """Deprecated"""
+        logging.warning("'PXDataset.pxget()' is deprecated. Use "
+                        "'PXDataset.download()' instead.")
+        _ = self.download(files, dest_dir)
+
 
 # Private functions -----------------------------------------------------------
 def _parse_ftp(url: str):
