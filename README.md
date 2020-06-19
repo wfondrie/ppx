@@ -4,24 +4,19 @@
 # ppx: A Python interface to the ProteomeXchange Repository  
 
 ## Overview  
-The `ppx` package provides a simple means to access the
+ppx provides a simple means to access the
 [ProteomeXchange](http://www.proteomexchange.org/) repository from Python. Using
-ProteomeXchange identifiers, the user can retrieve metadata associated with a
+ProteomeXchange identifiers, you can retrieve the metadata associated with a
 project and download project files from
 [PRIDE](https://www.ebi.ac.uk/pride/archive/),
 [MassIVE](https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp), or other
 partner repositories.
 
-`ppx` is largely based on the `rpx` R package by Laurent Gatto. If you're an R
-user, check it out on
-[Bioconductor](http://bioconductor.org/packages/release/bioc/html/rpx.html) and
-[GitHub](https://github.com/lgatto/rpx).
-
 For full documentation and examples, visit: https://ppx.readthedocs.io
 
 ## Installation  
-`ppx` is `pip` installable. The `ppx` package is available for Python 3.6+ and
-only depends on packages in the Python Standard Library.
+ppx is `pip` installable. ppx requires Python 3.6+ and only depends on packages
+in the Python Standard Library.
 
 ```
 pip3 install ppx
@@ -61,3 +56,9 @@ Lastly, we can download files that we're interested in:
 # Download "README.txt" to the "test" directory
 >>> dat.download(files="README.txt", dest_dir="test")
 ```
+
+## If you are an R user...
+
+ppx started based on the rpx R package by Laurent Gatto. Check it out on
+[Bioconductor](http://bioconductor.org/packages/release/bioc/html/rpx.html) and
+[GitHub](https://github.com/lgatto/rpx).
