@@ -55,7 +55,6 @@ extensions = [
     'numpydoc'
 ]
 
-autosummary_generate = True
 autodoc_member_order = "bysource"
 numpydoc_show_class_members = True
 
