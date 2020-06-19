@@ -1,42 +1,48 @@
-.. ppx documentation master file, created by
-   sphinx-quickstart on Tue Sep  4 15:33:48 2018.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+ppx: A Python interface to the ProteomeXchange Repository
+=========================================================
 
-The ppx Package
-===============
-A Python interface to the ProteomeXchange Repository
-----------------------------------------------------
-
-.. image:: https://travis-ci.org/wfondrie/ppx.svg?branch=master
-   :target: https://travis-ci.org/wfondrie/ppx
+.. image:: https://github.com/wfondrie/ppx/workflows/tests/badge.svg?branch=master
+   :target: https://github.com/wfondrie/ppx/actions?query=workflow%3Atests
 
 .. image:: https://readthedocs.org/projects/ppx/badge/?version=latest
     :target: https://ppx.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-The :code:`ppx` package provides a simple means to access the ProteomeXchange
-[1]_ repository from Python. Using ProteomeXchange identifiers, the user can
-retrieve metadata associated with a project and download project files from
-the PRIDE Archive [2]_ .
+ppx provides a simple means to access the `ProteomeXchange
+<http://www.proteomexchange.org/>`_ [1]_ repository from Python. Using
+ProteomeXchange identifiers, the user can retrieve metadata associated with a
+project and download project files from the `PRIDE Archive
+<https://www.ebi.ac.uk/pride/archive/>`_ [2]_, `MassIVE
+<https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp>`_, and other partner
+repositories.
 
-:code:`ppx` is based on the :code:`rpx` R package by Laurent Gatto
-[3]_. Our intent is that :code:`ppx` would provide an efficient method to reuse
+Our intent is that ppx would provide an efficient method to reuse
 proteomics data from ProteomeXchange, allowing easier access for those
 developing proteomics tools and analyses in Python.
 
 Installation
 ------------
-:code:`ppx` was developed and tested for Python 3.5+, and only requires
+ppx was developed and tested for Python 3.6+, and only requires
 packages that are distributed as part of the Python Standard Library. The
-release version of :code:`ppx` can be installed with :code:`pip` (or 
+release version of ppx can be installed with :code:`pip` (or 
 :code:`pip3`)::
 
     pip install ppx
 
 License
 -------
-:code:`ppx` is distributed under the MIT license.
+ppx is distributed under the MIT license.
+
+
+For R Users
+-----------
+
+ppx was inspired by the rpx R package [3]_ written by Laurent Gatto. If you are
+an R user and want many of the same functionalities that ppx offers, check it
+out on `Bioconductor
+<http://bioconductor.org/packages/release/bioc/html/rpx.html>`_. and `GitHub
+<https://github.com/lgatto/rpx>`_.
+
 
 .. toctree::
    :maxdepth: 1
@@ -44,13 +50,15 @@ License
 
    self
    basicUsage.rst
-   examples.rst
+
+.. examples.rst
 
 .. toctree::
    :maxdepth: 1
    :caption: API Reference
 
    PXDataset.rst
+
 
 .. [1] Vizcaino J.A. et al. *ProteomeXchange: globally co-ordinated proteomics
     data submission and dissemination*, Nature Biotechnology 2014, 32, 223 – 226,

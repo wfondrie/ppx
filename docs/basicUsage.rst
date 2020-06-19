@@ -1,69 +1,75 @@
 Basic Usage
 ===========
 
-The :code:`ppx` package defines a single class, the :code:`PXDataset`. When
+The ppx package centers around a single class, the :code:`PXDataset`. When
 provided with a ProteomeXchange identifier---such as "PXD000001"---the
 constructor retrieves the metadata for the dataset from ProteomeXchange. The
-methods for the :code:`PXDataset` class are used to access specific
-information about the dataset or download files associated with it.
+attributes, properties, and methods a :code:`PXDataset` instance allows us to
+access specific information about the dataset or download the files associated
+with it.
 
-To begin, first import the package::
+To begin, we first import the package:
 
-    >>> from ppx import PXDataset
+    >>> import ppx
 
-Then we can create a :code:`PXDataset` object for a ProteomeXchange dataset::
+Then we create a :code:`PXDataset` object for a ProteomeXchange dataset:
 
-    >>> dat = PXDataset("PXD000001")
-    >>> print(dat.return_id)
-    PXD000001
+    >>> dat = ppx.PXDataset("PXD000001")
+    >>> dat.return_id
+    'PXD000001'
 
-We can then use the :code:`PXDataset` methods to access information about the
-dataset. Bibliographic information can be accessed with the :code:`pxref()`
-method:
+We can then use the :code:`PXDataset` attributes, properties, and methods to
+access information about the dataset. Bibliographic information is accessed with
+the :code:`references` property:
 
-    >>> dat.pxref()
-    ['Gatto L, Christoforou A. Using R and Bioconductor for proteomics data
-    analysis. Biochim Biophys Acta. 2014 1844(1 pt a):42-51']
+    >>> dat.references
+    ['Gatto L, Christoforou A. Using R and Bioconductor for proteomics data analysis. Biochim Biophys Acta. 2013 May 18. doi:pii: S1570-9639(13)00186-6. 10.1016/j.bbapap.2013.04.032']
 
-The species used to generate the dataset can be accessed with the
-:code:`pxtax()` method:
+The species used to generate the dataset is accessed with the :code:`taxonomies`
+property:
 
-    >>> dat.pxtax()
+    >>> dat.taxonomies
     ['Erwinia carotovora']
 
-The FTP URL where the data files can be downloaded can be accessed with the
-:code:`pxurl()` method. Note that not all datasets have this available::
+The URL for the FTP server where the data files can be downloaded is accessed
+with the :code:`url` property. Note that not all datasets have this available:
 
-    # The FTP link is available
-    >>> dat.pxurl()
+    >>> dat.url
     'ftp://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001'
 
-    # The FTP link is not available. This also results in a warning.
-    >>> print(PXDataset("PXD010937").pxurl())
-    None
+If there a :code:`PXDataset` does have an FTP URL, we can retrieve a list of the
+available files in the root directory with the :code:`list_files()` method:
 
-If there is an FTP URL for the dataset, a list of the available files can be
-retrieved with the :code:`pxfiles()` method:
+    >>> dat.list_files()
+    ['F063721.dat', 'F063721.dat-mztab.txt', 'PRIDE_Exp_Complete_Ac_22134.xml.gz', 'PRIDE_Exp_mzData_Ac_22134.xml.gz', 'PXD000001_mztab.txt', 'README.txt', 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML', 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzXML', 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML', 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw', 'erwinia_carotovora.fasta']
 
-    >>> dat.pxfiles()
-    ['F063721.dat', 'F063721.dat-mztab.txt',
-    'PRIDE_Exp_Complete_Ac_22134.xml.gz', 'PRIDE_Exp_mzData_Ac_22134.xml.gz',
-    'PXD000001_mztab.txt', 'README.txt',
-    'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML',
-    'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzXML',
-    'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML',
-    'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw',
-    'erwinia_carotovora.fasta', 'generated']
+In some repositories, such as MassIVE, the FTP server has the project files
+organized into directories. We can list the available directories using the
+:code:`list_dirs()` method:
 
-Finally, we can use the :code:`pxget()` method to download all or some of the
-files available at the FTP URL. If we want updates on download progress,
-we can change the level for reporting in the :code:`logging` package:
+   >>> msv = ppx.PXDataset("PXD018973")
+   >>> msv.list_dirs()
+   ['ccms_parameters', 'ccms_quant', 'quant_stats', 'raw', 'search']
 
-    >>> import logging
-    >>> logging.getLogger().setLevel(logging.INFO)
-    >>> dat.pxget(files="README.txt", dest_dir="test")
-    INFO:root:Downloading README.txt...
-    INFO:root:Done!
+We can then list the files in one of these subdirectories:
+
+    >>> msv.list_files(path="raw")
+    ['HELA-DIA-DDA-A2.raw']
+
+
+Finally, we can use the :code:`download()` method to download all or some of the
+files available on the FTP server.
+
+    >>> dat.download(files="README.txt", dest_dir="test")
+    ['test/README.txt']
+
+.. note::
+   If we want updates on download progress, we can change the level for
+   reporting using the :code:`logging` package:
+
+       >>> import logging
+       >>> logging.getLogger().setLevel(logging.INFO)
+
 
 For more information about the :code:`PXDataset` class or any of its methods,
 see the :ref:`API Reference <PXDataset-API>`.

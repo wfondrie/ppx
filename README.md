@@ -59,6 +59,6 @@ Lastly, we can download files that we're interested in:
 
 ## If you are an R user...
 
-ppx started based on the rpx R package by Laurent Gatto. Check it out on
+ppx was inpsired the rpx R package by Laurent Gatto. Check it out on
 [Bioconductor](http://bioconductor.org/packages/release/bioc/html/rpx.html) and
 [GitHub](https://github.com/lgatto/rpx).
