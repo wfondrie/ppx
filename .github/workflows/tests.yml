@@ -1,5 +1,5 @@
 # This workflow installs, lints, and tests ppx on the latest version of Python.
-name: ppx
+name: tests
 
 on:
   push:
