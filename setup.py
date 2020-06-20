@@ -1,12 +1,11 @@
 import setuptools
-import ppx
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="ppx",
-    version=ppx.__version__,
+    use_scm_version=True,
     author="William E Fondrie",
     author_email="fondriew@gmail.com",
     description="A Python interface to the ProteomeXchange Repository",

@@ -1,2 +1,4 @@
 recursive-include ppx *.py
 include README.md
+include LICENSE
+include pyproject.toml

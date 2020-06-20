@@ -2,9 +2,10 @@
 """
 See the README for detailed documentation and examples.
 """
-
-name = "ppx"
-
+import pkg_resources
 from .PXDataset import PXDataset
 
-__version__ = "0.3.0"
+try:
+    __version__ = pkg_resources.get_distribution("ppx").version
+except pkg_resources.DistributionNotFound:
+    __version__ = "unknown"
