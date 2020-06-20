@@ -8,7 +8,6 @@ import logging
 import os
 import shutil
 import time
-from typing import Union, List, Optional
 
 
 class PXDataset:
@@ -22,24 +21,15 @@ class PXDataset:
     Attributes
     ----------
     name : str
-        The name of the project
     description : str
-        A description of the project.
     taxonomies : list of str
-        The species and other taxonomies provided for the project.
     references : list of str
-         Bibliographic information for the project.
     url : str
-        The URL of the FTP server associated with the project.
     return_id : str
-        The ProteomeXchange identifier returned by the server. There
-        are cases where this may differ from the query identifier.
     query_id : str
-        The queried ProteomeXchange identifier.
     data : xml.etree.ElementTree.ElementTree
-        The parsed XML data returned by the ProteomeXchange server.
     """
-    def __init__(self, pxid: str):
+    def __init__(self, pxid):
         """Instantiate a PXDataset object."""
 
         if not isinstance(pxid, str):
@@ -71,23 +61,26 @@ class PXDataset:
                             "%s instead.", pxid, self._return_id)
 
     @property
-    def return_id(self) -> str:
-        """The id returned by the server"""
+    def return_id(self):
+        """
+        The ProteomeXchange identifier returned by the server. There
+        are cases where this may differ from the query identifier.
+        """
         return self._return_id
 
     @property
-    def query_id(self) -> str:
-        """The queried id"""
+    def query_id(self):
+        """The queried ProteomeXchange identifier."""
         return self._query_id
 
     @property
-    def data(self) -> ET.ElementTree:
-        """The parsed xml data"""
+    def data(self):
+        """The parsed XML data returned by the ProteomeXchange server."""
         return self._data
 
     @property
-    def url(self) -> str:
-        """str: The FTP URL for the data files of a PXDataset."""
+    def url(self):
+        """The URL of the FTP server associated with the project."""
         links = _getnodes(self.data,
                           ".//cvParam[@name='Dataset FTP location']")
 
@@ -105,12 +98,8 @@ class PXDataset:
         return link
 
     @property
-    def taxonomies(self) -> List[str]:
-        """
-        list of str or None:
-            the sample taxonomies listed for this accession or None if not
-            provided.
-        """
+    def taxonomies(self):
+        """The species and other taxonomies provided for the project."""
         tax = _getnodes(self.data, ".//cvParam[@accession='MS:1001469']")
         if not tax:
             logging.warning("No taxonomies reported for %s.", self.return_id)
@@ -119,8 +108,8 @@ class PXDataset:
         return tax
 
     @property
-    def references(self) -> List[str]:
-        """list of str: references associated with this accession."""
+    def references(self):
+        """Bibliographic information for the project."""
         curr_ref = _getnodes(self.data,
                              ".//cvParam[@accession='PRIDE:0000400']")
         pend_ref = _getnodes(self.data,
@@ -134,8 +123,8 @@ class PXDataset:
         return all_ref
 
     @property
-    def description(self) -> Union[str, None]:
-        """A description of the project"""
+    def description(self):
+        """A description of the project."""
         desc = self.data.getroot().find(".//Description")
         if desc is None:
             return None
@@ -143,27 +132,28 @@ class PXDataset:
         return desc.text
 
     @property
-    def name(self) -> Union[str, None]:
-        """The name of the dataset"""
+    def name(self):
+        """The name of the project."""
         name = self.data.getroot().find(".//RepositoryRecord")
         if name is None:
             return None
 
         return name.attrib["name"]
 
-    def list_dirs(self, path: Optional[Union[List, str]] = None) -> List[str]:
+    def list_dirs(self, path=None):
         """
         List available directories on the FTP server.
 
         Parameters
         ----------
-        path : str or list of str
+        path : str or list of str, optional
             The subdirectory on the FTP server to look in. A list
             will be concatenated into a single URL.
 
         Returns
         -------
-        directories : list of str
+        list of str
+             The directories available on the FTP server.
         """
         if isinstance(path, str):
             path = [path]
@@ -180,19 +170,20 @@ class PXDataset:
 
         return dirs
 
-    def list_files(self, path: Optional[Union[List, str]] = None) -> List[str]:
+    def list_files(self, path=None):
         """
         List available files on the FTP server.
 
         Parameters
         ----------
-        path : str or list of str
+        path : str or list of str, optional
             The subdirectory on the FTP server to look in. A list
             will be concatenated into a single URL.
 
         Returns
         -------
-        files : list of str
+        list of str
+            The available files on the FTP server.
         """
         if isinstance(path, str):
             path = [path]
@@ -209,8 +200,7 @@ class PXDataset:
 
         return files
 
-    def download(self, files: Optional[Union[str, List]] = None,
-                 dest_dir: str = ".", force_: bool = False) -> List[str]:
+    def download(self, files=None, dest_dir=".", force_=False):
         """
         Download PXDataset files from the PRIDE FTP location.
 
@@ -219,14 +209,14 @@ class PXDataset:
 
         Parameters
         ----------
-        files : str, tuple of str, or None (optional)
+        files : str or tuple of str, optional
             Specifies the files to be downloaded. The default, None,
-            downloads all files found with PXDataset.pxfiles().
-        dest_dir : str (optional)
+            downloads all files found with PXDataset.list_files().
+        dest_dir : str, optional
             Specifies the directory to download files into. If the
             directory does not exist, it will be created. The default
             is the current working directory.
-        force_ : bool (optional)
+        force_ : bool, optional
             When False, files with matching name is dest_dir will not be
             downloaded again. True overides this, overwriting the
             matching file.
@@ -234,7 +224,7 @@ class PXDataset:
         Returns
         -------
         list of str
-            A list of output files.
+            A list of the downloaded files.
         """
         if files is None:
             files = self.list_files()
@@ -293,7 +283,7 @@ class PXDataset:
 
 
 # Private functions -----------------------------------------------------------
-def _parse_ftp(url: str):
+def _parse_ftp(url):
     """
     Parse the FTP server response.
 
@@ -379,4 +369,3 @@ def _openurl(url):
                 raise
 
     return dat
-

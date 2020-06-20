@@ -52,11 +52,15 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
-    'numpydoc'
+    #'sphinx.ext.napoleon'
+    'numpydoc',
+    'sphinx_rtd_theme'
 ]
 
 autodoc_member_order = "bysource"
+autodoc_typehints = "none"
 numpydoc_show_class_members = True
+numpydoc_attributes_as_param_list = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
