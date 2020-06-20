@@ -5,7 +5,6 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="ppx",
-    use_scm_version=True,
     author="William E Fondrie",
     author_email="fondriew@gmail.com",
     description="A Python interface to the ProteomeXchange Repository",
