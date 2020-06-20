@@ -23,7 +23,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pytest
+        pip install flake8 pytest sphinx
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip install -e .
     - name: Lint with flake8
@@ -35,3 +35,8 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
+
+    - name: Test the docs
+      run: |
+        cd docs
+        make doctest
