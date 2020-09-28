@@ -4,6 +4,7 @@ See the README for detailed documentation and examples.
 """
 import pkg_resources
 from .PXDataset import PXDataset
+from .MSVDataset import MSVDataset
 
 try:
     __version__ = pkg_resources.get_distribution("ppx").version

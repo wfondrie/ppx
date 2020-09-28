@@ -174,7 +174,7 @@ class PXDataset:
 
     def download(self, files=None, dest_dir=None, force_=False):
         """
-        Download PXDataset files from the PRIDE FTP location.
+        Download PXDataset files from the FTP location.
 
         By default, it will not download files that have a file
         with a matching name in the destination directory, `dest_dir`.
