@@ -104,7 +104,8 @@ def download(url, files=None, dest_dir=None, force_=False):
         files = [files]
 
     if dest_dir is not None:
-        out_files = [os.path.join(dest_dir, f) for f in files]
+        out_files = [os.path.join(dest_dir, os.path.split(f)[-1])
+                     for f in files]
     else:
         out_files = files
 
