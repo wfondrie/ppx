@@ -3,11 +3,9 @@ This module contains the PXDataset class and its associated methods,
 which are the foundation of the ppx package.
 """
 import xml.etree.ElementTree as ET
-import urllib.request
 import logging
-import os
-import shutil
-import time
+
+from .utils import getnodes, openurl, list_files, list_dirs, download
 
 
 class PXDataset:
@@ -48,7 +46,7 @@ class PXDataset:
 
         logging.debug("ProteomeXchange URL is %s", url)
 
-        xml = ET.parse(_openurl(url))
+        xml = ET.parse(openurl(url))
         root = xml.getroot()
 
         self._format_version = root.attrib["formatVersion"]
@@ -81,8 +79,8 @@ class PXDataset:
     @property
     def url(self):
         """The URL of the FTP server associated with the project."""
-        links = _getnodes(self.data,
-                          ".//cvParam[@name='Dataset FTP location']")
+        links = getnodes(self.data,
+                         ".//cvParam[@name='Dataset FTP location']")
 
         if not links:
             raise ValueError(f"No FTP URL found for {self.return_id}.")
@@ -100,7 +98,7 @@ class PXDataset:
     @property
     def taxonomies(self):
         """The species and other taxonomies provided for the project."""
-        tax = _getnodes(self.data, ".//cvParam[@accession='MS:1001469']")
+        tax = getnodes(self.data, ".//cvParam[@accession='MS:1001469']")
         if not tax:
             logging.warning("No taxonomies reported for %s.", self.return_id)
             tax = None
@@ -110,10 +108,10 @@ class PXDataset:
     @property
     def references(self):
         """Bibliographic information for the project."""
-        curr_ref = _getnodes(self.data,
-                             ".//cvParam[@accession='PRIDE:0000400']")
-        pend_ref = _getnodes(self.data,
-                             ".//cvParam[@accession='PRIDE:0000432']")
+        curr_ref = getnodes(self.data,
+                            ".//cvParam[@accession='PRIDE:0000400']")
+        pend_ref = getnodes(self.data,
+                            ".//cvParam[@accession='PRIDE:0000432']")
 
         all_ref = curr_ref + pend_ref
         if not all_ref:
@@ -155,20 +153,7 @@ class PXDataset:
         list of str
              The directories available on the FTP server.
         """
-        if isinstance(path, str):
-            path = [path]
-
-        if path is not None:
-            url = "/".join([self.url] + path)
-        else:
-            url = self.url
-
-        _, dirs = _parse_ftp(url)
-        if not dirs:
-            logging.warning("No directories were found at %s.", url)
-            dirs = None
-
-        return dirs
+        return list_dirs(self.url, path)
 
     def list_files(self, path=None):
         """
@@ -185,22 +170,9 @@ class PXDataset:
         list of str
             The available files on the FTP server.
         """
-        if isinstance(path, str):
-            path = [path]
+        return list_files(self.url, path)
 
-        if path is not None:
-            url = "/".join([self.url] + path)
-        else:
-            url = self.url
-
-        files, _ = _parse_ftp(url)
-        if not files:
-            logging.warning("No files were found at %s.", url)
-            files = None
-
-        return files
-
-    def download(self, files=None, dest_dir=".", force_=False):
+    def download(self, files=None, dest_dir=None, force_=False):
         """
         Download PXDataset files from the PRIDE FTP location.
 
@@ -226,29 +198,7 @@ class PXDataset:
         list of str
             A list of the downloaded files.
         """
-        if files is None:
-            files = self.list_files()
-        elif isinstance(files, str):
-            files = [files]
-
-        out_files = [os.path.join(dest_dir, f) for f in files]
-        all_exist = all([os.path.isfile(f) for f in out_files])
-
-        if all_exist and not force_:
-            return out_files
-
-        os.makedirs(dest_dir, exist_ok=True)
-        for in_file, out_file in zip(files, out_files):
-            if os.path.isfile(out_file) and not force_:
-                continue
-
-            logging.info("Downloading %s...", in_file)
-
-            with _openurl(f"{self.url}/{in_file}") as dat, \
-                    open(out_file, "wb") as fout:
-                shutil.copyfileobj(dat, fout)
-
-        return out_files
+        return download(self.url, files, dest_dir, force_)
 
     # Depricated methods:
     def pxref(self):
@@ -280,92 +230,3 @@ class PXDataset:
         logging.warning("'PXDataset.pxget()' is deprecated. Use "
                         "'PXDataset.download()' instead.")
         _ = self.download(files, dest_dir)
-
-
-# Private functions -----------------------------------------------------------
-def _parse_ftp(url):
-    """
-    Parse the FTP server response.
-
-    Parameters
-    ----------
-    url : str
-        The url of the FTP server.
-
-    Returns
-    -------
-    files : list of str
-    directories : list of str
-    """
-    if not url.endswith("/"):
-        url += "/"
-
-    lines = _openurl(url).read().decode("UTF-8").splitlines()
-    files = []
-    dirs = []
-    for line in lines:
-        line = line.split(maxsplit=8)
-        if line[0].startswith("d"):
-            dirs.append(line[-1])
-        else:
-            files.append(line[-1])
-
-    return files, dirs
-
-
-def _getnodes(xml, xpath):
-    """Retreive the 'value' attribute from a set of XML nodes.
-
-    Parameters
-    ----------
-    xml : xml.etree.ElementTree.ElementTree
-        XML data in the PXDataset.data attribute.
-
-    XPath : str
-        An XPath string used to the define the nodes of interest.
-
-    Returns
-    -------
-    list of str
-        A list containing the 'value' attribute for each node found
-
-    """
-    return [node.attrib["value"] for node in xml.getroot().findall(xpath)]
-
-
-def _openurl(url):
-    """
-    Open a URL using the ppx user-agent. If an URLError is raised,
-    such as by a timeout, the request will retry up to 5 times.
-
-    Parameters
-    ----------
-    url : str
-        The URL to open.
-
-    Return
-    ------
-    Whatever urllib.request.urlopen() would return.
-    """
-    req = urllib.request.Request(url)
-    req.add_header("user-agent", "ppx (https://pypi.org/project/ppx/)")
-
-    # Retries were added after Travic-CI build failures. These seem to
-    # have been necessary due to connectivity issues on Travis servers.
-    # Retries may not be needed in normal settings.
-    max_retry = 5
-    retries = 0
-    success = False
-    while not success:
-        retries += 1
-        try:
-            dat = urllib.request.urlopen(req, timeout=100)
-            success = True
-        except urllib.error.URLError:
-            logging.debug("Attempt %s  download failed...", retries)
-            if retries <= (max_retry - 1):
-                time.sleep(3)
-            else:
-                raise
-
-    return dat
