@@ -1,8 +1,11 @@
 """General utilities for working with the repository FTP sites."""
 import re
+import logging
 from ftplib import FTP
 
+LOGGER = logging.getLogger(__name__)
 
+# Constants -------------------------------------------------------------------
 # UNIX FTP server regex from:
 # https://github.com/stevemayne/pyftpparser/blob/master/ftpparser/parse.py
 UNIX = re.compile(
@@ -23,72 +26,73 @@ UNIX_TIME = re.compile(
 )
 
 
-def list_files(url):
-    """Recursively list files on the FTP server.
+# Classes ---------------------------------------------------------------------
+class FTPParser:
+    """Handle FTP connections
 
     Parameters
     ----------
     url : str
-        The url of the FTP server
-
-    Returns
-    -------
-    list of str
-        A list of files on the FTP server, including paths.
+        The url for the FTP connection.
+    max_depth : int, optional
+        The maximum resursion depth when looking for files.
     """
-    server, path = parse_ftp_url(url)
-    with FTP(server) as repo:
-        repo.login()
-        repo.cwd(path)
-        files = parse_files(repo)
+    def __init__(self, url, max_depth=3):
+        """Initialize an FTPParser"""
+        if not url.startswith("ftp://"):
+            raise ValueError("The URL does not appear to be an FTP server")
 
-    return files
+        self.server, self.path = url.replace("ftp://", "").split("/", 1)
+        self.max_depth = max_depth
+        self._files = None
+        self._dates = None
+        self._depth = 1
+
+    def _get_files(self):
+        """Recursively list files from the FTP connection.
+
+        Parameters
+        ----------
+        max_depth : int
+            The maximum recursion depth.
+        """
+        with FTP(self.server) as repo:
+            repo.login()
+            repo.cwd(self.path)
+            self._files, self._dates = self._parse_files(repo)
+            self._depth = 0
+
+    def _parse_files(self, conn):
+        """A recursive function to parse the files
+
+        Parameters
+        ----------
+        conn : FTP object
+            The FTP connection.
+        """
+        files, dirs = parse_response(conn)
+        for rpath in dirs:
+            self._depth += 1
+            if self._depth <= self.max_depth:
+                conn.cwd(rpath)
+                new_res = []
+                for res in zip(*self._parse_files(conn)):
+                    new_res.append("/".join([rpath, f] for f in res))
+
+                conn.cwd("..")
+            else:
+                new_res = [[], []]
+
+            self._depth -= 1
+
+        return files + new_res[0], dirs + new_res[1]
 
 
-def parse_files(conn):
-    """Recursive function to parse the files
-
-    Parameter
-    ---------
-    conn : ftplib.FTP connection
-        The connection to the FTP server.
-
-    Returns
-    -------
-    list of tuples
-        Each tuple contains the file name with path, and the time when it was
-        last modified on the FTP server
-    """
-    files, dirs = parse_response(conn)
-    new_files = []
-    for path in dirs:
-        conn.cwd(path)
-        new_files += ["/".join([path, f]) for f in parse_files(conn)]
-        conn.cwd("..")
-
-    return files + new_files
-
-
-def parse_ftp_url(url):
-    """Parse an FTP URL
-
-    Parameters
-    ----------
-    url : str
-        A URL for an FTP server. Must start with 'ftp://'.
-
-    Returns
-    -------
-    server : str
-        The FTP server address.
-    path : str
-        The requested path on the server.
-    """
-    if not url.startswith("ftp://"):
-        raise ValueError("The URL does not appear to be an FTP server")
-
-    url = url.replace("ftp://", "").split("/", 1)
-    return url
+    @property
+    def files(self):
+        """List the files form the FTP connection"""
+        if self._files is None:
+            self._get_files()
 
 
 def parse_response(conn):
@@ -114,7 +118,6 @@ def parse_response(conn):
         if line[0].startswith("d"):
             dirs.append(line[-1])
         else:
-            print(line)
             files.append(line[-1])
 
     return files, dirs

@@ -1,9 +1,12 @@
 """This module contains the configuration details for ppx"""
 import os
+import logging
 from pathlib import Path
 
+LOGGER = logging.getLogger(__name__)
 
-class _PPXDataDir:
+
+class PPXConfig:
     """Configure the data directory for ppx
 
     Attributes
@@ -12,17 +15,9 @@ class _PPXDataDir:
     """
     def __init__(self):
         """Initialize the _PPXDataDir"""
-        path = os.getenv("PPX_DATA_DIR")
-        if path is None:
-            self._path = Path(Path.home(), ".ppx")
-            self._path.mkdir(exist_ok=True)
-        else:
-            self._path = Path(path).expanduser().resolve()
-            if not self._path.exists():
-                raise FileNotFoundError(
-                    "The directory specified by the PPX_DATA_DIR environment "
-                    f"variable does not exist ({self._path})."
-                )
+        self._path = None
+        self.path = os.getenv("PPX_DATA_DIR")
+
 
     @property
     def path(self):
@@ -30,11 +25,14 @@ class _PPXDataDir:
         return self._path
 
     @path.setter
-    def path(self, path=None):
+    def path(self, path):
         """Set the current ppx data directory"""
         if path is None:
-            path = Path(Path.home(), ".ppx")
-            path.mkdir(exist_ok=True)
+            try:
+                path = Path(os.eviron["PPX_DATA_DIR"]).expanduser().resolve()
+            except AttributeError:
+                path = Path(Path.home(), ".ppx")
+                path.mkdir(exist_ok=True)
         else:
             path = Path(path).expanduser().resolve()
             if not path.exists():
@@ -43,3 +41,17 @@ class _PPXDataDir:
                 )
 
         self._path = path
+
+
+def get_data_dir():
+    """Retrieve the current data directory for ppx."""
+    return config.path
+
+
+def set_data_dir(path=None):
+    """Set the data dir"""
+    config.path = path
+
+
+# Initialize the configuration when loaded:
+config = PPXConfig()
