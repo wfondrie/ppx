@@ -2,6 +2,12 @@
 import re
 import logging
 from ftplib import FTP
+from pathlib import Path
+from functools import partial
+
+from tqdm import tqdm
+
+from .utils import listify
 
 LOGGER = logging.getLogger(__name__)
 
@@ -45,7 +51,7 @@ class FTPParser:
         self.server, self.path = url.replace("ftp://", "").split("/", 1)
         self.max_depth = max_depth
         self._files = None
-        self._dates = None
+        self._dirs = None
         self._depth = 1
 
     def _get_files(self):
@@ -59,7 +65,7 @@ class FTPParser:
         with FTP(self.server) as repo:
             repo.login()
             repo.cwd(self.path)
-            self._files, self._dates = self._parse_files(repo)
+            self._files, self._dirs = self._parse_files(repo)
             self._depth = 0
 
     def _parse_files(self, conn):
@@ -71,21 +77,52 @@ class FTPParser:
             The FTP connection.
         """
         files, dirs = parse_response(conn)
+        new_files = []
+        new_dirs = []
         for rpath in dirs:
             self._depth += 1
             if self._depth <= self.max_depth:
                 conn.cwd(rpath)
-                new_res = []
-                for res in zip(*self._parse_files(conn)):
-                    new_res.append("/".join([rpath, f] for f in res))
-
+                curr_files, curr_dirs = self._parse_files(conn)
+                new_files += ["/".join([rpath, f]) for f in curr_files]
+                new_dirs += ["/".join([rpath, d]) for d in curr_dirs]
                 conn.cwd("..")
-            else:
-                new_res = [[], []]
 
             self._depth -= 1
 
-        return files + new_res[0], dirs + new_res[1]
+        return files + new_files, dirs + new_dirs
+
+    def download(self, files, dest_dir, force_=False):
+        """Download the files"""
+        files = listify(files)
+        with FTP(self.server, timeout=1000) as repo:
+            repo.login()
+            repo.cwd(self.path)
+
+            out_files = []
+            for fname in tqdm(files, desc="TOTAL", position=0, unit="files"):
+                out_file = Path(dest_dir, fname)
+                out_files.append(out_file)
+                if not force_ and out_file.exists():
+                    continue
+
+                out_file.parent.mkdir(parents=True, exist_ok=True)
+                size = repo.size(fname)
+                desc = f"{fname} ["
+                pbar = tqdm(
+                    desc=str(fname),
+                    total=size,
+                    position=1,
+                    unit="b",
+                    unit_scale=True,
+                    leave=False,
+                )
+                with out_file.open("wb+") as out:
+                    write = partial(write_file, fhandle=out, pbar=pbar)
+                    repo.retrbinary(f"RETR {fname}", write)
+                    pbar.close()
+
+        return out_files
 
 
     @property
@@ -93,6 +130,23 @@ class FTPParser:
         """List the files form the FTP connection"""
         if self._files is None:
             self._get_files()
+
+        return self._files
+
+    @property
+    def dirs(self):
+        """List the directories form the FTP connection"""
+        if self._dirs is None:
+            self._get_files()
+
+        return self._dirs
+
+
+# Functions -------------------------------------------------------------------
+def write_file(data, fhandle, pbar):
+    """Write a file with progress."""
+    fhandle.write(data)
+    pbar.update(len(data))
 
 
 def parse_response(conn):
@@ -114,11 +168,11 @@ def parse_response(conn):
     files = []
     dirs = []
     for line in lines:
-        line = line.split(maxsplit=8)
-        if line[0].startswith("d"):
-            dirs.append(line[-1])
+        parsed, is_dir = parse_line(line)
+        if is_dir:
+            dirs.append(parsed)
         else:
-            files.append(line[-1])
+            files.append(parsed)
 
     return files, dirs
 
@@ -140,15 +194,7 @@ def parse_line(line):
     date : date
         The modification date.
     """
-    match = UNIX.full_match(line)
+    match = UNIX.fullmatch(line)
     is_dir = match[1] == "d" or match[1] == "l"
     name = match[8]
-    date = match[7]
-
-
-def parse_time(time):
-    """Parse the FTP modification time.
-
-    Parameters
-    """
-    pass
+    return name, is_dir

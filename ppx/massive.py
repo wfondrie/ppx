@@ -1,10 +1,12 @@
-"""
-MassIVE datasets.
-"""
-from .utils import list_files, list_dirs, download
+"""MassIVE datasets."""
+import re
+from pathlib import Path
+
+from .ftp import FTPParser
+from .dataset import BaseDataset
 
 
-class MSVDataset:
+class MassiveDataset(BaseDataset):
     """Retrieve information about a MassIVE project
 
     Parameters
@@ -16,27 +18,22 @@ class MSVDataset:
     ----------
     url : str
     """
-    def __init__(self, msv_id):
+    def __init__(self, msv_id, local=None):
         """Instantiate a MSVDataset object"""
-        if not isinstance(msv_id, str):
-            raise TypeError("'msv_id' must be a string (str).")
+        super().__init__(msv_id, local)
+        self._url = f"ftp://massive.ucsd.edu/{self.msv_id}"
+        self._parser = FTPParser(self._url)
 
-        self._msv_id = msv_id = msv_id.upper()
-        self._url = (f"ftp://massive.ucsd.edu/{self.msv_id}")
+    def _validate_id(self, identifier):
+        """Validate a MassIVE identifier"""
+        identifier = str(identifier).upper()
+        if not re.match("MSV[0-9]{9}", identifier):
+            raise ValueError("Malformed MassIVE identifier.")
 
-    @property
-    def msv_id(self):
-        """The MassIVE identifier for the project."""
-        return self._msv_id
+        return identifier
 
-    @property
-    def url(self):
-        """The URL of the FTP server associated with the project"""
-        return self._url
-
-    def list_dirs(self, path=None):
-        """
-        List available directories on the FTP server.
+    def remote_dirs(self, glob=None):
+        """List the project directories.
 
         Parameters
         ----------
@@ -49,9 +46,13 @@ class MSVDataset:
         list of str
              The directories available on the FTP server.
         """
-        return list_dirs(self.url, path)
+        dirs = self._parser.dirs
+        if glob is not None:
+            dirs = [d for d in dirs if Path(d).match(glob)]
 
-    def list_files(self, path=None):
+        return dirs
+
+    def remote_files(self, glob=None):
         """
         List available files on the FTP server.
 
@@ -66,14 +67,18 @@ class MSVDataset:
         list of str
             The available files on the FTP server.
         """
-        return list_files(self.url, path)
+        files = self._parser.files
+        if glob is not None:
+            files = [f for f in files if Path(f).match(glob)]
 
-    def download(self, files=None, dest_dir=None, force_=False):
+        return self._parser.files
+
+    def download(self, files, force_=False):
         """
         Download MassIVE files from the FTP location.
 
         By default, it will not download files that have a file
-        with a matching name in the destination directory, `dest_dir`.
+        with a matching name and path in the destination directory.
 
         Parameters
         ----------
@@ -94,4 +99,4 @@ class MSVDataset:
         list of str
             A list of the downloaded files.
         """
-        return download(self.url, files, dest_dir, force_)
+        return self._parser.download(files, self.local, force_)

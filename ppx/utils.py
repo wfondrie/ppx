@@ -128,6 +128,18 @@ def download(url, files=None, dest_dir=None, force_=False):
     return out_files
 
 
+def listify(obj):
+    """Turn an object into a list, but don't split strings"""
+    try:
+        assert not isinstance(obj, str)
+        iter(obj)
+    except (AssertionError, TypeError):
+        obj = [obj]
+
+    return list(obj)
+
+
+
 def parse_ftp(url):
     """
     Parse the FTP server response.
