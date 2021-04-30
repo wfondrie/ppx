@@ -82,5 +82,5 @@ def list_projects():
     list of str
         A list of MassIVE identifiers.
     """
-    parser = FTPParser("ftp://massive.ucsd.edu", max_depth=0)
+    parser = FTPParser("ftp://massive.ucsd.edu/", max_depth=0)
     return parser.dirs

@@ -1,46 +1,68 @@
 [![tests](https://github.com/wfondrie/ppx/workflows/tests/badge.svg?branch=master)](https://github.com/wfondrie/ppx/actions?query=workflow%3Atests)[![Documentation Status](https://readthedocs.org/projects/ppx/badge/?version=latest)](https://ppx.readthedocs.io/en/latest/?badge=latest)  
 
 
-# ppx: A Python interface to ProteomeXchange  
+# ppx: A Python interface to proteomics data repositories
 
 ## Overview  
-ppx provides a simple means to access the
-[ProteomeXchange](http://www.proteomexchange.org/) repository from Python. Using
-ProteomeXchange identifiers, you can retrieve the metadata associated with a
-project and download project files from
-[PRIDE](https://www.ebi.ac.uk/pride/archive/),
-[MassIVE](https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp), or other
-partner repositories.
+ppx provides a simple, programatic means to access proteomics data that are
+publicly available in [ProteomeXchange](http://www.proteomexchange.org) partner
+repositories. ppx allows users to easily find and download files associated
+with projects in [PRIDE](https://www.ebi.ac.uk/pride/archive/) or
+[MassIVE](https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp). In doing so,
+ppx promotes the reproducible analysis of proteomics data.
 
 For full documentation and examples, visit: https://ppx.readthedocs.io
 
 ## Installation  
-ppx is `pip` installable. ppx requires Python 3.6+ and only depends on packages
-in the Python Standard Library.
+ppx requires Python 3.6+ and depends on the
+[requests](https://docs.python-requests.org/en/master/) and
+[tqdm](https://tqdm.github.io/) Python packages. ppx and any missing
+dependencies are easily installed with `pip`:
 
 ```
 pip3 install ppx
 ```
 
-## Examples  
-First create a PXDataset object using a valid ProteomeXchange identifier:
-```Python
->>> dat = PXDataset("PXD000001")
+## Configuration
+
+By default, ppx will download project files in the `.ppx` directory under the
+current users home directory (`~/.ppx` on Linux and MacOS). There are several
+ways to specify different data directories:
+
+1. Change the ppx data directory for all future sessions by setting the 
+`PPX_DATA_DIR` environment variable to your preferred directory.
+
+2. Change the ppx data directory for a session using the `ppx.set_data_dir()`
+function.
+
+3. Specify a data directory for a project using the `local` argument:
+
+``` Python
+import ppx
+
+proj = ppx.find_project("PXD000001", local="my/data/dir")
 ```
 
-We can then extract various data about the ProteomeXchange project from the PXDataset:
-```Python
->>> dat.references
-# ['Gatto L, Christoforou A. Using R and Bioconductor for proteomics data
-# analysis. Biochim Biophys Acta. 2014 1844(1 pt a):42-51']
+Why does ppx set a default data directory? We found that this makes it easier
+to reuse the same proteomics data files in multiple tasks that we're working
+on.
 
->>> dat.url
-# 'ftp://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001'
 
->>> dat.taxonomies
-# ['Erwinia carotovora']
+## Examples
+First, find a project using its ProteomeXchange or MassIVE identifier:
 
->>> dat.list_files()
+``` Python
+>>> import ppx
+
+>>> proj = ppx.find_project("PXD000001")
+```
+
+We can then view the files associated with the project in the repository
+(PRIDE in this case):
+
+``` Python
+>>> remote_files = proj.remote_files()
+>>> print(remote_files)
 # ['F063721.dat', 'F063721.dat-mztab.txt',
 # 'PRIDE_Exp_Complete_Ac_22134.xml.gz', 'PRIDE_Exp_mzData_Ac_22134.xml.gz',
 # 'PXD000001_mztab.txt', 'README.txt',
@@ -51,10 +73,35 @@ We can then extract various data about the ProteomeXchange project from the PXDa
 # 'erwinia_carotovora.fasta']
 ```
 
-Lastly, we can download files that we're interested in:
-```Python
-# Download "README.txt" to the "test" directory
->>> dat.download(files="README.txt", dest_dir="test")
+We can also [glob](https://en.wikipedia.org/wiki/Glob_(programming)) for
+specific types of files:
+
+``` Python
+>>> mzml_files = proj.remote_files("*.mzML")
+>>> print(mzml_files)
+# ['TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML']
+```
+
+Then we can download one or more files to the projects local data directory:
+
+``` Python
+>>> downloaded = proj.download("README.txt")
+>>> print(downloaded)
+# [PosixPath('/Users/wfondrie/.ppx/PXD000001/README.txt')]
+```
+
+Once we've downloaded files, ppx no longer needs an internet connection to
+retrieve a project's local data. However, you will need to specify the 
+repository in which the project data resides. If we start a new Python
+session, we can find our previous file easily:
+
+``` Python
+>>> import ppx
+
+>>> proj = ppx.find_project("PXD000001", repo="PRIDE")
+>>> local_files = proj.local_files()
+>>> print(local_files)
+# [PosixPath('/Users/wfondrie/.ppx/PXD000001/README.txt')]
 ```
 
 ## If you are an R user...
