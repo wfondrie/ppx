@@ -26,14 +26,14 @@ pip3 install ppx
 ## Configuration
 
 By default, ppx will download project files in the `.ppx` directory under the
-current users home directory (`~/.ppx` on Linux and MacOS). There are several
+current user's home directory (`~/.ppx` on Linux and MacOS). There are several
 ways to specify different data directories:
 
-1. Change the ppx data directory for all future sessions by setting the 
+1. Change the ppx data directory for all future Python sessions by setting the 
 `PPX_DATA_DIR` environment variable to your preferred directory.
 
-2. Change the ppx data directory for a session using the `ppx.set_data_dir()`
-function.
+2. Change the ppx data directory for a Python session using the
+`ppx.set_data_dir()` function.
 
 3. Specify a data directory for a project using the `local` argument:
 
