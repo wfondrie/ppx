@@ -6,10 +6,10 @@ import requests
 
 from .ftp import FTPParser
 from .config import config
-from .dataset import BaseDataset
+from .project import BaseProject
 
 
-class PrideDataset(BaseDataset):
+class PrideProject(BaseProject):
     """Retrieve information about a PRIDE project
 
     Parameters
@@ -55,7 +55,13 @@ class PrideDataset(BaseDataset):
         """
         if self._remote_files is None:
             file_url = self.url + "/files"
-            res = requests.get(file_url).json()["_embedded"]["files"]
+            res = requests.get(file_url)
+            if res.status_code != 200:
+                raise requests.HTTPError(
+                    f"Error {res.status_code}: {res.text}"
+                )
+
+            res = res.json()["_embedded"]["files"]
             self._remote_files = [f["fileName"] for f in res]
 
         files = self._remote_files
@@ -67,8 +73,13 @@ class PrideDataset(BaseDataset):
     def download(self, files, force_=False):
         """Download some files"""
         if self._parser is None:
-            res = requests.get(self.url).json()
-            ftp_url = res["_links"]["datasetFtpUrl"]["href"]
+            res = requests.get(self.url)
+            if res.status_code != 200:
+                raise requests.HTTPError(
+                    f"Error {res.status_code}: {res.text}"
+                )
+
+            ftp_url = res.json()["_links"]["datasetFtpUrl"]["href"]
             self._parser = FTPParser(ftp_url)
 
         return super().download(files=files, force_=force_)

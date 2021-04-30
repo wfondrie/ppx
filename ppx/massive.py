@@ -3,10 +3,10 @@ import re
 from pathlib import Path
 
 from .ftp import FTPParser
-from .dataset import BaseDataset
+from .project import BaseProject
 
 
-class MassiveDataset(BaseDataset):
+class MassiveProject(BaseProject):
     """Retrieve information about a MassIVE project
 
     Parameters
@@ -21,7 +21,7 @@ class MassiveDataset(BaseDataset):
     def __init__(self, msv_id, local=None):
         """Instantiate a MSVDataset object"""
         super().__init__(msv_id, local)
-        self._url = f"ftp://massive.ucsd.edu/{self.msv_id}"
+        self._url = f"ftp://massive.ucsd.edu/{self.id}"
         self._parser = FTPParser(self._url)
 
     def _validate_id(self, identifier):
@@ -73,30 +73,14 @@ class MassiveDataset(BaseDataset):
 
         return self._parser.files
 
-    def download(self, files, force_=False):
-        """
-        Download MassIVE files from the FTP location.
 
-        By default, it will not download files that have a file
-        with a matching name and path in the destination directory.
+def list_projects():
+    """List all available projects on MassIVE.
 
-        Parameters
-        ----------
-        files : str or tuple of str, optional
-            Specifies the files to be downloaded. The default, None,
-            downloads all files found with MSVDataset.list_files().
-        dest_dir : str, optional
-            Specifies the directory to download files into. If the
-            directory does not exist, it will be created. The default
-            is the current working directory.
-        force_ : bool, optional
-            When False, files with matching name is dest_dir will not be
-            downloaded again. True overides this, overwriting the
-            matching file.
-
-        Returns
-        -------
-        list of str
-            A list of the downloaded files.
-        """
-        return self._parser.download(files, self.local, force_)
+    Returns
+    -------
+    list of str
+        A list of MassIVE identifiers.
+    """
+    parser = FTPParser("ftp://massive.ucsd.edu", max_depth=0)
+    return parser.dirs

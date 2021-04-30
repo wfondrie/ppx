@@ -15,6 +15,8 @@ except ImportError:
     except DistributionNotFound:
         pass
 
-from .pride import PrideDataset
-from .massive import MassiveDataset
+from . import massive
+from .factory import find_project
+from .pride import PrideProject
+from .massive import MassiveProject
 from .config import get_data_dir, set_data_dir

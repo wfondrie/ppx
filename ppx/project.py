@@ -5,8 +5,8 @@ from abc import ABC, abstractmethod
 from .config import config
 
 
-class BaseDataset(ABC):
-    """A base class for ppx dataset classes.
+class BaseProject(ABC):
+    """A base class for ppx project classes.
 
     Paramters
     ---------
@@ -18,10 +18,15 @@ class BaseDataset(ABC):
     """
     def __init__(self, identifier, local=None):
         """Initialize a BaseDataset"""
-        self.id = self._validate_id(identifier)
+        self._id = self._validate_id(identifier)
         self.local = local
         self._url = None
         self._parser = None
+
+    @property
+    def id(self):
+        """The repository identifier"""
+        return self._id
 
     @property
     def local(self):
