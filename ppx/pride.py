@@ -30,6 +30,7 @@ class PrideProject(BaseProject):
         self._url = self.rest + self.id
         self._remote_files = None
         self._parser = None
+        self._metadata = None
 
     def _validate_id(self, identifier):
         """Validate a PRIDE identifier"""
@@ -38,6 +39,39 @@ class PrideProject(BaseProject):
             raise ValueError("Malformed PRIDE identifier.")
 
         return identifier
+
+    @property
+    def metadata(self):
+        """The project metadata as a nested dictionary"""
+        if self._metadata is None:
+            self._metadata = get(self.url)
+
+        return self._metadata
+
+    @property
+    def title(self):
+        """The title of the study associated with this project."""
+        return self.metadata["title"]
+
+    @property
+    def description(self):
+        """A description of this project"""
+        return self.metadata["projectDescription"]
+
+    @property
+    def sample_processing_protocol(self):
+        """The sample processing protocol for this project"""
+        return self.metadata["sampleProcessingProtocol"]
+
+    @property
+    def data_processing_protocol(self):
+        """The data processing protocol for this project"""
+        return self.metadata["dataProcessingProtocol"]
+
+    @property
+    def doi(self):
+        """The DOI for this project"""
+        return self.metadata["doi"]
 
     def remote_files(self, glob=None):
         """List the project files in the remote repository
@@ -54,14 +88,7 @@ class PrideProject(BaseProject):
             The files available for the project.
         """
         if self._remote_files is None:
-            file_url = self.url + "/files"
-            res = requests.get(file_url)
-            if res.status_code != 200:
-                raise requests.HTTPError(
-                    f"Error {res.status_code}: {res.text}"
-                )
-
-            res = res.json()["_embedded"]["files"]
+            res = get(self.url + "/files")["_embedded"]["files"]
             self._remote_files = [f["fileName"] for f in res]
 
         files = self._remote_files
@@ -73,13 +100,18 @@ class PrideProject(BaseProject):
     def download(self, files, force_=False):
         """Download some files"""
         if self._parser is None:
-            res = requests.get(self.url)
-            if res.status_code != 200:
-                raise requests.HTTPError(
-                    f"Error {res.status_code}: {res.text}"
-                )
-
-            ftp_url = res.json()["_links"]["datasetFtpUrl"]["href"]
+            ftp_url = self.metadata["_links"]["datasetFtpUrl"]["href"]
             self._parser = FTPParser(ftp_url)
 
         return super().download(files=files, force_=force_)
+
+
+def get(url):
+    """Perform a GET command at the specified url."""
+    res = requests.get(url)
+    if res.status_code != 200:
+        raise requests.HTTPError(
+            f"Error {res.status_code}: {res.text}"
+        )
+
+    return res.json()

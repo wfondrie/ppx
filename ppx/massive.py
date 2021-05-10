@@ -7,16 +7,22 @@ from .project import BaseProject
 
 
 class MassiveProject(BaseProject):
-    """Retrieve information about a MassIVE project
+    """Retrieve information about a MassIVE project.
 
     Parameters
     ----------
     msv_id : str
         The MassIVE identifier.
+    local : str or path object, optional
+        The local directory where data for this project will be downloaded.
 
     Attributes
     ----------
+    id : str
+    local : pathlib.Path object
     url : str
+
+
     """
     def __init__(self, msv_id, local=None):
         """Instantiate a MSVDataset object"""

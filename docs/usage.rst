@@ -36,7 +36,7 @@ example, we'll use a project from PRIDE:
 
     >>> proj = ppx.find_project("PXD000001")
 
-Here, :code:`proj` is a is :py:class:`~ppx.pride.PrideProject` object with
+Here, :code:`proj` is a is :py:class:`~ppx.PrideProject` object with
 methods that let us explore the available files and download files that we
 select. Let's retreive a list of all of the files associated with this project
 on PRIDE:
@@ -73,5 +73,5 @@ session, we can find our previous files easily:
     [PosixPath('/Users/wfondrie/.ppx/PXD000001/README.txt')]
 
 For more details about the available methods for a project, see our Python API
-documentation for the :py:class:`~ppx.pride.PrideProject` and
-`~ppx.massive.MassiveProject` classes.
+documentation for the :py:class:`~ppx.PrideProject` and
+:py:class:`~ppx.MassiveProject` classes.

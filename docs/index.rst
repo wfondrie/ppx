@@ -1,5 +1,3 @@
-ppx: A Python interface to proteomics data repositories
-=======================================================
 
 .. image:: https://github.com/wfondrie/ppx/workflows/tests/badge.svg?branch=master
    :target: https://github.com/wfondrie/ppx/actions?query=workflow%3Atests
@@ -8,19 +6,24 @@ ppx: A Python interface to proteomics data repositories
     :target: https://ppx.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-ppx provides simple, programmatic access means to access proteomics data that are publicly available in `ProteomeXchange
-<http://www.proteomexchange.org/>`_ [1]_ partner repositories. ppx allows users to easily find and download files associated with projects in `PRIDE
-<https://www.ebi.ac.uk/pride/archive/>`_ [2]_, `MassIVE
-<https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp>`_ [3]_.
+A Python interface to proteomics data repositories
+==================================================
+
+ppx provides simple, programmatic access means to access proteomics data that
+are publicly available in `ProteomeXchange <http://www.proteomexchange.org/>`_
+[1]_ partner repositories. ppx allows users to easily find and download files
+associated with projects in `PRIDE <https://www.ebi.ac.uk/pride/archive/>`_
+[2]_ and `MassIVE <https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp>`_
+[3]_.
 
 Our intent is that ppx would provide an efficient method to reuse
-proteomics data that has been deposited in public repositories, therby
+proteomics data that has been deposited in public repositories, thereby
 promoting reproducible research practices and enabling tool developers.
 
 Installation
 ------------
 
-ppx requires Python 3.6+ and deponds on the `requests
+ppx requires Python 3.6+ and depends upon the `requests
 <https://docs.python-requests.org/en/master/>`_ and `tqdm
 <https://tqdm.github.io/>`_ Python packages. ppx and any missing dependencies
 can be installed with :code:`pip`::
@@ -33,18 +36,18 @@ License
 ppx is distributed under the MIT license.
 
 .. toctree::
+   :hidden:
    :maxdepth: 1
-   :caption: Getting Started
 
    Overview <self>
    Basic Usage <usage.rst>
-   Python API <api>
+   Python API <api/index.rst>
 
 
 For R Users
 -----------
 
-ppx was inspired by the rpx R package [3]_ written by Laurent Gatto. If you are
+ppx was inspired by the rpx R package [4]_ written by Laurent Gatto. If you are
 an R user and want many of the same functionalities that ppx offers, check it
 out on `Bioconductor
 <http://bioconductor.org/packages/release/bioc/html/rpx.html>`_. and `GitHub

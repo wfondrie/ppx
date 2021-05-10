@@ -2,6 +2,7 @@
 from pathlib import Path
 from abc import ABC, abstractmethod
 
+from . import utils
 from .config import config
 
 
@@ -53,8 +54,33 @@ class BaseProject(ABC):
         """Validate that the identifier is correct"""
         return identifier
 
+    @property
+    @abstractmethod
+    def remote_files(self, glob=None):
+        """List the project files in the remote repository
+
+        Parameters
+        ----------
+        glob : str, optional
+            Use Unix wildcards to return specific files. For example,
+            "*.mzML" would return the mzML files.
+
+        Returns
+        -------
+        list of str
+            The files available for the project.
+        """
+        return None
+
     def local_dirs(self, glob=None):
-        """List the local directories in the project"""
+        """List the local directories associated with this project.
+
+        Parameters
+        ----------
+        glob : str, optional
+            A Unix-style glob string (i.e. :code:``)
+
+        """
         if glob is None:
             glob = "**/*"
 
@@ -95,4 +121,16 @@ class BaseProject(ABC):
         list of str
             A list of the downloaded files.
         """
+        files = utils.listify(files)
+        in_remote = [f in self.remote_files() for f in files]
+        if not all(in_remote):
+            missing = [
+                f for i, f in zip(in_remote, self.remote_files()) if not i
+            ]
+
+            raise FileNotFoundError(
+                "The following files were not found in the remote repository:"
+                f"{', '.join(missing)}"
+            )
+
         return self._parser.download(files, self.local, force_)

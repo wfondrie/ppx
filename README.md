@@ -4,7 +4,7 @@
 # ppx: A Python interface to proteomics data repositories
 
 ## Overview  
-ppx provides a simple, programatic means to access proteomics data that are
+ppx provides a simple, programmatic means to access proteomics data that are
 publicly available in [ProteomeXchange](http://www.proteomexchange.org) partner
 repositories. ppx allows users to easily find and download files associated
 with projects in [PRIDE](https://www.ebi.ac.uk/pride/archive/) or
@@ -38,9 +38,9 @@ ways to specify different data directories:
 3. Specify a data directory for a project using the `local` argument:
 
 ``` Python
-import ppx
+>>> import ppx
 
-proj = ppx.find_project("PXD000001", local="my/data/dir")
+>>> proj = ppx.find_project("PXD000001", local="my/data/dir")
 ```
 
 Why does ppx set a default data directory? We found that this makes it easier
