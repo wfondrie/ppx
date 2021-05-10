@@ -1,20 +1,25 @@
+
+![ppx_logo](ppx_light.svg)
+
+---
+
 [![tests](https://github.com/wfondrie/ppx/workflows/tests/badge.svg?branch=master)](https://github.com/wfondrie/ppx/actions?query=workflow%3Atests)[![Documentation Status](https://readthedocs.org/projects/ppx/badge/?version=latest)](https://ppx.readthedocs.io/en/latest/?badge=latest)  
 
 
-# ppx: A Python interface to proteomics data repositories
+# A Python interface to proteomics data repositories
 
 ## Overview  
 ppx provides a simple, programmatic means to access proteomics data that are
 publicly available in [ProteomeXchange](http://www.proteomexchange.org) partner
 repositories. ppx allows users to easily find and download files associated
-with projects in [PRIDE](https://www.ebi.ac.uk/pride/archive/) or
+with projects in [PRIDE](https://www.ebi.ac.uk/pride/archive/) and
 [MassIVE](https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp). In doing so,
 ppx promotes the reproducible analysis of proteomics data.
 
 For full documentation and examples, visit: https://ppx.readthedocs.io
 
 ## Installation  
-ppx requires Python 3.6+ and depends on the
+ppx requires Python 3.6+ and depends upon the
 [requests](https://docs.python-requests.org/en/master/) and
 [tqdm](https://tqdm.github.io/) Python packages. ppx and any missing
 dependencies are easily installed with `pip`:
