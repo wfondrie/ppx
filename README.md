@@ -1,11 +1,8 @@
 <img src="static/ppx_light.svg" width=300>
 
----
+# A Python interface to proteomics data repositories
 
 [![tests](https://github.com/wfondrie/ppx/workflows/tests/badge.svg?branch=master)](https://github.com/wfondrie/ppx/actions?query=workflow%3Atests)[![Documentation Status](https://readthedocs.org/projects/ppx/badge/?version=latest)](https://ppx.readthedocs.io/en/latest/?badge=latest)  
-
-
-# A Python interface to proteomics data repositories
 
 ## Overview  
 ppx provides a simple, programmatic means to access proteomics data that are
