@@ -1,5 +1,4 @@
-
-![ppx_logo](static/ppx_light.svg)
+<img src="static/ppx_light.svg" width=300>
 
 ---
 

@@ -48,10 +48,13 @@
                 <path d="M118.488,275.962L118.345,315.649" style="fill:none;stroke:rgb(36,184,160);stroke-width:4.4px;"/>
             </g>
             <g transform="matrix(0.999935,0.00932079,0.00359454,2.07733,560.684,53.4229)">
-                <path d="M118.463,282.881L118.345,315.649" style="fill:none;stroke:rgb(36,184,160);stroke-width:4.89px;stroke-linecap:square;"/>
+                <path d="M118.463,282.881L118.345,315.649" style="fill:none;"/>
             </g>
             <g transform="matrix(-0.00932079,0.999935,-2.07733,0.00359454,1336.97,590.761)">
-                <path d="M118.539,261.699L118.345,315.649" style="fill:none;stroke:rgb(36,184,160);stroke-width:4.89px;stroke-linecap:square;"/>
+                <path d="M118.539,261.699L118.345,315.649" style="fill:none;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,7.78924,123.676)">
+                <path d="M668.366,514.488L668.366,590.557L788.436,590.557L788.436,582.557L676.366,582.557L676.366,514.488L668.366,514.488Z" style="fill:rgb(36,184,160);"/>
             </g>
         </g>
         <g transform="matrix(1,0,0,1,-6.9399,-129.774)">
