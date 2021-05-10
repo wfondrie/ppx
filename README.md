@@ -1,5 +1,5 @@
 
-![ppx_logo](ppx_light.svg)
+![ppx_logo](static/ppx_light.svg)
 
 ---
 
