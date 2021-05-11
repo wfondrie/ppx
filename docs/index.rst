@@ -42,6 +42,7 @@ ppx is distributed under the MIT license.
    Overview <self>
    Basic Usage <usage.rst>
    Python API <api/index.rst>
+   Command Line Interface <cli.rst>
 
 
 For R Users
