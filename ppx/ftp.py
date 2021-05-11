@@ -43,7 +43,7 @@ class FTPParser:
     max_depth : int, optional
         The maximum resursion depth when looking for files.
     """
-    def __init__(self, url, max_depth=3):
+    def __init__(self, url, max_depth=4):
         """Initialize an FTPParser"""
         if not url.startswith("ftp://"):
             raise ValueError("The URL does not appear to be an FTP server")
@@ -52,7 +52,7 @@ class FTPParser:
         self.max_depth = max_depth
         self._files = None
         self._dirs = None
-        self._depth = 1
+        self._depth = 0
 
     def _get_files(self):
         """Recursively list files from the FTP connection.
@@ -92,7 +92,7 @@ class FTPParser:
 
         return files + new_files, dirs + new_dirs
 
-    def download(self, files, dest_dir, force_=False):
+    def download(self, files, dest_dir, force_=False, silent=False):
         """Download the files"""
         files = listify(files)
         with FTP(self.server, timeout=1000) as repo:
@@ -100,7 +100,11 @@ class FTPParser:
             repo.cwd(self.path)
 
             out_files = []
-            for fname in tqdm(files, desc="TOTAL", position=0, unit="files"):
+            overall_pbar = partial(
+                tqdm, desc="TOTAL", position=0, unit="files", disable=silent,
+            )
+
+            for fname in overall_pbar(files):
                 out_file = Path(dest_dir, fname)
                 out_files.append(out_file)
                 if not force_ and out_file.exists():
@@ -116,6 +120,7 @@ class FTPParser:
                     unit="b",
                     unit_scale=True,
                     leave=False,
+                    disable=silent,
                 )
                 with out_file.open("wb+") as out:
                     write = partial(write_file, fhandle=out, pbar=pbar)

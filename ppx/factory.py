@@ -20,7 +20,12 @@ class PXDFactory:
     Parameters
     ----------
     pxid : str
-       A ProteomeXchange identifier.
+        A ProteomeXchange identifier.
+    local : str or Path object, optional
+        The local data directory in which this project's files will be
+        downloaded.
+    fetch : bool, optional
+        Should ppx check the remote repository for updated metadata?
     """
     rest = "http://proteomecentral.proteomexchange.org/cgi/GetDataset"
 
@@ -36,10 +41,11 @@ class PXDFactory:
         "massive.ucsd.edu": "MassIVE",
     }
 
-    def __init__(self, pxid, local=None):
+    def __init__(self, pxid, local=None, fetch=False):
         """Instantiate a PXDataset"""
         self._id = self._validate_id(pxid)
         self._local = local
+        self._fetch = fetch
 
         # Retrieve the data:
         params = {"ID": self.id, "outputMode": "JSON", "test": "no"}
@@ -69,9 +75,9 @@ class PXDFactory:
     def find(self):
         """Find the dataset at the partner repository"""
         if self._repo == "PRIDE":
-            return PrideProject(self._repo_id, self._local)
+            return PrideProject(self._repo_id, self._local, self._fetch)
         elif self._repo == "MassIVE":
-            return MassiveProject(self._repo_id, self._local)
+            return MassiveProject(self._repo_id, self._local, self._fetch)
         else:
             raise RuntimeError("Unsupported partner repository.")
 
@@ -108,7 +114,6 @@ class PXDFactory:
             "this time. ppx currently supports PRIDE and MassIVE."
         )
 
-
     def _validate_id(self, identifier):
         """Validate a ProteomeXchange identifier"""
         identifier = str(identifier).upper()
@@ -118,7 +123,7 @@ class PXDFactory:
         return identifier
 
 
-def find_project(identifier, local=None, repo=None):
+def find_project(identifier, local=None, repo=None, fetch=False):
     """Find a project in the PRIDE or MassIVE repositories.
 
     Parameters
@@ -131,11 +136,12 @@ def find_project(identifier, local=None, repo=None):
     repo : {"pride", "massive"}, optional
         The repository in which to look for the project. If :code:`None`,
         ppx will try to figure it out.
+    fetch : bool, optional
+        Should ppx check the remote repository for updated metadata?
 
     Returns
     -------
-    :py:class:`~ppx.pride.PrideProject` or
-    :py:class:`~ppx.massive.MassiveProject`
+    :py:class:`~ppx.PrideProject` or :py:class:`~ppx.MassiveProject`
         An object to interact with the project data in the repository.
     """
     identifier = str(identifier).upper()
@@ -144,22 +150,22 @@ def find_project(identifier, local=None, repo=None):
 
     # User-specified:
     if repo == "pride":
-        return PrideProject(identifier, local)
+        return PrideProject(identifier, local=local, fetch=fetch)
 
     if repo == "massive":
-        return MassiveProject(identifier, local)
+        return MassiveProject(identifier, local=local, fetch=fetch)
 
     if repo is not None:
         raise ValueError("Unsupported repository.")
 
     # Try and figure it out:
     if identifier.startswith("MSV"):
-        return MassiveProject(identifier, local)
+        return MassiveProject(identifier, local=local, fetch=fetch)
 
     if re.match("P[XR]D", identifier):
         try:
-            return PXDFactory(identifier, local).find()
+            return PXDFactory(identifier, local=local, fetch=fetch).find()
         except requests.HTTPError:
-            return PrideProject(identifier, local)
+            return PrideProject(identifier, local=local, fetch=fetch)
 
     raise ValueError("Malformed identifier.")
