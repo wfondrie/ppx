@@ -14,15 +14,13 @@ class MassiveProject(BaseProject):
     msv_id : str
         The MassIVE identifier.
     local : str or path object, optional
-        The local directory where data for this project will be downloaded.
+        The local data directory in which to download project files.
 
     Attributes
     ----------
     id : str
-    local : pathlib.Path object
+    local : Path object
     url : str
-
-
     """
     def __init__(self, msv_id, local=None):
         """Instantiate a MSVDataset object"""
@@ -31,7 +29,18 @@ class MassiveProject(BaseProject):
         self._parser = FTPParser(self._url)
 
     def _validate_id(self, identifier):
-        """Validate a MassIVE identifier"""
+        """Validate a MassIVE identifier
+
+        Parameters
+        ----------
+        identifier : str
+            The project identifier to validate.
+
+        Returns
+        -------
+        str
+            The validated identifier
+        """
         identifier = str(identifier).upper()
         if not re.match("MSV[0-9]{9}", identifier):
             raise ValueError("Malformed MassIVE identifier.")
@@ -39,18 +48,18 @@ class MassiveProject(BaseProject):
         return identifier
 
     def remote_dirs(self, glob=None):
-        """List the project directories.
+        """List the project directories in the remote repoistory.
 
         Parameters
         ----------
-        path : str or list of str, optional
-            The subdirectory on the FTP server to look in. A list
-            will be concatenated into a single URL.
+        glob : str, optional
+            Use Unix wildcards to return specific files. For example,
+            :code:`"*peak"` would return all directories ending in "peak".
 
         Returns
         -------
         list of str
-             The directories available on the FTP server.
+            The remote directories avaiable for this project.
         """
         dirs = self._parser.dirs
         if glob is not None:
@@ -60,18 +69,18 @@ class MassiveProject(BaseProject):
 
     def remote_files(self, glob=None):
         """
-        List available files on the FTP server.
+        List the project files in the remote repository.
 
         Parameters
         ----------
-        path : str or list of str, optional
-            The subdirectory on the FTP server to look in. A list
-            will be concatenated into a single URL.
+        glob : str, optional
+            Use Unix wildcards to return specific files. For example,
+            :code:`"*.mzML"` would return all of the mzML files.
 
         Returns
         -------
         list of str
-            The available files on the FTP server.
+            The remote files avaiable for this project.
         """
         files = self._parser.files
         if glob is not None:
