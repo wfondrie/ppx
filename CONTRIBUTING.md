@@ -37,7 +37,7 @@ code](#contributing-to-the-code) below for more details on contributing this
 way.
 
 
-### Contributing to the code
+## Contributing to the code
 
 We welcome contributions to the source code of ppx---particularly ones that
 address discussed `issues <https://github.com/wfondrie/ppx/issues>`_.
