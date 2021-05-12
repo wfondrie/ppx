@@ -19,6 +19,7 @@ class BaseProject(ABC):
     fetch : bool, optional
         Should ppx check the remote repository for updated metadata?
     """
+
     def __init__(self, identifier, local=None, fetch=False):
         """Initialize a BaseDataset"""
         self._id = self._validate_id(identifier)

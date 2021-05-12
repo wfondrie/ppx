@@ -36,6 +36,7 @@ class PrideProject(BaseProject):
     metadata : dict
     fetch : bool
     """
+
     rest = "https://www.ebi.ac.uk/pride/ws/archive/v2/projects/"
 
     def __init__(self, pride_id, local=None, fetch=False):
@@ -174,8 +175,6 @@ def get(url):
     """Perform a GET command at the specified url."""
     res = requests.get(url)
     if res.status_code != 200:
-        raise requests.HTTPError(
-            f"Error {res.status_code}: {res.text}"
-        )
+        raise requests.HTTPError(f"Error {res.status_code}: {res.text}")
 
     return res.json()

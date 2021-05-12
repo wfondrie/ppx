@@ -32,6 +32,7 @@ class MassiveProject(BaseProject):
     metadata : dict
     fetch : bool
     """
+
     def __init__(self, msv_id, local=None, fetch=False):
         """Instantiate a MSVDataset object"""
         super().__init__(msv_id, local, fetch)

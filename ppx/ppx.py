@@ -63,7 +63,7 @@ def get_parser():
         help=(
             "Should ppx download files that are already present in the local "
             "data directory?"
-        )
+        ),
     )
 
     return parser
@@ -72,8 +72,8 @@ def get_parser():
 def main():
     """Run ppx"""
     logging.basicConfig(
-        level=logging.INFO,
-        format="[%(levelname)s]: %(message)s")
+        level=logging.INFO, format="[%(levelname)s]: %(message)s"
+    )
 
     parser = get_parser()
     args = parser.parse_args()

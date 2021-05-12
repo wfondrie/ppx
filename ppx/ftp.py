@@ -15,20 +15,20 @@ LOGGER = logging.getLogger(__name__)
 # UNIX FTP server regex from:
 # https://github.com/stevemayne/pyftpparser/blob/master/ftpparser/parse.py
 UNIX = re.compile(
-    "^([-bcdlps])" # type
-    "([-rwxXsStT]{1,9})" # permissions
-    "\\s+(\\d+)" # hard link count
-    "\\s+(\\w+)" # owner
-    "\\s+(\\w+)" # group
-    "\\s+(\\d+)" # size
-    "\\s+([A-Za-z]{3}\\s+\\d{1,2}\\s+[:\\d]{4,5})" # modification date
-    "\\s(.+)$" # name
+    "^([-bcdlps])"  # type
+    "([-rwxXsStT]{1,9})"  # permissions
+    "\\s+(\\d+)"  # hard link count
+    "\\s+(\\w+)"  # owner
+    "\\s+(\\w+)"  # group
+    "\\s+(\\d+)"  # size
+    "\\s+([A-Za-z]{3}\\s+\\d{1,2}\\s+[:\\d]{4,5})"  # modification date
+    "\\s(.+)$"  # name
 )
 
 UNIX_TIME = re.compile(
-    "^([A-Za-z]{3})" # month
-    "\\s+(\\d{1,2})" # day of month
-    "\\s+([:\\d]{4,5})$" # time of day or year
+    "^([A-Za-z]{3})"  # month
+    "\\s+(\\d{1,2})"  # day of month
+    "\\s+([:\\d]{4,5})$"  # time of day or year
 )
 
 
@@ -43,6 +43,7 @@ class FTPParser:
     max_depth : int, optional
         The maximum resursion depth when looking for files.
     """
+
     def __init__(self, url, max_depth=4):
         """Initialize an FTPParser"""
         if not url.startswith("ftp://"):
@@ -101,7 +102,11 @@ class FTPParser:
 
             out_files = []
             overall_pbar = partial(
-                tqdm, desc="TOTAL", position=0, unit="files", disable=silent,
+                tqdm,
+                desc="TOTAL",
+                position=0,
+                unit="files",
+                disable=silent,
             )
 
             for fname in overall_pbar(files):
@@ -128,7 +133,6 @@ class FTPParser:
                     pbar.close()
 
         return out_files
-
 
     @property
     def files(self):

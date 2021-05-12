@@ -27,6 +27,7 @@ class PXDFactory:
     fetch : bool, optional
         Should ppx check the remote repository for updated metadata?
     """
+
     rest = "http://proteomecentral.proteomexchange.org/cgi/GetDataset"
 
     repo_cv = {
@@ -51,9 +52,7 @@ class PXDFactory:
         params = {"ID": self.id, "outputMode": "JSON", "test": "no"}
         res = requests.get(self.rest, params=params)
         if res.status_code != 200:
-            raise requests.HTTPError(
-                f"Error {res.status_code}: {res.text}"
-            )
+            raise requests.HTTPError(f"Error {res.status_code}: {res.text}")
 
         self._url = res.url
         self._data = res.json()
@@ -106,7 +105,6 @@ class PXDFactory:
             repo_id = repos.get(repo)
             if repo_id is not None:
                 return repo, repo_id
-
 
         repo = ", ".join(repos.keys())
         raise ValueError(

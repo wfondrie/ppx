@@ -13,11 +13,11 @@ class PPXConfig:
     ----------
     path : pathlib.Path object
     """
+
     def __init__(self):
         """Initialize the _PPXDataDir"""
         self._path = None
         self.path = os.getenv("PPX_DATA_DIR")
-
 
     @property
     def path(self):
