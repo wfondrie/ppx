@@ -1,0 +1,120 @@
+{
+  "accession": "PXD000001",
+  "title": "TMT spikes -  Using R and Bioconductor for proteomics data analysis",
+  "additionalAttributes": [
+    {
+      "@type": "CvParam",
+      "cvLabel": "PRIDE",
+      "accession": "PRIDE:0000411",
+      "name": "Dataset FTP location",
+      "value": "ftp://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001"
+    }
+  ],
+  "projectDescription": "Expected reporter ion ratios: Erwinia peptides:    1:1:1:1:1:1 Enolase spike (sp|P00924|ENO1_YEAST):  10:5:2.5:1:2.5:10 BSA spike (sp|P02769|ALBU_BOVIN):  1:2.5:5:10:5:1 PhosB spike (sp|P00489|PYGM_RABIT):  2:2:2:2:1:1 Cytochrome C spike (sp|P62894|CYC_BOVIN): 1:1:1:1:1:2",
+  "sampleProcessingProtocol": "Not available",
+  "dataProcessingProtocol": "Two extra files have been added post-publication:<br><a href=\"ftp://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001/TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML\" target=\"_top\">TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML</a><br><a href=\"ftp://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001/TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzXML\" target=\"_top\">TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzXML</a>",
+  "projectTags": [
+    "Prime-xs project"
+  ],
+  "keywords": [
+    "Spikes",
+    "Tmt",
+    "Eriwinia"
+  ],
+  "doi": "10.6019/PXD000001",
+  "submissionType": "COMPLETE",
+  "submissionDate": "2012-03-13",
+  "publicationDate": "2012-03-07",
+  "submitters": [
+    {
+      "title": "Dr",
+      "affiliation": "Department of Biochemistry, University of Cambridge",
+      "email": "lg390@cam.ac.uk",
+      "country": "",
+      "orcid": "",
+      "name": "Laurent Gatto",
+      "id": "710175"
+    }
+  ],
+  "labPIs": [],
+  "affiliations": [
+    "Department of Biochemistry, University of Cambridge"
+  ],
+  "instruments": [
+    {
+      "@type": "CvParam",
+      "cvLabel": "MS",
+      "accession": "MS:1000031",
+      "name": "instrument model",
+      "value": "LTQ Orbitrap Velos"
+    },
+    {
+      "@type": "CvParam",
+      "cvLabel": "MS",
+      "accession": "MS:1001742",
+      "name": "LTQ Orbitrap Velos"
+    }
+  ],
+  "softwares": [
+    {
+      "@type": "CvParam",
+      "cvLabel": "MS",
+      "accession": "MS:1000531",
+      "name": "Matrix Science Mascot 2.3.02"
+    }
+  ],
+  "quantificationMethods": [],
+  "countries": [
+    "United Kingdom"
+  ],
+  "sampleAttributes": [],
+  "organisms": [
+    {
+      "@type": "CvParam",
+      "cvLabel": "NEWT",
+      "accession": "554",
+      "name": "Erwinia carotovora"
+    }
+  ],
+  "organismParts": [],
+  "diseases": [],
+  "references": [
+    {
+      "referenceLine": "Gatto L, Christoforou A; Using R and Bioconductor for proteomics data analysis., Biochim Biophys Acta, 2013 May 18, ",
+      "doi": "10.1016/j.bbapap.2013.04.032",
+      "pubmedId": 23692960,
+      "id": 23692960
+    }
+  ],
+  "identifiedPTMStrings": [
+    {
+      "@type": "CvParam",
+      "cvLabel": "MOD",
+      "accession": "MOD:00425",
+      "name": "monohydroxylated residue"
+    },
+    {
+      "@type": "CvParam",
+      "cvLabel": "MOD",
+      "accession": "MOD:01720",
+      "name": "TMT6plex-126 reporter+balance reagent acylated residue"
+    },
+    {
+      "@type": "CvParam",
+      "cvLabel": "MOD",
+      "accession": "MOD:01153",
+      "name": "methylthiolated residue"
+    }
+  ],
+  "_links": {
+    "self": {
+      "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/projects/PXD000001"
+    },
+    "files": {
+      "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/projects/PXD000001/files"
+    },
+    "datasetFtpUrl": {
+      "href": "ftp://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001"
+    }
+  }
+}

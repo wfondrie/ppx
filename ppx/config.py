@@ -29,8 +29,8 @@ class PPXConfig:
         """Set the current ppx data directory"""
         if path is None:
             try:
-                path = Path(os.eviron["PPX_DATA_DIR"]).expanduser().resolve()
-            except AttributeError:
+                path = Path(os.environ["PPX_DATA_DIR"]).expanduser().resolve()
+            except KeyError:
                 path = Path(Path.home(), ".ppx")
                 path.mkdir(exist_ok=True)
         else:
