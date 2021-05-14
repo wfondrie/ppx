@@ -157,7 +157,7 @@ def find_project(identifier, local=None, repo=None, fetch=False):
         raise ValueError("Unsupported repository.")
 
     # Try and figure it out:
-    if identifier.startswith("MSV"):
+    if identifier.startswith("MSV") or identifier.startswith("RMS"):
         return MassiveProject(identifier, local=local, fetch=fetch)
 
     if re.match("P[XR]D", identifier):
