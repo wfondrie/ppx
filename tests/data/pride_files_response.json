@@ -1,0 +1,365 @@
+{
+  "_embedded": {
+    "files": [
+      {
+        "projectAccessions": [
+          "PXD000001"
+        ],
+        "accession": "34476b308bb9dab10edab047891e2ef5ded65f458ba5c24022cfab3e1f757e90",
+        "fileCategory": {
+          "@type": "CvParam",
+          "cvLabel": "PRIDE",
+          "accession": "PRIDE:0000410",
+          "name": "Other type file URI",
+          "value": "OTHER"
+        },
+        "checksum": "631f5821d741ac9ef0de4f067eaf033b968af8e2",
+        "publicFileLocations": [
+          {
+            "@type": "CvParam",
+            "cvLabel": "PRIDE",
+            "accession": "PRIDE:0000469",
+            "name": "FTP Protocol",
+            "value": "ftp://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001/erwinia_carotovora.fasta"
+          },
+          {
+            "@type": "CvParam",
+            "cvLabel": "PRIDE",
+            "accession": "PRIDE:0000468",
+            "name": "Aspera Protocol",
+            "value": "prd_ascp@fasp.ebi.ac.uk:pride/data/archive/2012/03/PXD000001/erwinia_carotovora.fasta"
+          }
+        ],
+        "fileSizeBytes": 1657668,
+        "fileName": "erwinia_carotovora.fasta",
+        "compress": false,
+        "submissionDate": "2012-03-13T00:00:00.000+0000",
+        "publicationDate": "2012-03-07T00:00:00.000+0000",
+        "updatedDate": "2017-06-20T14:57:06.000+0000",
+        "additionalAttributes": [],
+        "_links": {
+          "self": {
+            "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/files/34476b308bb9dab10edab047891e2ef5ded65f458ba5c24022cfab3e1f757e90"
+          }
+        }
+      },
+      {
+        "projectAccessions": [
+          "PXD000001"
+        ],
+        "accession": "ffdea08e7981243dbf92b1cc6076edc8f481ba3e6db0d1e0ad641c8faa544b90",
+        "fileCategory": {
+          "@type": "CvParam",
+          "cvLabel": "PRIDE",
+          "accession": "PRIDE:0000404",
+          "name": "Associated raw file URI",
+          "value": "RAW"
+        },
+        "checksum": "5e050c8abc697891e2286271e062a8144518108a",
+        "publicFileLocations": [
+          {
+            "@type": "CvParam",
+            "cvLabel": "PRIDE",
+            "accession": "PRIDE:0000468",
+            "name": "Aspera Protocol",
+            "value": "prd_ascp@fasp.ebi.ac.uk:pride/data/archive/2012/03/PXD000001/TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw"
+          },
+          {
+            "@type": "CvParam",
+            "cvLabel": "PRIDE",
+            "accession": "PRIDE:0000469",
+            "name": "FTP Protocol",
+            "value": "ftp://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001/TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw"
+          }
+        ],
+        "fileSizeBytes": 220475548,
+        "fileName": "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw",
+        "compress": false,
+        "submissionDate": "2012-03-13T00:00:00.000+0000",
+        "publicationDate": "2012-03-07T00:00:00.000+0000",
+        "updatedDate": "2017-06-20T14:57:06.000+0000",
+        "additionalAttributes": [],
+        "_links": {
+          "self": {
+            "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/files/ffdea08e7981243dbf92b1cc6076edc8f481ba3e6db0d1e0ad641c8faa544b90"
+          }
+        }
+      },
+      {
+        "projectAccessions": [
+          "PXD000001"
+        ],
+        "accession": "8ce43227bda837e3cad6c4fa1b11c4094291c48d76ca469c66e0a4e1efebd7e7",
+        "fileCategory": {
+          "@type": "CvParam",
+          "cvLabel": "PRIDE",
+          "accession": "PRIDE:0000409",
+          "name": "Peak list file URI",
+          "value": "PEAK"
+        },
+        "checksum": "93bd2b2461acb02b5bcabbf7faa9ff0c471267f4",
+        "publicFileLocations": [
+          {
+            "@type": "CvParam",
+            "cvLabel": "PRIDE",
+            "accession": "PRIDE:0000469",
+            "name": "FTP Protocol",
+            "value": "ftp://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001/TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML"
+          },
+          {
+            "@type": "CvParam",
+            "cvLabel": "PRIDE",
+            "accession": "PRIDE:0000468",
+            "name": "Aspera Protocol",
+            "value": "prd_ascp@fasp.ebi.ac.uk:pride/data/archive/2012/03/PXD000001/TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML"
+          }
+        ],
+        "fileSizeBytes": 243031280,
+        "fileName": "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML",
+        "compress": false,
+        "submissionDate": "2012-03-13T00:00:00.000+0000",
+        "publicationDate": "2012-03-07T00:00:00.000+0000",
+        "updatedDate": "2017-06-20T14:57:06.000+0000",
+        "additionalAttributes": [],
+        "_links": {
+          "self": {
+            "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/files/8ce43227bda837e3cad6c4fa1b11c4094291c48d76ca469c66e0a4e1efebd7e7"
+          }
+        }
+      },
+      {
+        "projectAccessions": [
+          "PXD000001"
+        ],
+        "accession": "146448a5a94636a2564a48082859cefac47c5e490fdc97b092a45c49c0a183ed",
+        "fileCategory": {
+          "@type": "CvParam",
+          "cvLabel": "PRIDE",
+          "accession": "PRIDE:1002848",
+          "name": "Result file URI",
+          "value": "RESULT"
+        },
+        "checksum": "99b90224bacfea9e67ce3974bfdd8abc9e227ec6",
+        "publicFileLocations": [
+          {
+            "@type": "CvParam",
+            "cvLabel": "PRIDE",
+            "accession": "PRIDE:0000468",
+            "name": "Aspera Protocol",
+            "value": "prd_ascp@fasp.ebi.ac.uk:pride/data/archive/2012/03/PXD000001/PRIDE_Exp_Complete_Ac_22134.xml.gz"
+          },
+          {
+            "@type": "CvParam",
+            "cvLabel": "PRIDE",
+            "accession": "PRIDE:0000469",
+            "name": "FTP Protocol",
+            "value": "ftp://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001/PRIDE_Exp_Complete_Ac_22134.xml.gz"
+          }
+        ],
+        "fileSizeBytes": 10677205,
+        "fileName": "PRIDE_Exp_Complete_Ac_22134.xml.gz",
+        "compress": false,
+        "submissionDate": "2012-03-13T00:00:00.000+0000",
+        "publicationDate": "2012-03-07T00:00:00.000+0000",
+        "updatedDate": "2017-06-20T14:57:06.000+0000",
+        "additionalAttributes": [],
+        "_links": {
+          "self": {
+            "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/files/146448a5a94636a2564a48082859cefac47c5e490fdc97b092a45c49c0a183ed"
+          }
+        }
+      },
+      {
+        "projectAccessions": [
+          "PXD000001"
+        ],
+        "accession": "5bda360133398f66021c8889e01dce921cb51300c7269e1f2b0f20368ab20af6",
+        "fileCategory": {
+          "@type": "CvParam",
+          "cvLabel": "PRIDE",
+          "accession": "PRIDE:0000410",
+          "name": "Other type file URI",
+          "value": "OTHER"
+        },
+        "checksum": "c37fa5f5d0e2b52d0e9e4825a1006e446b2dfff7",
+        "publicFileLocations": [
+          {
+            "@type": "CvParam",
+            "cvLabel": "PRIDE",
+            "accession": "PRIDE:0000469",
+            "name": "FTP Protocol",
+            "value": "ftp://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001/generated/PRIDE_Exp_Complete_Ac_22134.pride.mztab.gz"
+          },
+          {
+            "@type": "CvParam",
+            "cvLabel": "PRIDE",
+            "accession": "PRIDE:0000468",
+            "name": "Aspera Protocol",
+            "value": "prd_ascp@fasp.ebi.ac.uk:pride/data/archive/2012/03/PXD000001/generated/PRIDE_Exp_Complete_Ac_22134.pride.mztab.gz"
+          }
+        ],
+        "fileSizeBytes": 497985,
+        "fileName": "PRIDE_Exp_Complete_Ac_22134.pride.mztab.gz",
+        "compress": false,
+        "submissionDate": "2012-03-13T00:00:00.000+0000",
+        "publicationDate": "2012-03-07T00:00:00.000+0000",
+        "updatedDate": "2017-06-20T14:57:06.000+0000",
+        "additionalAttributes": [],
+        "_links": {
+          "self": {
+            "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/files/5bda360133398f66021c8889e01dce921cb51300c7269e1f2b0f20368ab20af6"
+          }
+        }
+      },
+      {
+        "projectAccessions": [
+          "PXD000001"
+        ],
+        "accession": "ca2e3dea18950a328b7dc8303911961267a2c19058e67bfe49ab0d6784c3f62b",
+        "fileCategory": {
+          "@type": "CvParam",
+          "cvLabel": "PRIDE",
+          "accession": "PRIDE:0000409",
+          "name": "Peak list file URI",
+          "value": "PEAK"
+        },
+        "checksum": "4bfcf84592a6cc6943ef3124427c524c4591d692",
+        "publicFileLocations": [
+          {
+            "@type": "CvParam",
+            "cvLabel": "PRIDE",
+            "accession": "PRIDE:0000468",
+            "name": "Aspera Protocol",
+            "value": "prd_ascp@fasp.ebi.ac.uk:pride/data/archive/2012/03/PXD000001/generated/PRIDE_Exp_Complete_Ac_22134.pride.mgf.gz"
+          },
+          {
+            "@type": "CvParam",
+            "cvLabel": "PRIDE",
+            "accession": "PRIDE:0000469",
+            "name": "FTP Protocol",
+            "value": "ftp://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001/generated/PRIDE_Exp_Complete_Ac_22134.pride.mgf.gz"
+          }
+        ],
+        "fileSizeBytes": 16448103,
+        "fileName": "PRIDE_Exp_Complete_Ac_22134.pride.mgf.gz",
+        "compress": false,
+        "submissionDate": "2012-03-13T00:00:00.000+0000",
+        "publicationDate": "2012-03-07T00:00:00.000+0000",
+        "updatedDate": "2017-06-20T14:57:06.000+0000",
+        "additionalAttributes": [],
+        "_links": {
+          "self": {
+            "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/files/ca2e3dea18950a328b7dc8303911961267a2c19058e67bfe49ab0d6784c3f62b"
+          }
+        }
+      },
+      {
+        "projectAccessions": [
+          "PXD000001"
+        ],
+        "accession": "8e9f031d8e56f5026860a1b116cbb8769787993c35f72b1d449254963c787b65",
+        "fileCategory": {
+          "@type": "CvParam",
+          "cvLabel": "PRIDE",
+          "accession": "PRIDE:0000410",
+          "name": "Other type file URI",
+          "value": "OTHER"
+        },
+        "checksum": "e5037b5aefb15e75ca38bc4eed316df1c6ccbbfb",
+        "publicFileLocations": [
+          {
+            "@type": "CvParam",
+            "cvLabel": "PRIDE",
+            "accession": "PRIDE:0000469",
+            "name": "FTP Protocol",
+            "value": "ftp://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001/F063721.dat-mztab.txt"
+          },
+          {
+            "@type": "CvParam",
+            "cvLabel": "PRIDE",
+            "accession": "PRIDE:0000468",
+            "name": "Aspera Protocol",
+            "value": "prd_ascp@fasp.ebi.ac.uk:pride/data/archive/2012/03/PXD000001/F063721.dat-mztab.txt"
+          }
+        ],
+        "fileSizeBytes": 304798,
+        "fileName": "F063721.dat-mztab.txt",
+        "compress": false,
+        "submissionDate": "2012-03-13T00:00:00.000+0000",
+        "publicationDate": "2012-03-07T00:00:00.000+0000",
+        "updatedDate": "2017-06-20T14:57:06.000+0000",
+        "additionalAttributes": [],
+        "_links": {
+          "self": {
+            "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/files/8e9f031d8e56f5026860a1b116cbb8769787993c35f72b1d449254963c787b65"
+          }
+        }
+      },
+      {
+        "projectAccessions": [
+          "PXD000001"
+        ],
+        "accession": "4b46ae91064697f1c8df768df676ffaf7c6f0dad4f29523003be62fa09e7826c",
+        "fileCategory": {
+          "@type": "CvParam",
+          "cvLabel": "PRIDE",
+          "accession": "PRIDE:0000408",
+          "name": "Search engine output file URI",
+          "value": "SEARCH"
+        },
+        "checksum": "54fac65e53d61c56f5f46e9b4347d722a57cdc2e",
+        "publicFileLocations": [
+          {
+            "@type": "CvParam",
+            "cvLabel": "PRIDE",
+            "accession": "PRIDE:0000469",
+            "name": "FTP Protocol",
+            "value": "ftp://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001/F063721.dat"
+          },
+          {
+            "@type": "CvParam",
+            "cvLabel": "PRIDE",
+            "accession": "PRIDE:0000468",
+            "name": "Aspera Protocol",
+            "value": "prd_ascp@fasp.ebi.ac.uk:pride/data/archive/2012/03/PXD000001/F063721.dat"
+          }
+        ],
+        "fileSizeBytes": 21185462,
+        "fileName": "F063721.dat",
+        "compress": false,
+        "submissionDate": "2012-03-13T00:00:00.000+0000",
+        "publicationDate": "2012-03-07T00:00:00.000+0000",
+        "updatedDate": "2017-06-20T14:57:06.000+0000",
+        "additionalAttributes": [],
+        "_links": {
+          "self": {
+            "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/files/4b46ae91064697f1c8df768df676ffaf7c6f0dad4f29523003be62fa09e7826c"
+          }
+        }
+      }
+    ]
+  },
+  "_links": {
+    "self": {
+      "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/projects/PXD000001/files?filter=''&pageSize=100&page=0&sortDirection=DESC&sortConditions=fileName"
+    },
+    "next": {
+      "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/projects/PXD000001/files?filter=''&pageSize=100&page=1&sortDirection=DESC&sortConditions=fileName"
+    },
+    "previous": {
+      "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/projects/PXD000001/files?filter=''&pageSize=100&page=0&sortDirection=DESC&sortConditions=fileName"
+    },
+    "first": {
+      "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/projects/PXD000001/files?filter=''&pageSize=100&page=0&sortDirection=DESC&sortConditions=fileName"
+    },
+    "last": {
+      "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/projects/PXD000001/files?filter=''&pageSize=100&page=1&sortDirection=DESC&sortConditions=fileName"
+    }
+  },
+  "page": {
+    "size": 100,
+    "totalElements": 8,
+    "totalPages": 1,
+    "number": 0
+  }
+}

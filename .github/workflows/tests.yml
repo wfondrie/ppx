@@ -1,4 +1,6 @@
-# This workflow installs, lints, and tests ppx on the latest version of Python.
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
 name: tests
 
 on:
@@ -11,20 +13,22 @@ on:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python
+    - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
-        python-version: "3.x"
+        python-version: "3.8"
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pytest sphinx sphinx-rtd-theme
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install flake8 pytest pytest-cov wheel
         pip install -e .
     - name: Lint with flake8
       run: |
@@ -32,11 +36,10 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
+    - name: Run unit and system tests
       run: |
-        pytest
-
-    - name: Test the docs
-      run: |
-        cd docs
-        make doctest
+        pytest --cov=ppx tests/
+    - name: Upload coverage to codecov
+      uses: codecov/codecov-action@v1
+      with:
+        fail_ci_if_error: true

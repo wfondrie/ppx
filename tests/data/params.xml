@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<parameters>
+<parameter name="dataset.comments">Silver stained bands were submitted for mass spec analysis.  Investigators are interested in the protein polzeta.  </parameter>
+<parameter name="dataset.instrument">MS:1001911</parameter>
+<parameter name="dataset.keywords">polzeta</parameter>
+<parameter name="dataset.modification">UNIMOD:4;UNIMOD:35;UNIMOD:1</parameter>
+<parameter name="dataset.password">polzeta</parameter>
+<parameter name="dataset.pi">Rajiv Kumar|rkumar@mayo.edu|Mayo clinic|United States</parameter>
+<parameter name="dataset.px">on</parameter>
+<parameter name="dataset.species">NCBITaxon:4932</parameter>
+<parameter name="default.license">on</parameter>
+<parameter name="desc">RajKumar-PolZeta-P19-078_MayoClinic</parameter>
+<parameter name="email">brown.benjamin2@mayo.edu</parameter>
+<parameter name="file_mapping">PeakList/qe2_052219_P19078_Kumar_03_band-4.mgf|Results/sw_052319_P19078_Kumar_SSbands-MGF.mzid#/raw/projects/Kumar_R_RXK01/P19-078/qe2_mass_spec/sw_052319_P19078_Kumar_SSbands-MGF/scaffold/mzid/sw_052319_P19078_Kumar_SSbands-MGF.mzid_(qe2_052219_P19078_Kumar_03_band-4).MGF;PeakList/qe2_052219_P19078_Kumar_05_band-3.mgf|Results/sw_052319_P19078_Kumar_SSbands-MGF.mzid#/raw/projects/Kumar_R_RXK01/P19-078/qe2_mass_spec/sw_052319_P19078_Kumar_SSbands-MGF/scaffold/mzid/sw_052319_P19078_Kumar_SSbands-MGF.mzid_(qe2_052219_P19078_Kumar_05_band-3).MGF;PeakList/qe2_052219_P19078_Kumar_07_band-2.mgf|Results/sw_052319_P19078_Kumar_SSbands-MGF.mzid#/raw/projects/Kumar_R_RXK01/P19-078/qe2_mass_spec/sw_052319_P19078_Kumar_SSbands-MGF/scaffold/mzid/sw_052319_P19078_Kumar_SSbands-MGF.mzid_(qe2_052219_P19078_Kumar_07_band-2).MGF;PeakList/qe2_052219_P19078_Kumar_09_band-1.mgf|Results/sw_052319_P19078_Kumar_SSbands-MGF.mzid#/raw/projects/Kumar_R_RXK01/P19-078/qe2_mass_spec/sw_052319_P19078_Kumar_SSbands-MGF/scaffold/mzid/sw_052319_P19078_Kumar_SSbands-MGF.mzid_(qe2_052219_P19078_Kumar_09_band-1).MGF;</parameter>
+<parameter name="peak_list_files">d.bcbrown/P19-078_PolZeta/PeakList;</parameter>
+<parameter name="raw_files">d.bcbrown/P19-078_PolZeta/Raw;</parameter>
+<parameter name="result_file_mapping">Results/sw_052319_P19078_Kumar_SSbands-MGF.mzid#/raw/projects/Kumar_R_RXK01/P19-078/qe2_mass_spec/sw_052319_P19078_Kumar_SSbands-MGF/scaffold/mzid/sw_052319_P19078_Kumar_SSbands-MGF.mzid_(qe2_052219_P19078_Kumar_09_band-1).MGF|PeakList/qe2_052219_P19078_Kumar_09_band-1.mgf</parameter>
+<parameter name="result_file_mapping">Results/sw_052319_P19078_Kumar_SSbands-MGF.mzid#/raw/projects/Kumar_R_RXK01/P19-078/qe2_mass_spec/sw_052319_P19078_Kumar_SSbands-MGF/scaffold/mzid/sw_052319_P19078_Kumar_SSbands-MGF.mzid_(qe2_052219_P19078_Kumar_07_band-2).MGF|PeakList/qe2_052219_P19078_Kumar_07_band-2.mgf</parameter>
+<parameter name="result_file_mapping">Results/sw_052319_P19078_Kumar_SSbands-MGF.mzid#/raw/projects/Kumar_R_RXK01/P19-078/qe2_mass_spec/sw_052319_P19078_Kumar_SSbands-MGF/scaffold/mzid/sw_052319_P19078_Kumar_SSbands-MGF.mzid_(qe2_052219_P19078_Kumar_05_band-3).MGF|PeakList/qe2_052219_P19078_Kumar_05_band-3.mgf</parameter>
+<parameter name="result_file_mapping">Results/sw_052319_P19078_Kumar_SSbands-MGF.mzid#/raw/projects/Kumar_R_RXK01/P19-078/qe2_mass_spec/sw_052319_P19078_Kumar_SSbands-MGF/scaffold/mzid/sw_052319_P19078_Kumar_SSbands-MGF.mzid_(qe2_052219_P19078_Kumar_03_band-4).MGF|PeakList/qe2_052219_P19078_Kumar_03_band-4.mgf</parameter>
+<parameter name="result_files">d.bcbrown/P19-078_PolZeta/Results;</parameter>
+<parameter name="task">a9d2db04de3c43cea77c45a182d9d57a</parameter>
+<parameter name="upload_file_mapping">PEAK-00000.mgf|bcbrown/P19-078_PolZeta/PeakList/qe2_052219_P19078_Kumar_09_band-1.mgf</parameter>
+<parameter name="upload_file_mapping">PEAK-00001.mgf|bcbrown/P19-078_PolZeta/PeakList/qe2_052219_P19078_Kumar_03_band-4.mgf</parameter>
+<parameter name="upload_file_mapping">PEAK-00002.mgf|bcbrown/P19-078_PolZeta/PeakList/qe2_052219_P19078_Kumar_05_band-3.mgf</parameter>
+<parameter name="upload_file_mapping">PEAK-00003.mgf|bcbrown/P19-078_PolZeta/PeakList/qe2_052219_P19078_Kumar_07_band-2.mgf</parameter>
+<parameter name="upload_file_mapping">RESULT-00000.mzid|bcbrown/P19-078_PolZeta/Results/sw_052319_P19078_Kumar_SSbands-MGF.mzid</parameter>
+<parameter name="upload_file_mapping">RAW-00000.raw|bcbrown/P19-078_PolZeta/Raw/qe2_052219_P19078_Kumar_09_band-1.raw</parameter>
+<parameter name="upload_file_mapping">RAW-00001.raw|bcbrown/P19-078_PolZeta/Raw/qe2_052219_P19078_Kumar_03_band-4.raw</parameter>
+<parameter name="upload_file_mapping">RAW-00002.raw|bcbrown/P19-078_PolZeta/Raw/qe2_052219_P19078_Kumar_07_band-2.raw</parameter>
+<parameter name="upload_file_mapping">RAW-00003.raw|bcbrown/P19-078_PolZeta/Raw/qe2_052219_P19078_Kumar_05_band-3.raw</parameter>
+<parameter name="user">bcbrown</parameter>
+<parameter name="uuid">1E37D00F-16D2-0001-2A3B-7DB062BF2250</parameter>
+<parameter name="workflow">MASSIVE-COMPLETE</parameter>
+<parameter name="workflow_version">1.3.2</parameter>
+</parameters>
