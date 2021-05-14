@@ -15,6 +15,7 @@
 import os
 import sys
 import subprocess
+
 sys.path.insert(0, os.path.abspath(".."))
 
 try:
@@ -29,6 +30,7 @@ copyright = "2020, William E Fondrie"
 author = "William E Fondrie"
 
 import ppx
+
 # The short X.Y version
 version = str(ppx.__version__)
 # The full version, including alpha/beta/rc tags
@@ -53,7 +55,7 @@ extensions = [
     "sphinx_rtd_theme",
     "numpydoc",
     "sphinxarg.ext",
-    "recommonmark"
+    "recommonmark",
 ]
 
 autosummary_generate = True
