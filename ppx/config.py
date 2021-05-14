@@ -52,7 +52,13 @@ def get_data_dir():
 
 
 def set_data_dir(path=None):
-    """Set the data dir"""
+    """Set the ppx data directory.
+
+    Parameters
+    ----------
+    path : str or Path object, optional
+        The path for ppx to use as its data directory.
+    """
     config.path = path
 
 
