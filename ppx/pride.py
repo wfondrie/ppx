@@ -29,6 +29,7 @@ class PrideProject(BaseProject):
     id : str
     local : Path object
     url : str
+    title : str
     description : str
     doi : str
     data_processing_protocol : str

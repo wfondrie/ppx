@@ -30,9 +30,12 @@ class PPXConfig:
         if path is None:
             try:
                 path = Path(os.environ["PPX_DATA_DIR"]).expanduser().resolve()
+                if not path.exists():
+                    raise FileNotFoundError(
+                        f"The specified PPX_DATA_DIR ({path}) does not exist."
+                    )
             except KeyError:
                 path = Path(Path.home(), ".ppx")
-                path.mkdir(exist_ok=True)
         else:
             path = Path(path).expanduser().resolve()
             if not path.exists():

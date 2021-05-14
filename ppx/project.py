@@ -53,6 +53,9 @@ class BaseProject(ABC):
     def local(self, path):
         """Set the local data directory for this project."""
         if path is None:
+            if config.path == Path(Path.home(), ".ppx"):
+                config.path.mkdir(exist_ok=True)
+
             self._local = Path(config.path, self.id)
         else:
             self._local = Path(path)
