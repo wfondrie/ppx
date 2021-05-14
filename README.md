@@ -64,9 +64,7 @@ We can then view the files associated with the project in the repository
 ``` Python
 >>> remote_files = proj.remote_files()
 >>> print(remote_files)
-# ['F063721.dat', 'F063721.dat-mztab.txt',
-# 'PRIDE_Exp_Complete_Ac_22134.xml.gz', 'PRIDE_Exp_mzData_Ac_22134.xml.gz',
-# 'PXD000001_mztab.txt', 'README.txt',
+# ['F063721.dat', 'F063721.dat-mztab.txt', 'PXD000001_mztab.txt',
 # 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML',
 # 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzXML',
 # 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML',
@@ -86,9 +84,9 @@ specific types of files:
 Then we can download one or more files to the projects local data directory:
 
 ``` Python
->>> downloaded = proj.download("README.txt")
+>>> downloaded = proj.download("F063721.dat-mztab.txt")
 >>> print(downloaded)
-# [PosixPath('/Users/wfondrie/.ppx/PXD000001/README.txt')]
+# [PosixPath('/Users/wfondrie/.ppx/PXD000001/F063721.dat-mztab.txt')]
 ```
 
 Once we've downloaded files, ppx no longer needs an internet connection to
@@ -102,7 +100,7 @@ session, we can find our previous file easily:
 >>> proj = ppx.find_project("PXD000001", repo="PRIDE")
 >>> local_files = proj.local_files()
 >>> print(local_files)
-# [PosixPath('/Users/wfondrie/.ppx/PXD000001/README.txt')]
+# [PosixPath('/Users/wfondrie/.ppx/PXD000001/F063721.dat-mztab.txt')]
 ```
 
 ## If you are an R user...

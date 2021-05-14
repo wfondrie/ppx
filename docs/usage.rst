@@ -43,22 +43,22 @@ on PRIDE:
 
     >>> remote_files = proj.remote_files()
     >>> print(remote_files)
-    ['F063721.dat', 'F063721.dat-mztab.txt', 'PRIDE_Exp_Complete_Ac_22134.xml.gz', 'PRIDE_Exp_mzData_Ac_22134.xml.gz', 'PXD000001_mztab.txt', 'README.txt', 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML', 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzXML', 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML', 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw', 'erwinia_carotovora.fasta']
+    ['F063721.dat', 'F063721.dat-mztab.txt', 'PXD000001_mztab.txt',  'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML', 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzXML', 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML', 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw', 'erwinia_carotovora.fasta']
 
 Alternatively, we can `glob
 <https://en.wikipedia.org/wiki/Glob_(programming)>`_ for specific files of
 interest:
 
-    >>> mzml_files = proje.remote_files("*.mzML")
+    >>> mzml_files = proj.remote_files("*.mzML")
     >>> print(mzml_files)
     ['TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML']
 
 Once we've determined what file we desire to download, we can download
 them to our local data directory. In this case, that is `~/.ppx/PXD000001`:
 
-    >>> downloaded = proj.download("README.txt")
+    >>> downloaded = proj.download("F063721.dat-mztab.txt")
     >>> print(downloaded)
-    [PosixPath('/Users/wfondrie/.ppx/PXD000001/README.txt')]
+    [PosixPath('/Users/wfondrie/.ppx/PXD000001/F063721.dat-mztab.txt')]
 
 
 Once we've downloaded files, ppx no longer needs an internet connection to
@@ -70,8 +70,7 @@ session, we can find our previous files easily:
     >>> proj = ppx.find_project("PXD000001", rep="PRIDE")
     >>> local_files = proj.local_files()
     >>> print(local_files)
-    [PosixPath('/Users/wfondrie/.ppx/PXD000001/README.txt')]
+    [PosixPath('/Users/wfondrie/.ppx/PXD000001/F063721.dat-mztab.txt')]
 
-For more details about the available methods for a project, see our Python API
-documentation for the :py:class:`~ppx.PrideProject` and
+For more details about the available methods for a project, see our Python API documentation for the :py:class:`~ppx.PrideProject` and
 :py:class:`~ppx.MassiveProject` classes.
