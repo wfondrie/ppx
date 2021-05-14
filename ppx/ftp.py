@@ -123,6 +123,7 @@ class FTPParser:
                     total=size,
                     position=1,
                     unit="b",
+                    unit_divisor=1024,
                     unit_scale=True,
                     leave=False,
                     disable=silent,

@@ -8,6 +8,8 @@ We need:
 - A mock FTP server response from MassIVE
 """
 import json
+import socket
+import ftplib
 
 import pytest
 import requests
@@ -70,6 +72,31 @@ def mock_pride_project_response(monkeypatch):
     monkeypatch.setattr(requests, "get", mock_get)
 
 
+# MassIVE FTP server ----------------------------------------------------------
+class MockMassiveFtpResponse:
+    """A mock of the MassIVE FTP server response"""
+
+    @staticmethod
+    def dir(fun):
+        with open("tests/data/massive_ftp_response.txt") as ref:
+            [fun(line) for line in ref]
+
+
+def mock_massive_ftp_response(monkeypatch):
+    """Patch ftplib to use a local file as a response"""
+
+    def null(*args, **kwargs):
+        pass
+
+    def mock_dir(fun):
+        with open("tests/data/massive_ftp_response.txt") as ref:
+            [fun(line) for line in ref]
+
+    monkeypatch.setattr(ftplib.FTP, "login", null)
+    monkeypatch.setattr(ftplib.FTP, "cwd", null)
+    monkeypatch.setattr(ftplib.FTP, "dir", mock_dir)
+
+
 # Mock up local files ---------------------------------------------------------
 @pytest.fixture
 def local_files(tmp_path):
@@ -89,3 +116,15 @@ def local_files(tmp_path):
     local_files.append(tmp_path / "test_file.mzML")
     local_files[-1].touch()
     return local_files, local_dirs
+
+
+# Block internet --------------------------------------------------------------
+@pytest.fixture
+def block_internet(monkeypatch):
+    """Turn off internet access"""
+
+    class Blocker(socket.socket):
+        def __init__(self, *args, **kwargs):
+            raise Exception("Network call blocked")
+
+    monkeypatch.setattr(socket, "socket", Blocker)

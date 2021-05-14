@@ -1,4 +1,4 @@
-"""Test PRIDE access"""
+"""Test PRIDE functionality w/o internet access"""
 import json
 from pathlib import Path
 
@@ -12,6 +12,7 @@ def test_init(tmp_path):
     """Test initialization"""
     proj = ppx.PrideProject(PXID)
     url = "https://www.ebi.ac.uk/pride/ws/archive/v2/projects/PXD000001"
+    assert proj.id == PXID
     assert proj.url == url
     assert proj.local == tmp_path / "PXD000001"
     assert not proj.fetch

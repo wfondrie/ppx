@@ -153,9 +153,7 @@ class BaseProject(ABC):
         files = utils.listify(files)
         in_remote = [f in self.remote_files() for f in files]
         if not all(in_remote):
-            missing = [
-                f for i, f in zip(in_remote, self.remote_files()) if not i
-            ]
+            missing = [f for i, f in zip(in_remote, files) if not i]
 
             raise FileNotFoundError(
                 "The following files were not found in the remote repository: "
