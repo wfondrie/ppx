@@ -58,6 +58,35 @@ def test_metadata(mock_pride_project_response):
 
     assert meta == true_meta
 
+    title = (
+        "TMT spikes -  Using R and Bioconductor for proteomics data analysis"
+    )
+    assert proj.title == title
+
+    desc = (
+        "Expected reporter ion ratios: Erwinia peptides:    1:1:1:1:1:1 "
+        "Enolase spike (sp|P00924|ENO1_YEAST):  10:5:2.5:1:2.5:10 BSA spike "
+        "(sp|P02769|ALBU_BOVIN):  1:2.5:5:10:5:1 PhosB spike "
+        "(sp|P00489|PYGM_RABIT):  2:2:2:2:1:1 Cytochrome C spike "
+        "(sp|P62894|CYC_BOVIN): 1:1:1:1:1:2"
+    )
+    assert proj.description == desc
+    assert proj.sample_processing_protocol == "Not available"
+
+    data_prot = (
+        "Two extra files have been added post-publication:<br>"
+        '<a href="ftp://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/'
+        "PXD000001/TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-"
+        '20141210.mzML" target="_top">TMT_Erwinia_1uLSike_Top10HCD_isol2_'
+        '45stepped_60min_01-20141210.mzML</a><br><a href="ftp://ftp.pride.'
+        "ebi.ac.uk/pride/data/archive/2012/03/PXD000001/TMT_Erwinia_1uLSike_"
+        'Top10HCD_isol2_45stepped_60min_01-20141210.mzXML" target="_top">'
+        "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzXML"
+        "</a>"
+    )
+    assert proj.data_processing_protocol == data_prot
+    assert proj.doi == "10.6019/PXD000001"
+
 
 def test_remote_files(mock_pride_files_response):
     """Test that listing remote files works"""

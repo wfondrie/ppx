@@ -54,7 +54,7 @@ class MassiveProject(BaseProject):
             The validated identifier.
         """
         identifier = str(identifier).upper()
-        if not re.match("MSV[0-9]{9}", identifier):
+        if not re.match("(MSV|RMS)[0-9]{9}", identifier):
             raise ValueError("Malformed MassIVE identifier.")
 
         return identifier
@@ -136,6 +136,8 @@ class MassiveProject(BaseProject):
 
 def list_projects():
     """List all available projects on MassIVE.
+
+    MassIVE: `<https://massive.ucsd.edu>`_
 
     Returns
     -------

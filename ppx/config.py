@@ -30,9 +30,12 @@ class PPXConfig:
         if path is None:
             try:
                 path = Path(os.environ["PPX_DATA_DIR"]).expanduser().resolve()
+                if not path.exists():
+                    raise FileNotFoundError(
+                        f"The specified PPX_DATA_DIR ({path}) does not exist."
+                    )
             except KeyError:
                 path = Path(Path.home(), ".ppx")
-                path.mkdir(exist_ok=True)
         else:
             path = Path(path).expanduser().resolve()
             if not path.exists():
@@ -49,7 +52,13 @@ def get_data_dir():
 
 
 def set_data_dir(path=None):
-    """Set the data dir"""
+    """Set the ppx data directory.
+
+    Parameters
+    ----------
+    path : str or Path object, optional
+        The path for ppx to use as its data directory.
+    """
     config.path = path
 
 
