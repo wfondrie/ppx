@@ -15,6 +15,7 @@ except ImportError:
     except DistributionNotFound:
         pass
 
+from . import pride
 from . import massive
 from .factory import find_project
 from .pride import PrideProject

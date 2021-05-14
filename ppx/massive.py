@@ -137,6 +137,8 @@ class MassiveProject(BaseProject):
 def list_projects():
     """List all available projects on MassIVE.
 
+    MassIVE: `<https://massive.ucsd.edu>`_
+
     Returns
     -------
     list of str

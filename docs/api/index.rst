@@ -24,6 +24,7 @@ objects have methods to find and download files of interest.
    find_project
    get_data_dir
    set_data_dir
+   pride.list_projects
    massive.list_projects
    PrideProject
    MassiveProject

@@ -179,3 +179,22 @@ def get(url):
         raise requests.HTTPError(f"Error {res.status_code}: {res.text}")
 
     return res.json()
+
+
+def list_projects():
+    """List all available projects on PRIDE
+
+    PRIDE Archive: `<https://www.ebi.ac.uk/pride/archive/>`_
+
+    Returns
+    -------
+    list of str
+        A list of PRIDE identifiers.
+    """
+    url = "https://www.ebi.ac.uk/pride/ws/archive/v2/misc/sitemap"
+    res = requests.get(url)
+    if res.status_code != 200:
+        raise requests.HTTPError(f"Error {res.status_code}: {res.text})")
+
+    res = [p.split("/")[-1] for p in res.text.splitlines()]
+    return [p for p in res if re.match("P[RX]D[0-9]{6}", p)]
