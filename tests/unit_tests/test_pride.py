@@ -93,29 +93,31 @@ def test_remote_files(mock_pride_files_response):
     proj = ppx.PrideProject(PXID)
     files = proj.remote_files()
     true_files = [
-        "erwinia_carotovora.fasta",
-        "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw",
-        "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML",
-        "PRIDE_Exp_Complete_Ac_22134.xml.gz",
-        "PRIDE_Exp_Complete_Ac_22134.pride.mztab.gz",
-        "PRIDE_Exp_Complete_Ac_22134.pride.mgf.gz",
-        "F063721.dat-mztab.txt",
         "F063721.dat",
+        "F063721.dat-mztab.txt",
+        "PRIDE_Exp_Complete_Ac_22134.xml.gz",
+        "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML",
+        "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw",
+        "erwinia_carotovora.fasta",
+        "generated/PRIDE_Exp_Complete_Ac_22134.pride.mgf.gz",
+        "generated/PRIDE_Exp_Complete_Ac_22134.pride.mztab.gz",
     ]
+
     assert files == true_files
 
     gzipped = proj.remote_files("*.gz")
+    print(gzipped)
     true_gzipped = [
         "PRIDE_Exp_Complete_Ac_22134.xml.gz",
-        "PRIDE_Exp_Complete_Ac_22134.pride.mztab.gz",
-        "PRIDE_Exp_Complete_Ac_22134.pride.mgf.gz",
+        "generated/PRIDE_Exp_Complete_Ac_22134.pride.mgf.gz",
+        "generated/PRIDE_Exp_Complete_Ac_22134.pride.mztab.gz",
     ]
     assert gzipped == true_gzipped
 
     ms_files = proj.remote_files("*60min_01*")
     true_ms_files = [
-        "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw",
         "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML",
+        "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw",
     ]
     assert ms_files == true_ms_files
     assert proj.remote_files("blah") == []

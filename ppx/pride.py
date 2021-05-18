@@ -39,6 +39,7 @@ class PrideProject(BaseProject):
     """
 
     rest = "https://www.ebi.ac.uk/pride/ws/archive/v2/projects/"
+    file_rest = "https://www.ebi.ac.uk/pride/ws/archive/v2/files/byProject"
 
     def __init__(self, pride_id, local=None, fetch=False):
         """Instantiate a PrideDataset object"""
@@ -132,8 +133,15 @@ class PrideProject(BaseProject):
             The remote files available for this project.
         """
         if self._remote_files is None:
-            res = get(self.url + "/files")["_embedded"]["files"]
-            self._remote_files = [f["fileName"] for f in res]
+            res = get(self.file_rest, params={"accession": self.id})
+            self._remote_files = sorted(
+                [
+                    f["publicFileLocations"][0]["value"].split(
+                        self.id + "/", 1
+                    )[1]
+                    for f in res
+                ]
+            )
 
         files = self._remote_files
         if glob is not None:
@@ -172,9 +180,9 @@ class PrideProject(BaseProject):
         return super().download(files=files, force_=force_, silent=silent)
 
 
-def get(url):
+def get(url, **kwargs):
     """Perform a GET command at the specified url."""
-    res = requests.get(url)
+    res = requests.get(url, **kwargs)
     if res.status_code != 200:
         raise requests.HTTPError(f"Error {res.status_code}: {res.text}")
 
