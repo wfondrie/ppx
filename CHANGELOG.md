@@ -5,7 +5,7 @@
 - The PRIDE REST API was not yielding all of the available files on the their
   FTP server for a project. We changed the backend use the FTP server directly
   instead. **Note that this may change the number, identity, and order of the
-  file that were previously returned for PRIDE projects**
+  file that were previously returned for PRIDE projects!**
 - Small documentation updates.
   
 ### Added
