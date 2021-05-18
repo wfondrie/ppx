@@ -21,7 +21,7 @@ def test_pride_download(tmp_path):
     files = proj.local_files()
     local_txt = tmp_path / PXID / fname
     assert txt == [local_txt]
-    assert files[1] == local_txt
+    assert files[0] == local_txt
 
 
 def test_massive_download(tmp_path):
