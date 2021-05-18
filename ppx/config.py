@@ -56,7 +56,7 @@ def set_data_dir(path=None):
 
     Parameters
     ----------
-    path : str or Path object, optional
+    path : str or pathlib.Path object, optional
         The path for ppx to use as its data directory.
     """
     config.path = path

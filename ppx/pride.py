@@ -19,7 +19,7 @@ class PrideProject(BaseProject):
     ----------
     pride_id : str
         The PRIDE identifier.
-    local : str or Path-like object, optional
+    local : str or pathlib.Path object, optional
         The local data directory in which to download project files.
     fetch : bool, optional
         Should ppx check the remote repository for updated metadata?

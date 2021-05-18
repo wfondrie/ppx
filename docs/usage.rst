@@ -38,12 +38,13 @@ example, we'll use a project from PRIDE:
 
 Here, :code:`proj` is a is :py:class:`~ppx.PrideProject` object with
 methods that let us explore the available files and download files that we
-select. Let's retreive a list of all of the files associated with this project
+select. Let's retrieve a list of all of the files associated with this project
 on PRIDE:
 
     >>> remote_files = proj.remote_files()
     >>> print(remote_files)
-    ['F063721.dat', 'F063721.dat-mztab.txt', 'PXD000001_mztab.txt',  'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML', 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzXML', 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML', 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw', 'erwinia_carotovora.fasta']
+    ['F063721.dat', 'F063721.dat-mztab.txt', 'PRIDE_Exp_Complete_Ac_22134.xml.gz', 'PRIDE_Exp_mzData_Ac_22134.xml.gz', 'PXD000001_mztab.txt', 'README.txt', 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML', 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzXML', 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML', 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw', 'erwinia_carotovora.fasta', 'generated/PRIDE_Exp_Complete_Ac_22134.pride.mgf.gz', 'generated/PRIDE_Exp_Complete_Ac_22134.pride.mztab.gz']
+
 
 Alternatively, we can `glob
 <https://en.wikipedia.org/wiki/Glob_(programming)>`_ for specific files of
@@ -72,5 +73,6 @@ session, we can find our previous files easily:
     >>> print(local_files)
     [PosixPath('/Users/wfondrie/.ppx/PXD000001/F063721.dat-mztab.txt')]
 
-For more details about the available methods for a project, see our Python API documentation for the :py:class:`~ppx.PrideProject` and
+For more details about the available methods for a project, see our Python API
+documentation for the :py:class:`~ppx.PrideProject` and
 :py:class:`~ppx.MassiveProject` classes.

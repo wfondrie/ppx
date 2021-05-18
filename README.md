@@ -2,6 +2,8 @@
 
 # A Python interface to proteomics data repositories
 
+[![conda](https://img.shields.io/conda/vn/bioconda/ppx?color=green)](http://bioconda.github.io/recipes/ppx/README.html)
+[![PyPI](https://img.shields.io/pypi/v/ppx?color=green)](https://pypi.org/project/ppx/)
 [![tests](https://github.com/wfondrie/ppx/workflows/tests/badge.svg?branch=master)](https://github.com/wfondrie/ppx/actions?query=workflow%3Atests)[![Documentation Status](https://readthedocs.org/projects/ppx/badge/?version=latest)](https://ppx.readthedocs.io/en/latest/?badge=latest)  
 
 ## Overview  

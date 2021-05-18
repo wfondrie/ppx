@@ -1,3 +1,10 @@
+.. image:: https://img.shields.io/conda/vn/bioconda/ppx?color=green
+   :target: http://bioconda.github.io/recipes/ppx/README.html
+   :alt: bioconda
+
+.. image:: https://img.shields.io/pypi/v/ppx?color=green
+   :target: https://pypi.org/project/ppx/
+   :alt: PyPI
 
 .. image:: https://github.com/wfondrie/ppx/workflows/tests/badge.svg?branch=master
    :target: https://github.com/wfondrie/ppx/actions?query=workflow%3Atests
@@ -26,7 +33,13 @@ Installation
 ppx requires Python 3.6+ and depends upon the `requests
 <https://docs.python-requests.org/en/master/>`_ and `tqdm
 <https://tqdm.github.io/>`_ Python packages. ppx and any missing dependencies
-can be installed with :code:`pip`::
+can be installed with :code:`pip`: or :code:`conda`.
+
+Install with :code:`conda`:
+
+    conda install -c bioconda ppx
+
+Or install with :code:`pip`:
 
     pip install ppx
 

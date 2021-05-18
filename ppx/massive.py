@@ -17,7 +17,7 @@ class MassiveProject(BaseProject):
     ----------
     msv_id : str
         The MassIVE identifier.
-    local : str or path object, optional
+    local : str or pathlib.Path object, optional
         The local data directory in which to download project files.
     fetch : bool, optional
         Should ppx check the remote repository for updated metadata?
