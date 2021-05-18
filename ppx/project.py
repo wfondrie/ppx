@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 
 from . import utils
 from .config import config
+from .ftp import FTPParser
 
 
 class BaseProject(ABC):
@@ -25,7 +26,7 @@ class BaseProject(ABC):
         self._id = self._validate_id(identifier)
         self.local = local
         self._url = None
-        self._parser = None
+        self._parser_state = None
         self._metadata = None
         self.fetch = fetch
         self._remote_files = None
@@ -34,6 +35,14 @@ class BaseProject(ABC):
     def _remote_files(self):
         """The cached remote files"""
         return self._cached_remote_files
+
+    @property
+    def _parser(self):
+        """The FTPParser"""
+        if self._parser_state is None:
+            self._parser_state = FTPParser(self.url)
+
+        return self._parser_state
 
     @_remote_files.setter
     def _remote_files(self, files):
@@ -88,7 +97,7 @@ class BaseProject(ABC):
 
     @property
     def url(self):
-        """The web address associated with this project."""
+        """The FTP address associated with this project."""
         return self._url
 
     @abstractmethod
@@ -96,7 +105,26 @@ class BaseProject(ABC):
         """Validate that the identifier is correct."""
         return identifier
 
-    @abstractmethod
+    def remote_dirs(self, glob=None):
+        """List the project directories in the remote repository.
+
+        Parameters
+        ----------
+        glob : str, optional
+            Use Unix wildcards to return specific files. For example,
+            :code:`"*peak"` would return all directories ending in "peak".
+
+        Returns
+        -------
+        list of str
+            The remote directories available for this project.
+        """
+        dirs = self._parser.dirs
+        if glob is not None:
+            dirs = [d for d in dirs if Path(d).match(glob)]
+
+        return dirs
+
     def remote_files(self, glob=None):
         """List the project files in the remote repository.
 
@@ -104,14 +132,22 @@ class BaseProject(ABC):
         ----------
         glob : str, optional
             Use Unix wildcards to return specific files. For example,
-            "*.mzML" would return the mzML files.
+            :code:`"*.mzML"` would return all of the mzML files.
 
         Returns
         -------
         list of str
-            The files available for the project.
+            The remote files available for this project.
         """
-        return None
+        if self.fetch or self._remote_files is None:
+            self._remote_files = self._parser.files
+
+        if glob is not None:
+            files = [f for f in self._remote_files if Path(f).match(glob)]
+        else:
+            files = self._remote_files
+
+        return files
 
     def local_dirs(self, glob=None):
         """List the local directories associated with this project.
