@@ -123,6 +123,23 @@ def test_remote_files(mock_pride_files_response):
     assert proj.remote_files("blah") == []
 
 
+def test_cached_remote_files(tmp_path, mock_pride_files_response):
+    """Test that caching remote files works"""
+    cached = tmp_path / ".remote_files"
+
+    test_files = ["test1", "test2"]
+    with cached.open("w+") as ref:
+        ref.write("\n".join(test_files))
+
+    proj = ppx.PrideProject(PXID, local=tmp_path)
+    files = proj.remote_files()
+    assert files == test_files
+
+    proj.fetch = True
+    files = proj.remote_files()
+    assert files != test_files
+
+
 def test_local_files(local_files, tmp_path):
     """Test that finding local files works"""
     proj = ppx.PrideProject(PXID, local=tmp_path)

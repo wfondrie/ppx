@@ -127,11 +127,15 @@ class MassiveProject(BaseProject):
         list of str
             The remote files available for this project.
         """
-        files = self._parser.files
-        if glob is not None:
-            files = [f for f in files if Path(f).match(glob)]
+        if self.fetch or self._remote_files is None:
+            self._remote_files = self._parser.files
 
-        return self._parser.files
+        if glob is not None:
+            files = [f for f in self._remote_files if Path(f).match(glob)]
+        else:
+            files = self._remote_files
+
+        return files
 
 
 def list_projects():

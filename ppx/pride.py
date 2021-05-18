@@ -45,7 +45,6 @@ class PrideProject(BaseProject):
         """Instantiate a PrideDataset object"""
         super().__init__(pride_id, local, fetch)
         self._url = self.rest + self.id
-        self._remote_files = None
         self._parser = None
         self._metadata = None
 
@@ -132,7 +131,7 @@ class PrideProject(BaseProject):
         list of str
             The remote files available for this project.
         """
-        if self._remote_files is None:
+        if self.fetch or self._remote_files is None:
             res = get(self.file_rest, params={"accession": self.id})
             self._remote_files = sorted(
                 [

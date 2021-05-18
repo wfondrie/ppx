@@ -28,6 +28,30 @@ class BaseProject(ABC):
         self._parser = None
         self._metadata = None
         self.fetch = fetch
+        self._remote_files = None
+
+    @property
+    def _remote_files(self):
+        """The cached remote files"""
+        return self._cached_remote_files
+
+    @_remote_files.setter
+    def _remote_files(self, files):
+        """Cache the remote files if not None"""
+        cached = self.local / ".remote_files"
+        if not self.fetch and files is None:
+            if cached.exists():
+                with cached.open() as ref:
+                    self._cached_remote_files = ref.read().splitlines()
+            else:
+                self._cached_remote_files = None
+        elif files is not None:
+            files = utils.listify(files)
+            self._cached_remote_files = files
+            with cached.open("w+") as ref:
+                ref.write("\n".join(files))
+        else:
+            self._cached_remote_files = None
 
     @property
     def fetch(self):
@@ -104,7 +128,7 @@ class BaseProject(ABC):
             The local directories available for this project.
         """
         if glob is None:
-            glob = "**/*"
+            glob = "**/[!.]*"
 
         dirs = self.local.glob(glob)
         return sorted([d for d in dirs if d.is_dir()])
@@ -124,7 +148,7 @@ class BaseProject(ABC):
             The local files available for this project.
         """
         if glob is None:
-            glob = "**/*"
+            glob = "**/[!.]*"
 
         files = self.local.glob(glob)
         return sorted([f for f in files if f.is_file()])
