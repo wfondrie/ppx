@@ -25,16 +25,12 @@ class BaseProject(ABC):
         """Initialize a BaseDataset"""
         self._id = self._validate_id(identifier)
         self.local = local
+        self.fetch = fetch
         self._url = None
         self._parser_state = None
         self._metadata = None
-        self.fetch = fetch
         self._remote_files = None
-
-    @property
-    def _remote_files(self):
-        """The cached remote files"""
-        return self._cached_remote_files
+        self._remote_dirs = None
 
     @property
     def _parser(self):
@@ -44,23 +40,27 @@ class BaseProject(ABC):
 
         return self._parser_state
 
+    @property
+    def _remote_files(self):
+        """The cached remote files"""
+        return self._cached_remote_files
+
     @_remote_files.setter
     def _remote_files(self, files):
         """Cache the remote files if not None"""
-        cached = self.local / ".remote_files"
-        if not self.fetch and files is None:
-            if cached.exists():
-                with cached.open() as ref:
-                    self._cached_remote_files = ref.read().splitlines()
-            else:
-                self._cached_remote_files = None
-        elif files is not None:
-            files = utils.listify(files)
-            self._cached_remote_files = files
-            with cached.open("w+") as ref:
-                ref.write("\n".join(files))
-        else:
-            self._cached_remote_files = None
+        cache_file = self.local / ".remote_files"
+        self._cached_remote_files = cache(files, cache_file, self.fetch)
+
+    @property
+    def _remote_dirs(self):
+        """The cached remote files"""
+        return self._cached_remote_dirs
+
+    @_remote_dirs.setter
+    def _remote_dirs(self, dirs):
+        """Cache the remote files if not None"""
+        cache_file = self.local / ".remote_dirs"
+        self._cached_remote_dirs = cache(dirs, cache_file, self.fetch)
 
     @property
     def fetch(self):
@@ -119,9 +119,13 @@ class BaseProject(ABC):
         list of str
             The remote directories available for this project.
         """
-        dirs = self._parser.dirs
+        if self.fetch or self._remote_dirs is None:
+            self._remote_dirs = self._parser.dirs
+
         if glob is not None:
-            dirs = [d for d in dirs if Path(d).match(glob)]
+            dirs = [d for d in self._remote_dirs if Path(d).match(glob)]
+        else:
+            dirs = self._remote_dirs
 
         return dirs
 
@@ -226,3 +230,37 @@ class BaseProject(ABC):
         return self._parser.download(
             files, self.local, force_=force_, silent=silent
         )
+
+
+def cache(files, cache_file, fetch):
+    """Save and retrieve the file or directory lists.
+
+    Parameters
+    ----------
+    files : list of str
+        The file names to save
+    cache_file : Path
+        The file to save them to.
+    fetch : bool
+        Overide the cached file if True
+
+    Returns
+    -------
+    list of str
+        The newly cached or loaded files.
+    """
+    if not fetch and files is None:
+        if cache_file.exists():
+            with cache_file.open() as ref:
+                return ref.read().splitlines()
+        else:
+            return None
+
+    elif files is not None:
+        files = utils.listify(files)
+        with cache_file.open("w+") as ref:
+            ref.write("\n".join(files))
+
+        return files
+
+    return None
