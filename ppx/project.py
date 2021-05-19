@@ -193,7 +193,7 @@ class BaseProject(ABC):
         files = self.local.glob(glob)
         return sorted([f for f in files if f.is_file()])
 
-    def download(self, files, force_=False, silent=False):
+    def download(self, files, silent=False):
         """Download files from the remote repository.
 
         These files are downloaded to this project's local data directory
@@ -205,9 +205,6 @@ class BaseProject(ABC):
         ----------
         files : str or list of str
             One or more files to be downloaded from the remote repository.
-        force_ : bool, optional
-            Redownload files when files of the of the same name already appear
-            in the local data directory?
         silent : bool, optional
             Hide download progress bars?
 
@@ -227,9 +224,7 @@ class BaseProject(ABC):
                 f"{', '.join(missing)}"
             )
 
-        return self._parser.download(
-            files, self.local, force_=force_, silent=silent
-        )
+        return self._parser.download(files, self.local, silent=silent)
 
 
 def cache(files, cache_file, fetch):

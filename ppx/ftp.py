@@ -1,7 +1,8 @@
 """General utilities for working with the repository FTP sites."""
 import re
 import logging
-from ftplib import FTP
+import socket
+from ftplib import FTP, error_temp
 from pathlib import Path
 from functools import partial
 
@@ -34,7 +35,10 @@ UNIX_TIME = re.compile(
 
 # Classes ---------------------------------------------------------------------
 class FTPParser:
-    """Handle FTP connections
+    """Download files from the FTP server.
+
+    The parts for reconnection were adapted from:
+    https://github.com/Parquery/reconnecting-ftp
 
     Parameters
     ----------
@@ -44,94 +48,144 @@ class FTPParser:
         The maximum resursion depth when looking for files.
     """
 
-    def __init__(self, url, max_depth=4):
+    def __init__(self, url, max_depth=4, max_reconnects=10):
         """Initialize an FTPParser"""
         if not url.startswith("ftp://"):
             raise ValueError("The URL does not appear to be an FTP server")
 
         self.server, self.path = url.replace("ftp://", "").split("/", 1)
+        self.connection = None
         self.max_depth = max_depth
+        self.max_reconnects = max_reconnects
         self._files = None
         self._dirs = None
         self._depth = 0
 
+        # The directory at the time of disconnect:
+        self.last_pwd = None
+
+    def connect(self):
+        """Connect to the FTP server"""
+        if self.connection is not None and self.connection.file is None:
+            self.connection.close()
+            self.connection = None
+
+        if self.connection is None:
+            self.connection = FTP(timeout=100)
+            self.connection.connect(self.server)
+            self.connection.login()
+            self.connection.cwd(self.path)
+
+    def quit(self):
+        """Close the connection."""
+        if self.connection is not None:
+            self.connection.quit()
+            self.connection = None
+
+    def _download_file(self, remote_file, out_file, silent=False):
+        """Download a single file.
+
+        This wraps the ftplib.FTP.retrbinary to enable reconnects. It also
+        adds a progress bar.
+
+        Parameters
+        ----------
+        remote_file : str
+            The file to download.
+        out_file : pathlib.Path object
+            The local file.
+        silent : bool
+            Disable the pregress bar?
+        """
+        if self.connection is None:
+            self.connect()
+
+        size = self.connection.size(remote_file)
+        pbar = tqdm(
+            desc=str(remote_file),
+            total=size,
+            position=1,
+            unit="b",
+            unit_divisor=1024,
+            unit_scale=True,
+            leave=False,
+            disable=silent,
+        )
+        last_err = None
+        with out_file.open("wb+") as out:
+            pbar.update(out.tell())
+            write = partial(write_file, fhandle=out, pbar=pbar)
+            for _ in range(0, self.max_reconnects):
+                try:
+                    if self.connection is None:
+                        self.connect()
+
+                    self.connection.retrbinary(
+                        f"RETR {remote_file}", write, rest=out.tell()
+                    )
+                    pbar.close()
+                    return
+
+                except (
+                    ConnectionRefusedError,
+                    socket.timeout,
+                    socket.gaierror,
+                    socket.herror,
+                    error_temp,
+                    EOFError,
+                    OSError,
+                ) as err:
+                    self.connection.close()
+                    self.connection = None
+                    last_err = err
+
+        raise error_temp(
+            f"Failed after {self.max_reconnects} reconnect(s), "
+            f"the last error was: {last_err}"
+        )
+
     def _get_files(self):
-        """Recursively list files from the FTP connection.
+        """Recursively list files from the FTP connection."""
+        self.connect()
+        self._files, self._dirs = self._parse_files()
+        self._depth = 0
+        self.quit()
 
-        Parameters
-        ----------
-        max_depth : int
-            The maximum recursion depth.
-        """
-        with FTP(self.server) as repo:
-            repo.login()
-            repo.cwd(self.path)
-            self._files, self._dirs = self._parse_files(repo)
-            self._depth = 0
-
-    def _parse_files(self, conn):
-        """A recursive function to parse the files
-
-        Parameters
-        ----------
-        conn : FTP object
-            The FTP connection.
-        """
-        files, dirs = parse_response(conn)
+    def _parse_files(self):
+        """A recursive function to parse the files."""
+        files, dirs = parse_response(self.connection)
         new_files = []
         new_dirs = []
         for rpath in dirs:
             self._depth += 1
             if self._depth <= self.max_depth:
-                conn.cwd(rpath)
-                curr_files, curr_dirs = self._parse_files(conn)
+                self.connection.cwd(rpath)
+                curr_files, curr_dirs = self._parse_files()
                 new_files += ["/".join([rpath, f]) for f in curr_files]
                 new_dirs += ["/".join([rpath, d]) for d in curr_dirs]
-                conn.cwd("..")
+                self.connection.cwd("..")
 
             self._depth -= 1
 
         return files + new_files, dirs + new_dirs
 
-    def download(self, files, dest_dir, force_=False, silent=False):
+    def download(self, files, dest_dir, silent=False):
         """Download the files"""
         files = listify(files)
-        with FTP(self.server, timeout=1000) as repo:
-            repo.login()
-            repo.cwd(self.path)
+        out_files = []
+        overall_pbar = partial(
+            tqdm,
+            desc="TOTAL",
+            position=0,
+            unit="files",
+            disable=silent,
+        )
 
-            out_files = []
-            overall_pbar = partial(
-                tqdm,
-                desc="TOTAL",
-                position=0,
-                unit="files",
-                disable=silent,
-            )
-
-            for fname in overall_pbar(files):
-                out_file = Path(dest_dir, fname)
-                out_files.append(out_file)
-                if not force_ and out_file.exists():
-                    continue
-
-                out_file.parent.mkdir(parents=True, exist_ok=True)
-                size = repo.size(fname)
-                desc = f"{fname} ["
-                pbar = tqdm(
-                    desc=str(fname),
-                    total=size,
-                    position=1,
-                    unit="b",
-                    unit_divisor=1024,
-                    unit_scale=True,
-                    leave=False,
-                    disable=silent,
-                )
-                with out_file.open("wb+") as out:
-                    write = partial(write_file, fhandle=out, pbar=pbar)
-                    repo.retrbinary(f"RETR {fname}", write)
-                    pbar.close()
+        for fname in overall_pbar(files):
+            out_file = Path(dest_dir, fname)
+            out_files.append(out_file)
+            out_file.parent.mkdir(parents=True, exist_ok=True)
+            self._download_file(fname, out_file, silent=silent)
 
         return out_files
 
