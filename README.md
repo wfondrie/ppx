@@ -2,6 +2,8 @@
 
 # A Python interface to proteomics data repositories
 
+[![conda](https://img.shields.io/conda/vn/bioconda/ppx?color=green)](http://bioconda.github.io/recipes/ppx/README.html)
+[![PyPI](https://img.shields.io/pypi/v/ppx?color=green)](https://pypi.org/project/ppx/)
 [![tests](https://github.com/wfondrie/ppx/workflows/tests/badge.svg?branch=master)](https://github.com/wfondrie/ppx/actions?query=workflow%3Atests)[![Documentation Status](https://readthedocs.org/projects/ppx/badge/?version=latest)](https://ppx.readthedocs.io/en/latest/?badge=latest)  
 
 ## Overview  
@@ -18,9 +20,18 @@ For full documentation and examples, visit: https://ppx.readthedocs.io
 ppx requires Python 3.6+ and depends upon the
 [requests](https://docs.python-requests.org/en/master/) and
 [tqdm](https://tqdm.github.io/) Python packages. ppx and any missing
-dependencies are easily installed with `pip`:
+dependencies are easily installed with `pip` or with `conda` through the 
+[bioconda](https://bioconda.github.io/index.html) channel.
 
+Install with `conda`:
+
+``` shell
+conda install -c bioconda ppx
 ```
+
+Or install with `pip`:
+
+```shell
 pip3 install ppx
 ```
 
@@ -62,31 +73,35 @@ We can then view the files associated with the project in the repository
 (PRIDE in this case):
 
 ``` Python
->>> remote_files = proj.remote_files()
->>> print(remote_files)
-# ['F063721.dat', 'F063721.dat-mztab.txt', 'PXD000001_mztab.txt',
+>>> proj.remote_files()
+#['F063721.dat',
+# 'F063721.dat-mztab.txt',
+# 'PRIDE_Exp_Complete_Ac_22134.xml.gz',
+# 'PRIDE_Exp_mzData_Ac_22134.xml.gz',
+# 'PXD000001_mztab.txt',
+# 'README.txt',
 # 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML',
 # 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzXML',
 # 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML',
 # 'TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw',
-# 'erwinia_carotovora.fasta']
+# 'erwinia_carotovora.fasta',
+# 'generated/PRIDE_Exp_Complete_Ac_22134.pride.mgf.gz',
+# 'generated/PRIDE_Exp_Complete_Ac_22134.pride.mztab.gz']
 ```
 
 We can also [glob](https://en.wikipedia.org/wiki/Glob_(programming)) for
 specific types of files:
 
 ``` Python
->>> mzml_files = proj.remote_files("*.mzML")
->>> print(mzml_files)
+>>> proj.remote_files("*.mzML")
 # ['TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML']
 ```
 
 Then we can download one or more files to the projects local data directory:
 
 ``` Python
->>> downloaded = proj.download("F063721.dat-mztab.txt")
->>> print(downloaded)
-# [PosixPath('/Users/wfondrie/.ppx/PXD000001/F063721.dat-mztab.txt')]
+>>> proj.download("README.txt")
+# [PosixPath('/Users/wfondrie/.ppx/PXD000001/README.txt')]
 ```
 
 Once we've downloaded files, ppx no longer needs an internet connection to
@@ -98,13 +113,12 @@ session, we can find our previous file easily:
 >>> import ppx
 
 >>> proj = ppx.find_project("PXD000001", repo="PRIDE")
->>> local_files = proj.local_files()
->>> print(local_files)
-# [PosixPath('/Users/wfondrie/.ppx/PXD000001/F063721.dat-mztab.txt')]
+>>> proj.local_files()
+# [PosixPath('/Users/wfondrie/.ppx/PXD000001/README.txt')]
 ```
 
 ## If you are an R user...
 
-ppx was inpsired the rpx R package by Laurent Gatto. Check it out on
+ppx was inspired the rpx R package by Laurent Gatto. Check it out on
 [Bioconductor](http://bioconductor.org/packages/release/bioc/html/rpx.html) and
 [GitHub](https://github.com/lgatto/rpx).

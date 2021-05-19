@@ -17,7 +17,7 @@ class MassiveProject(BaseProject):
     ----------
     msv_id : str
         The MassIVE identifier.
-    local : str or path object, optional
+    local : str or pathlib.Path object, optional
         The local data directory in which to download project files.
     fetch : bool, optional
         Should ppx check the remote repository for updated metadata?
@@ -37,8 +37,6 @@ class MassiveProject(BaseProject):
         """Instantiate a MSVDataset object"""
         super().__init__(msv_id, local, fetch)
         self._url = f"ftp://massive.ucsd.edu/{self.id}"
-        self._parser = FTPParser(self._url)
-        self._metadata = None
 
     def _validate_id(self, identifier):
         """Validate a MassIVE identifier.
@@ -92,46 +90,6 @@ class MassiveProject(BaseProject):
     def description(self):
         """A description of this project."""
         return self.metadata["dataset.comments"]
-
-    def remote_dirs(self, glob=None):
-        """List the project directories in the remote repository.
-
-        Parameters
-        ----------
-        glob : str, optional
-            Use Unix wildcards to return specific files. For example,
-            :code:`"*peak"` would return all directories ending in "peak".
-
-        Returns
-        -------
-        list of str
-            The remote directories available for this project.
-        """
-        dirs = self._parser.dirs
-        if glob is not None:
-            dirs = [d for d in dirs if Path(d).match(glob)]
-
-        return dirs
-
-    def remote_files(self, glob=None):
-        """List the project files in the remote repository.
-
-        Parameters
-        ----------
-        glob : str, optional
-            Use Unix wildcards to return specific files. For example,
-            :code:`"*.mzML"` would return all of the mzML files.
-
-        Returns
-        -------
-        list of str
-            The remote files available for this project.
-        """
-        files = self._parser.files
-        if glob is not None:
-            files = [f for f in files if Path(f).match(glob)]
-
-        return self._parser.files
 
 
 def list_projects():

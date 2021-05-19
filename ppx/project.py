@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 
 from . import utils
 from .config import config
+from .ftp import FTPParser
 
 
 class BaseProject(ABC):
@@ -24,10 +25,42 @@ class BaseProject(ABC):
         """Initialize a BaseDataset"""
         self._id = self._validate_id(identifier)
         self.local = local
-        self._url = None
-        self._parser = None
-        self._metadata = None
         self.fetch = fetch
+        self._url = None
+        self._parser_state = None
+        self._metadata = None
+        self._remote_files = None
+        self._remote_dirs = None
+
+    @property
+    def _parser(self):
+        """The FTPParser"""
+        if self._parser_state is None:
+            self._parser_state = FTPParser(self.url)
+
+        return self._parser_state
+
+    @property
+    def _remote_files(self):
+        """The cached remote files"""
+        return self._cached_remote_files
+
+    @_remote_files.setter
+    def _remote_files(self, files):
+        """Cache the remote files if not None"""
+        cache_file = self.local / ".remote_files"
+        self._cached_remote_files = cache(files, cache_file, self.fetch)
+
+    @property
+    def _remote_dirs(self):
+        """The cached remote files"""
+        return self._cached_remote_dirs
+
+    @_remote_dirs.setter
+    def _remote_dirs(self, dirs):
+        """Cache the remote files if not None"""
+        cache_file = self.local / ".remote_dirs"
+        self._cached_remote_dirs = cache(dirs, cache_file, self.fetch)
 
     @property
     def fetch(self):
@@ -64,7 +97,7 @@ class BaseProject(ABC):
 
     @property
     def url(self):
-        """The web address associated with this project."""
+        """The FTP address associated with this project."""
         return self._url
 
     @abstractmethod
@@ -72,7 +105,30 @@ class BaseProject(ABC):
         """Validate that the identifier is correct."""
         return identifier
 
-    @abstractmethod
+    def remote_dirs(self, glob=None):
+        """List the project directories in the remote repository.
+
+        Parameters
+        ----------
+        glob : str, optional
+            Use Unix wildcards to return specific files. For example,
+            :code:`"*peak"` would return all directories ending in "peak".
+
+        Returns
+        -------
+        list of str
+            The remote directories available for this project.
+        """
+        if self.fetch or self._remote_dirs is None:
+            self._remote_dirs = self._parser.dirs
+
+        if glob is not None:
+            dirs = [d for d in self._remote_dirs if Path(d).match(glob)]
+        else:
+            dirs = self._remote_dirs
+
+        return dirs
+
     def remote_files(self, glob=None):
         """List the project files in the remote repository.
 
@@ -80,14 +136,22 @@ class BaseProject(ABC):
         ----------
         glob : str, optional
             Use Unix wildcards to return specific files. For example,
-            "*.mzML" would return the mzML files.
+            :code:`"*.mzML"` would return all of the mzML files.
 
         Returns
         -------
         list of str
-            The files available for the project.
+            The remote files available for this project.
         """
-        return None
+        if self.fetch or self._remote_files is None:
+            self._remote_files = self._parser.files
+
+        if glob is not None:
+            files = [f for f in self._remote_files if Path(f).match(glob)]
+        else:
+            files = self._remote_files
+
+        return files
 
     def local_dirs(self, glob=None):
         """List the local directories associated with this project.
@@ -104,7 +168,7 @@ class BaseProject(ABC):
             The local directories available for this project.
         """
         if glob is None:
-            glob = "**/*"
+            glob = "**/[!.]*"
 
         dirs = self.local.glob(glob)
         return sorted([d for d in dirs if d.is_dir()])
@@ -124,7 +188,7 @@ class BaseProject(ABC):
             The local files available for this project.
         """
         if glob is None:
-            glob = "**/*"
+            glob = "**/[!.]*"
 
         files = self.local.glob(glob)
         return sorted([f for f in files if f.is_file()])
@@ -166,3 +230,37 @@ class BaseProject(ABC):
         return self._parser.download(
             files, self.local, force_=force_, silent=silent
         )
+
+
+def cache(files, cache_file, fetch):
+    """Save and retrieve the file or directory lists.
+
+    Parameters
+    ----------
+    files : list of str
+        The file names to save
+    cache_file : Path
+        The file to save them to.
+    fetch : bool
+        Overide the cached file if True
+
+    Returns
+    -------
+    list of str
+        The newly cached or loaded files.
+    """
+    if not fetch and files is None:
+        if cache_file.exists():
+            with cache_file.open() as ref:
+                return ref.read().splitlines()
+        else:
+            return None
+
+    elif files is not None:
+        files = utils.listify(files)
+        with cache_file.open("w+") as ref:
+            ref.write("\n".join(files))
+
+        return files
+
+    return None

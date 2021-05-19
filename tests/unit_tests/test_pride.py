@@ -11,7 +11,7 @@ PXID = "PXD000001"
 def test_init(tmp_path):
     """Test initialization"""
     proj = ppx.PrideProject(PXID)
-    url = "https://www.ebi.ac.uk/pride/ws/archive/v2/projects/PXD000001"
+    url = "ftp://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001"
     assert proj.id == PXID
     assert proj.url == url
     assert proj.local == tmp_path / "PXD000001"
@@ -88,37 +88,88 @@ def test_metadata(mock_pride_project_response):
     assert proj.doi == "10.6019/PXD000001"
 
 
-def test_remote_files(mock_pride_files_response):
+def test_remote_files(mock_pride_project_response):
     """Test that listing remote files works"""
     proj = ppx.PrideProject(PXID)
     files = proj.remote_files()
     true_files = [
-        "erwinia_carotovora.fasta",
-        "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw",
-        "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML",
-        "PRIDE_Exp_Complete_Ac_22134.xml.gz",
-        "PRIDE_Exp_Complete_Ac_22134.pride.mztab.gz",
-        "PRIDE_Exp_Complete_Ac_22134.pride.mgf.gz",
-        "F063721.dat-mztab.txt",
         "F063721.dat",
+        "F063721.dat-mztab.txt",
+        "PRIDE_Exp_Complete_Ac_22134.xml.gz",
+        "PRIDE_Exp_mzData_Ac_22134.xml.gz",
+        "PXD000001_mztab.txt",
+        "README.txt",
+        "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML",
+        "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzXML",
+        "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML",
+        "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw",
+        "erwinia_carotovora.fasta",
+        "generated/PRIDE_Exp_Complete_Ac_22134.pride.mgf.gz",
+        "generated/PRIDE_Exp_Complete_Ac_22134.pride.mztab.gz",
     ]
+
     assert files == true_files
 
     gzipped = proj.remote_files("*.gz")
+    print(gzipped)
     true_gzipped = [
         "PRIDE_Exp_Complete_Ac_22134.xml.gz",
-        "PRIDE_Exp_Complete_Ac_22134.pride.mztab.gz",
-        "PRIDE_Exp_Complete_Ac_22134.pride.mgf.gz",
+        "PRIDE_Exp_mzData_Ac_22134.xml.gz",
+        "generated/PRIDE_Exp_Complete_Ac_22134.pride.mgf.gz",
+        "generated/PRIDE_Exp_Complete_Ac_22134.pride.mztab.gz",
     ]
     assert gzipped == true_gzipped
 
     ms_files = proj.remote_files("*60min_01*")
     true_ms_files = [
-        "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw",
+        "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML",
+        "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzXML",
         "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML",
+        "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw",
     ]
     assert ms_files == true_ms_files
     assert proj.remote_files("blah") == []
+
+
+def test_remote_files(mock_pride_project_response):
+    """Test that listing remote directories works"""
+    proj = ppx.PrideProject(PXID)
+    dirs = proj.remote_dirs()
+    assert dirs == ["generated"]
+
+
+def test_cached_remote_files(tmp_path, mock_pride_project_response):
+    """Test that caching remote files works"""
+    cached = tmp_path / ".remote_files"
+
+    test_files = ["test1", "test2"]
+    with cached.open("w+") as ref:
+        ref.write("\n".join(test_files))
+
+    proj = ppx.PrideProject(PXID, local=tmp_path)
+    files = proj.remote_files()
+    assert files == test_files
+
+    proj.fetch = True
+    files = proj.remote_files()
+    assert files != test_files
+
+
+def test_cached_remote_dirs(tmp_path, mock_pride_project_response):
+    """Test that caching remote directories works"""
+    cached = tmp_path / ".remote_dirs"
+
+    test_dirs = ["test1", "test2"]
+    with cached.open("w+") as ref:
+        ref.write("\n".join(test_dirs))
+
+    proj = ppx.PrideProject(PXID, local=tmp_path)
+    files = proj.remote_dirs()
+    assert files == test_dirs
+
+    proj.fetch = True
+    files = proj.remote_dirs()
+    assert files != test_dirs
 
 
 def test_local_files(local_files, tmp_path):
