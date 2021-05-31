@@ -35,11 +35,11 @@ ppx requires Python 3.6+ and depends upon the `requests
 <https://tqdm.github.io/>`_ Python packages. ppx and any missing dependencies
 can be installed with :code:`pip`: or :code:`conda`.
 
-Install with :code:`conda`:
+Install with :code:`conda`::
 
     conda install -c bioconda ppx
 
-Or install with :code:`pip`:
+Or install with :code:`pip`::
 
     pip install ppx
 
