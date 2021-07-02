@@ -206,8 +206,7 @@ class BaseProject(ABC):
         files : str or list of str
             One or more files to be downloaded from the remote repository.
         force_ : bool, optional
-            Redownload files when files of the of the same name already appear
-            in the local data directory?
+            Force the files to be downloaded, even if they already exist.
         silent : bool, optional
             Hide download progress bars?
 

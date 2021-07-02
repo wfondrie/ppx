@@ -125,6 +125,6 @@ def block_internet(monkeypatch):
 
     class Blocker(socket.socket):
         def __init__(self, *args, **kwargs):
-            raise Exception("Network call blocked")
+            raise OSError("Network call blocked")
 
     monkeypatch.setattr(socket, "socket", Blocker)
