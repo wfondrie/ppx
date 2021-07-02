@@ -71,7 +71,7 @@ class FTPParser:
             self.connection = None
 
         if self.connection is None:
-            self.connection = FTP(timeout=100)
+            self.connection = FTP()
             self.connection.connect(self.server)
             self.connection.login()
             self.connection.cwd(self.path)
@@ -114,25 +114,27 @@ class FTPParser:
             disable=silent,
         )
         last_err = None
-        with out_file.open("wb+") as out:
-            start_size = 0
-            if not force_:
-                start_size = out.tell()
+        mode = "wb+" if force_ else "ab+"
+        with out_file.open(mode) as out:
+            start_pos = out.tell()
+            pbar.update(start_pos)
 
-            pbar.update(start_size)
+            # Exit if all bytes are present:
+            if start_pos == size:
+                pbar.close()
+                return
+
+            # Download file if not:
             write = partial(write_file, fhandle=out, pbar=pbar)
-            for recon in range(0, self.max_reconnects):
+            for _ in range(0, self.max_reconnects):
                 try:
                     if self.connection is None:
                         self.connect()
 
-                    if not recon:
-                        curr_size = start_size
-                    else:
-                        curr_size = out.tell()
-
                     self.connection.retrbinary(
-                        f"RETR {remote_file}", write, rest=out.tell()
+                        f"RETR {remote_file}",
+                        write,
+                        rest=out.tell(),
                     )
                     pbar.close()
                     return

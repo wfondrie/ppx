@@ -20,8 +20,15 @@ def test_pride_download(tmp_path):
     txt = proj.download(fname)
     files = proj.local_files()
     local_txt = tmp_path / PXID / fname
+    orig_stat = local_txt.stat()
     assert txt == [local_txt]
     assert files[0] == local_txt
+
+    txt = proj.download(fname)  # should do nothing
+    assert orig_stat == local_txt.stat()
+
+    txt = proj.download(fname, force_=True)
+    assert orig_stat != local_txt.stat()
 
 
 def test_massive_download(tmp_path):
@@ -34,5 +41,12 @@ def test_massive_download(tmp_path):
     txt = proj.download(fname)
     files = proj.local_files()
     local_txt = tmp_path / MSVID / fname
+    orig_stat = local_txt.stat()
     assert txt == [local_txt]
     assert files[0] == local_txt
+
+    txt = proj.download(fname)  # should do nothing
+    assert orig_stat == local_txt.stat()
+
+    txt = proj.download(fname, force_=True)
+    assert orig_stat != local_txt.stat()
