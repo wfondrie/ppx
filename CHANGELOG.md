@@ -1,5 +1,12 @@
 # Changelog for ppx
 
+## [1.1.1] - 2021-07-02
+### Fixed
+- Downloading files is now more robust. ppx will now retry FTP connections up
+  to 10 times if the connection was dropped or refused.
+- Partial downloads are now continued automatically by comparing the local 
+  file size to the remote file size.
+
 ## [1.1.0] - 2021-05-18
 ### Fixed
 - The PRIDE REST API was not yielding all of the available files on the their
