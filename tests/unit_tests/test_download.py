@@ -6,12 +6,26 @@ import filecmp
 
 import pytest
 import ppx
+from ftplib import FTP, error_temp
 
 PXID = "PXD000001"
 MSVID = "MSV000087408"
 
 
-# @pytest.mark.skip(reason="Seem to have problems with PRIDE connections :/")
+def test_no_internet(monkeypatch):
+    """Test what happens when connection is blocked"""
+    proj = ppx.PrideProject(PXID)
+    remote_files = proj.remote_files()
+    fname = "F063721.dat-mztab.txt"
+
+    def retrbinary(*args, **kwargs):
+        raise OSError("Mock error")
+
+    monkeypatch.setattr(FTP, "retrbinary", retrbinary)
+    with pytest.raises(error_temp):
+        txt = proj.download(fname)
+
+
 def test_pride_download(tmp_path):
     """Test downloading data from PRIDE"""
     proj = ppx.PrideProject(PXID)
