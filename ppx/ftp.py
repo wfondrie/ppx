@@ -82,7 +82,7 @@ class FTPParser:
             self.connection.quit()
             self.connection = None
 
-    def _download_file(self, remote_file, out_file, silent=False):
+    def _download_file(self, remote_file, out_file, force_, silent):
         """Download a single file.
 
         This wraps the ftplib.FTP.retrbinary to enable reconnects. It also
@@ -95,7 +95,9 @@ class FTPParser:
         out_file : pathlib.Path object
             The local file.
         silent : bool
-            Disable the pregress bar?
+            Disable the progress bar?
+        force_ : bool
+            Force the file to be redownloaded, even if it exists.
         """
         if self.connection is None:
             self.connect()
@@ -113,12 +115,21 @@ class FTPParser:
         )
         last_err = None
         with out_file.open("wb+") as out:
-            pbar.update(out.tell())
+            start_size = 0
+            if not force_:
+                start_size = out.tell()
+
+            pbar.update(start_size)
             write = partial(write_file, fhandle=out, pbar=pbar)
-            for _ in range(0, self.max_reconnects):
+            for recon in range(0, self.max_reconnects):
                 try:
                     if self.connection is None:
                         self.connect()
+
+                    if not recon:
+                        curr_size = start_size
+                    else:
+                        curr_size = out.tell()
 
                     self.connection.retrbinary(
                         f"RETR {remote_file}", write, rest=out.tell()
@@ -169,8 +180,20 @@ class FTPParser:
 
         return files + new_files, dirs + new_dirs
 
-    def download(self, files, dest_dir, silent=False):
-        """Download the files"""
+    def download(self, files, dest_dir, force_=False, silent=False):
+        """Download the files
+
+        Parameters
+        ----------
+        remote_file : str
+            The file to download.
+        out_file : pathlib.Path object
+            The local file.
+        force_ : bool
+            Force the files to be redownloaded, even they already exist.
+        silent : bool
+            Disable the progress bar?
+        """
         files = listify(files)
         out_files = []
         overall_pbar = partial(
@@ -185,7 +208,7 @@ class FTPParser:
             out_file = Path(dest_dir, fname)
             out_files.append(out_file)
             out_file.parent.mkdir(parents=True, exist_ok=True)
-            self._download_file(fname, out_file, silent=silent)
+            self._download_file(fname, out_file, silent=silent, force_=force_)
 
         return out_files
 
