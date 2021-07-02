@@ -2,6 +2,8 @@
 
 These tests are in a separate file because they all require internet access.
 """
+import filecmp
+
 import pytest
 import ppx
 
@@ -20,15 +22,17 @@ def test_pride_download(tmp_path):
     txt = proj.download(fname)
     files = proj.local_files()
     local_txt = tmp_path / PXID / fname
-    orig_stat = local_txt.stat()
+    orig_sig = sig(local_txt)
     assert txt == [local_txt]
     assert files[0] == local_txt
 
     txt = proj.download(fname)  # should do nothing
-    assert orig_stat == local_txt.stat()
+    assert orig_sig == sig(local_txt)
 
     txt = proj.download(fname, force_=True)
-    assert orig_stat != local_txt.stat()
+    new_size, new_mtime = sig(local_txt)
+    assert orig_sig[0] == new_size
+    assert orig_sig[1] != new_mtime
 
 
 def test_massive_download(tmp_path):
@@ -41,12 +45,19 @@ def test_massive_download(tmp_path):
     txt = proj.download(fname)
     files = proj.local_files()
     local_txt = tmp_path / MSVID / fname
-    orig_stat = local_txt.stat()
+    orig_sig = sig(local_txt)
     assert txt == [local_txt]
     assert files[0] == local_txt
 
     txt = proj.download(fname)  # should do nothing
-    assert orig_stat == local_txt.stat()
+    assert orig_sig == sig(local_txt)
 
     txt = proj.download(fname, force_=True)
-    assert orig_stat != local_txt.stat()
+    new_size, new_mtime = sig(local_txt)
+    assert orig_sig[0] == new_size
+    assert orig_sig[1] != new_mtime
+
+
+def sig(f):
+    st = f.stat()
+    return st.st_size, st.st_mtime
