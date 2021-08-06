@@ -67,7 +67,7 @@ For R Users
 ppx was inspired by the rpx R package [4]_ written by Laurent Gatto. If you are
 an R user and want many of the same functionalities that ppx offers, check it
 out on `Bioconductor
-<http://bioconductor.org/packages/release/bioc/html/rpx.html>`_. and `GitHub
+<http://bioconductor.org/packages/release/bioc/html/rpx.html>` and `GitHub
 <https://github.com/lgatto/rpx>`_.
 
 
