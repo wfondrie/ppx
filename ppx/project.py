@@ -19,13 +19,16 @@ class BaseProject(ABC):
         downloaded.
     fetch : bool, optional
         Should ppx check the remote repository for updated metadata?
+    timeout : float, optional
+        The maximum amount of time to wait for a server response.
     """
 
-    def __init__(self, identifier, local=None, fetch=False):
+    def __init__(self, identifier, local=None, fetch=False, timeout=10.0):
         """Initialize a BaseDataset"""
         self._id = self._validate_id(identifier)
         self.local = local
         self.fetch = fetch
+        self.timeout = timeout
         self._url = None
         self._parser_state = None
         self._metadata = None
@@ -33,10 +36,21 @@ class BaseProject(ABC):
         self._remote_dirs = None
 
     @property
+    def timeout(self):
+        """The maximum amount of time to wait for a server response."""
+        return self._timeout
+
+    @timeout.setter
+    def timeout(self, wait):
+        """Set the timeout for requests"""
+        self._timeout = wait
+        self._parser_state = None  # Reset the connection for new timeout.
+
+    @property
     def _parser(self):
         """The FTPParser"""
         if self._parser_state is None:
-            self._parser_state = FTPParser(self.url)
+            self._parser_state = FTPParser(self.url, timeout=self._timeout)
 
         return self._parser_state
 

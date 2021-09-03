@@ -32,6 +32,12 @@ def test_init(tmp_path):
     proj = ppx.MassiveProject(MSVID, fetch=True)
     assert proj.fetch
 
+    proj = ppx.MassiveProject(MSVID, timeout=2)
+    assert proj.timeout == 2
+
+    proj.timeout = 10
+    assert proj.timeout == 10
+
 
 def test_env(monkeypatch, tmp_path):
     """Test that the environment variable is respected"""

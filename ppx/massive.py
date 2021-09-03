@@ -21,6 +21,8 @@ class MassiveProject(BaseProject):
         The local data directory in which to download project files.
     fetch : bool, optional
         Should ppx check the remote repository for updated metadata?
+    timeout : float, optional
+        The maximum amount of time to wait for a server response.
 
     Attributes
     ----------
@@ -31,11 +33,12 @@ class MassiveProject(BaseProject):
     description : str
     metadata : dict
     fetch : bool
+    timeout : float
     """
 
-    def __init__(self, msv_id, local=None, fetch=False):
+    def __init__(self, msv_id, local=None, fetch=False, timeout=10.0):
         """Instantiate a MSVDataset object"""
-        super().__init__(msv_id, local, fetch)
+        super().__init__(msv_id, local, fetch, timeout)
         self._url = f"ftp://massive.ucsd.edu/{self.id}"
 
     def _validate_id(self, identifier):

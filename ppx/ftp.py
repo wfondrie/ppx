@@ -46,9 +46,13 @@ class FTPParser:
         The url for the FTP connection.
     max_depth : int, optional
         The maximum resursion depth when looking for files.
+    max_reconnects : int, optional
+        The maximum number of reconnects to attempt during downloads.
+    timeout : float, optional
+        The maximum amount of time to wait for a response from the server.
     """
 
-    def __init__(self, url, max_depth=4, max_reconnects=10):
+    def __init__(self, url, max_depth=4, max_reconnects=10, timeout=10.0):
         """Initialize an FTPParser"""
         if not url.startswith("ftp://"):
             raise ValueError("The URL does not appear to be an FTP server")
@@ -57,6 +61,7 @@ class FTPParser:
         self.connection = None
         self.max_depth = max_depth
         self.max_reconnects = max_reconnects
+        self.timeout = timeout
         self._files = None
         self._dirs = None
         self._depth = 0
@@ -71,7 +76,7 @@ class FTPParser:
             self.connection = None
 
         if self.connection is None:
-            self.connection = FTP()
+            self.connection = FTP(timeout=self.timeout)
             self.connection.connect(self.server)
             self.connection.login()
             self.connection.cwd(self.path)

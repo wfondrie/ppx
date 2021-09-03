@@ -23,6 +23,8 @@ class PrideProject(BaseProject):
         The local data directory in which to download project files.
     fetch : bool, optional
         Should ppx check the remote repository for updated metadata?
+    timeout : float, optional
+        The maximum amount of time to wait for a server response.
 
     Attributes
     ----------
@@ -36,14 +38,15 @@ class PrideProject(BaseProject):
     sample_processing_protocol : str
     metadata : dict
     fetch : bool
+    timeout : float
     """
 
     rest = "https://www.ebi.ac.uk/pride/ws/archive/v2/projects/"
     file_rest = "https://www.ebi.ac.uk/pride/ws/archive/v2/files/byProject"
 
-    def __init__(self, pride_id, local=None, fetch=False):
+    def __init__(self, pride_id, local=None, fetch=False, timeout=10.0):
         """Instantiate a PrideDataset object"""
-        super().__init__(pride_id, local, fetch)
+        super().__init__(pride_id, local, fetch, timeout)
         self._rest_url = self.rest + self.id
 
     def _validate_id(self, identifier):

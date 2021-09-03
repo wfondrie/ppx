@@ -26,6 +26,8 @@ class PXDFactory:
         downloaded.
     fetch : bool, optional
         Should ppx check the remote repository for updated metadata?
+    timeout : float, optional
+        The maximum amount of time to wait for a server response.
     """
 
     rest = "http://proteomecentral.proteomexchange.org/cgi/GetDataset"
@@ -42,15 +44,16 @@ class PXDFactory:
         "massive.ucsd.edu": "MassIVE",
     }
 
-    def __init__(self, pxid, local=None, fetch=False):
+    def __init__(self, pxid, local=None, fetch=False, timeout=10.0):
         """Instantiate a PXDataset"""
         self._id = self._validate_id(pxid)
         self._local = local
         self._fetch = fetch
+        self._timeout = timeout
 
         # Retrieve the data:
         params = {"ID": self.id, "outputMode": "JSON", "test": "no"}
-        res = requests.get(self.rest, params=params)
+        res = requests.get(self.rest, params=params, timeout=self._timeout)
         if res.status_code != 200:
             raise requests.HTTPError(f"Error {res.status_code}: {res.text}")
 
@@ -73,12 +76,19 @@ class PXDFactory:
 
     def find(self):
         """Find the dataset at the partner repository"""
+        kwargs = dict(
+            local=self._local,
+            fetch=self._fetch,
+            timeout=self._timeout,
+        )
+
         if self._repo == "PRIDE":
-            return PrideProject(self._repo_id, self._local, self._fetch)
-        elif self._repo == "MassIVE":
-            return MassiveProject(self._repo_id, self._local, self._fetch)
-        else:
-            raise RuntimeError("Unsupported partner repository.")
+            return PrideProject(self._repo_id, **kwargs)
+
+        if self._repo == "MassIVE":
+            return MassiveProject(self._repo_id, **kwargs)
+
+        raise RuntimeError("Unsupported partner repository.")
 
     def _resolve_repo(self):
         """Resolve what repository the data is in."""
@@ -121,7 +131,7 @@ class PXDFactory:
         return identifier
 
 
-def find_project(identifier, local=None, repo=None, fetch=False):
+def find_project(identifier, local=None, repo=None, fetch=False, timeout=10.0):
     """Find a project in the PRIDE or MassIVE repositories.
 
     Parameters
@@ -136,6 +146,8 @@ def find_project(identifier, local=None, repo=None, fetch=False):
         ppx will try to figure it out.
     fetch : bool, optional
         Should ppx check the remote repository for updated metadata?
+    timeout : float, optional
+        The maximum amount of time to wait for a server response
 
     Returns
     -------
@@ -147,23 +159,24 @@ def find_project(identifier, local=None, repo=None, fetch=False):
         repo = str(repo).lower()
 
     # User-specified:
+    kwargs = dict(local=local, fetch=fetch, timeout=timeout)
     if repo == "pride":
-        return PrideProject(identifier, local=local, fetch=fetch)
+        return PrideProject(identifier, **kwargs)
 
     if repo == "massive":
-        return MassiveProject(identifier, local=local, fetch=fetch)
+        return MassiveProject(identifier, **kwargs)
 
     if repo is not None:
         raise ValueError("Unsupported repository.")
 
     # Try and figure it out:
     if identifier.startswith("MSV") or identifier.startswith("RMS"):
-        return MassiveProject(identifier, local=local, fetch=fetch)
+        return MassiveProject(identifier, **kwargs)
 
     if re.match("P[XR]D", identifier):
         try:
-            return PXDFactory(identifier, local=local, fetch=fetch).find()
+            return PXDFactory(identifier, **kwargs).find()
         except requests.HTTPError:
-            return PrideProject(identifier, local=local, fetch=fetch)
+            return PrideProject(identifier, **kwargs)
 
     raise ValueError("Malformed identifier.")

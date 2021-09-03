@@ -2,6 +2,8 @@
 import pytest
 import ppx
 
+from requests.exceptions import ConnectTimeout
+
 PXID = "PXD000001"
 MSVID = "MSV000087408"
 MSVPXD = "PXD025981"
@@ -56,3 +58,9 @@ def test_massive_project_with_pxd():
     proj = ppx.find_project(MSVPXD)
     assert isinstance(proj, ppx.MassiveProject)
     assert proj.id == MSVID
+
+
+def test_timeout():
+    """Try a value that is too small."""
+    with pytest.raises(ConnectTimeout):
+        proj = ppx.find_project(PXID, timeout=0.0000000000001)
