@@ -2,7 +2,7 @@
 import re
 import logging
 import socket
-from ftplib import FTP, error_temp
+from ftplib import FTP, error_temp, error_perm
 from pathlib import Path
 from functools import partial
 
@@ -58,6 +58,7 @@ class FTPParser:
             raise ValueError("The URL does not appear to be an FTP server")
 
         self.server, self.path = url.replace("ftp://", "").split("/", 1)
+        print(self.path)
         self.connection = None
         self.max_depth = max_depth
         self.max_reconnects = max_reconnects
@@ -79,13 +80,23 @@ class FTPParser:
             self.connection = FTP(timeout=self.timeout)
             self.connection.connect(self.server)
             self.connection.login()
-            self.connection.cwd(self.path)
+            self.cwd(self.path)
 
     def quit(self):
         """Close the connection."""
         if self.connection is not None:
             self.connection.quit()
             self.connection = None
+
+    def cwd(self, pathname):
+        """A robust wrapper ftplib.FTP.cwd()"""
+        for _ in range(self.max_reconnects):
+            try:
+                return self.connection.cwd(pathname)
+            except error_perm as err:
+                msg = err
+
+        raise msg
 
     def _download_file(self, remote_file, out_file, force_, silent):
         """Download a single file.
@@ -177,7 +188,7 @@ class FTPParser:
         for rpath in dirs:
             self._depth += 1
             if self._depth <= self.max_depth:
-                self.connection.cwd(rpath)
+                self.cwd(rpath)
                 curr_files, curr_dirs = self._parse_files()
                 new_files += ["/".join([rpath, f]) for f in curr_files]
                 new_dirs += ["/".join([rpath, d]) for d in curr_dirs]

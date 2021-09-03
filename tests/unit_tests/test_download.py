@@ -14,7 +14,7 @@ MSVID = "MSV000087408"
 
 def test_no_internet(monkeypatch):
     """Test what happens when connection is blocked"""
-    proj = ppx.PrideProject(PXID)
+    proj = ppx.PrideProject(PXID, timeout=None)
     remote_files = proj.remote_files()
     fname = "F063721.dat-mztab.txt"
 
