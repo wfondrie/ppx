@@ -1,5 +1,6 @@
 """General utilities for working with the repository FTP sites."""
 import re
+import time
 import logging
 import socket
 from ftplib import FTP, error_temp, error_perm
@@ -80,23 +81,13 @@ class FTPParser:
             self.connection = FTP(timeout=self.timeout)
             self.connection.connect(self.server)
             self.connection.login()
-            self.cwd(self.path)
+            self.connection.cwd(self.path)
 
     def quit(self):
         """Close the connection."""
         if self.connection is not None:
             self.connection.quit()
             self.connection = None
-
-    def cwd(self, pathname):
-        """A robust wrapper ftplib.FTP.cwd()"""
-        for _ in range(self.max_reconnects):
-            try:
-                return self.connection.cwd(pathname)
-            except error_perm as err:
-                msg = err
-
-        raise msg
 
     def _download_file(self, remote_file, out_file, force_, silent):
         """Download a single file.
@@ -142,7 +133,7 @@ class FTPParser:
 
             # Download file if not:
             write = partial(write_file, fhandle=out, pbar=pbar)
-            for _ in range(0, self.max_reconnects):
+            for _ in range(self.max_reconnects):
                 try:
                     if self.connection is None:
                         self.connect()
@@ -188,7 +179,7 @@ class FTPParser:
         for rpath in dirs:
             self._depth += 1
             if self._depth <= self.max_depth:
-                self.cwd(rpath)
+                self.connection.cwd(rpath)
                 curr_files, curr_dirs = self._parse_files()
                 new_files += ["/".join([rpath, f]) for f in curr_files]
                 new_dirs += ["/".join([rpath, d]) for d in curr_dirs]
