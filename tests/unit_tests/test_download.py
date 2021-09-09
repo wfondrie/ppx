@@ -6,7 +6,7 @@ import filecmp
 
 import pytest
 import ppx
-from ftplib import FTP, error_temp, error_perm
+from ftplib import FTP, error_temp
 
 PXID = "PXD000001"
 MSVID = "MSV000087408"
