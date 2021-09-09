@@ -1,9 +1,8 @@
 """General utilities for working with the repository FTP sites."""
 import re
-import time
 import logging
 import socket
-from ftplib import FTP, error_temp, error_perm
+from ftplib import FTP, error_temp
 from pathlib import Path
 from functools import partial
 
@@ -59,7 +58,6 @@ class FTPParser:
             raise ValueError("The URL does not appear to be an FTP server")
 
         self.server, self.path = url.replace("ftp://", "").split("/", 1)
-        print(self.path)
         self.connection = None
         self.max_depth = max_depth
         self.max_reconnects = max_reconnects
