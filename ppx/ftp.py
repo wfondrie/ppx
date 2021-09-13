@@ -97,6 +97,7 @@ class FTPParser:
 
             except (
                 ConnectionRefusedError,
+                ConnectionResetError,
                 socket.timeout,
                 socket.gaierror,
                 socket.herror,
