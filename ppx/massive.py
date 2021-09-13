@@ -1,11 +1,15 @@
 """MassIVE datasets."""
 import re
 import socket
+import logging
 import xml.etree.ElementTree as ET
-from pathlib import Path
+
+import requests
 
 from .ftp import FTPParser
 from .project import BaseProject
+
+LOGGER = logging.getLogger(__name__)
 
 
 class MassiveProject(BaseProject):
@@ -36,10 +40,18 @@ class MassiveProject(BaseProject):
     timeout : float
     """
 
+    _api = "https://gnps-datasetcache.ucsd.edu/datasette/database/filename.csv"
+
     def __init__(self, msv_id, local=None, fetch=False, timeout=10.0):
         """Instantiate a MSVDataset object"""
         super().__init__(msv_id, local, fetch, timeout)
         self._url = f"ftp://massive.ucsd.edu/{self.id}"
+        self._params = dict(
+            _stream="on",
+            _sort="filepath",
+            dataset__exact=self.id,
+            _size="max",
+        )
 
     def _validate_id(self, identifier):
         """Validate a MassIVE identifier.
@@ -94,16 +106,98 @@ class MassiveProject(BaseProject):
         """A description of this project."""
         return self.metadata["dataset.comments"]
 
+    def remote_files(self, glob=None):
+        """List the project files in the remote repository.
 
-def list_projects():
+        Parameters
+        ----------
+        glob : str, optional
+            Use Unix wildcards to return specific files. For example,
+            :code:`"*.mzML"` would return all of the mzML files.
+
+        Returns
+        -------
+        list of str
+            The remote files available for this project.
+        """
+        if self.fetch or self._remote_files is None:
+            try:
+                self._remote_files = _get_files(
+                    self._api,
+                    self._params,
+                    self.timeout,
+                )
+            except (
+                ConnectionRefusedError,
+                ConnectionResetError,
+                socket.timeout,
+                socket.gaierror,
+                socket.herror,
+                EOFError,
+                OSError,
+            ):
+                LOGGER.debug("Scraping the FTP server for files...")
+
+        return super().remote_files(glob=glob)
+
+
+def list_projects(timeout=10.0):
     """List all available projects on MassIVE.
 
     MassIVE: `<https://massive.ucsd.edu>`_
+
+    Parameters
+    ----------
+    timeout : float, optional
+        The maximum amount of time to wait for a response from the server.
 
     Returns
     -------
     list of str
         A list of MassIVE identifiers.
     """
-    parser = FTPParser("ftp://massive.ucsd.edu/", max_depth=0)
+    url = "https://gnps-datasetcache.ucsd.edu/datasette/database.csv"
+    params = dict(sql="select distinct dataset from filename", _size="max")
+    try:
+        res = requests.get(url, params, timeout=timeout).text.splitlines()[1:]
+        res.sort()
+        return res
+
+    except (
+        ConnectionRefusedError,
+        ConnectionResetError,
+        socket.timeout,
+        socket.gaierror,
+        socket.herror,
+        EOFError,
+        OSError,
+    ):
+        LOGGER.debug("Scraping the FTP server for projects...")
+
+    parser = FTPParser("ftp://massive.ucsd.edu/", max_depth=0, timeout=timeout)
     return parser.dirs
+
+
+def _get_files(url, params, timeout):
+    """Retrieve the files from the API URL.
+
+    Parameters
+    ----------
+    url : str
+        The API URL.
+    params : dict
+        The parameters to use.
+    timeout : float
+        The timeout for the request.
+
+    Returns
+    -------
+    list of str
+        The available files.
+    """
+    res = requests.get(url, params=params, timeout=timeout)
+    if res.status_code != 200:
+        raise requests.HTTPError(f"Error {res.status_code}: {res.text}")
+
+    res = res.text.splitlines()[1:]
+    return [r.split(",")[0].split("/", 1)[1] for r in res]

@@ -242,6 +242,7 @@ class FTPParser:
         """List the files form the FTP connection"""
         if self._files is None:
             self._get_files()
+            self._files.sort()
 
         return self._files
 
@@ -250,6 +251,7 @@ class FTPParser:
         """List the directories form the FTP connection"""
         if self._dirs is None:
             self._get_files()
+            self._dirs.sort()
 
         return self._dirs
 
