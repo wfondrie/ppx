@@ -2,9 +2,9 @@
 import re
 import logging
 import socket
-from ftplib import FTP, error_temp
 from pathlib import Path
 from functools import partial
+from ftplib import FTP, error_temp, error_perm
 
 from tqdm import tqdm
 
@@ -66,10 +66,7 @@ class FTPParser:
         self._dirs = None
         self._depth = 0
 
-        # The directory at the time of disconnect:
-        self.last_pwd = None
-
-    def connect(self):
+    def _connect(self):
         """Connect to the FTP server"""
         if self.connection is not None and self.connection.file is None:
             self.connection.close()
@@ -81,11 +78,40 @@ class FTPParser:
             self.connection.login()
             self.connection.cwd(self.path)
 
+    def connect(self):
+        """Connect to the FTP server, with reconnects on failure."""
+        self._with_reconnects(self._connect)
+
     def quit(self):
         """Close the connection."""
         if self.connection is not None:
             self.connection.quit()
             self.connection = None
+
+    def _with_reconnects(self, func, *args, **kwargs):
+        """Try and execute a function, reconnecting on failure."""
+        for _ in range(self.max_reconnects):
+            try:
+                self._connect()
+                return func(*args, **kwargs)
+
+            except (
+                ConnectionRefusedError,
+                socket.timeout,
+                socket.gaierror,
+                socket.herror,
+                error_temp,
+                error_perm,
+                EOFError,
+                OSError,
+            ) as err:
+                self.quit()
+                last_err = err
+
+        raise error_temp(
+            f"Failed after {self.max_reconnects} reconnect(s), "
+            f"the last error was: {last_err}"
+        )
 
     def _download_file(self, remote_file, out_file, force_, silent):
         """Download a single file.
@@ -104,9 +130,7 @@ class FTPParser:
         force_ : bool
             Force the file to be redownloaded, even if it exists.
         """
-        if self.connection is None:
-            self.connect()
-
+        self.connect()
         size = self.connection.size(remote_file)
         pbar = tqdm(
             desc=str(remote_file),
@@ -118,7 +142,7 @@ class FTPParser:
             leave=False,
             disable=silent,
         )
-        last_err = None
+
         mode = "wb+" if force_ else "ab+"
         with out_file.open(mode) as out:
             start_pos = out.tell()
@@ -130,42 +154,35 @@ class FTPParser:
                 return
 
             # Download file if not:
-            write = partial(write_file, fhandle=out, pbar=pbar)
-            for _ in range(self.max_reconnects):
-                try:
-                    if self.connection is None:
-                        self.connect()
+            self._with_reconnects(
+                self._transfer_file,
+                fname=remote_file,
+                fhandle=out,
+                pbar=pbar,
+            )
 
-                    self.connection.retrbinary(
-                        f"RETR {remote_file}",
-                        write,
-                        rest=out.tell(),
-                    )
-                    pbar.close()
-                    return
+        self.quit()
 
-                except (
-                    ConnectionRefusedError,
-                    socket.timeout,
-                    socket.gaierror,
-                    socket.herror,
-                    error_temp,
-                    EOFError,
-                    OSError,
-                ) as err:
-                    self.connection.close()
-                    self.connection = None
-                    last_err = err
+    def _transfer_file(self, fname, fhandle, pbar):
+        """Perform the actual file transfer.
 
-        raise error_temp(
-            f"Failed after {self.max_reconnects} reconnect(s), "
-            f"the last error was: {last_err}"
-        )
+        Parameters
+        ----------
+        fname : str
+            The remote file name.
+        fhandle : file object
+            The opened file object where the data will be written.
+        pbar : tqdm.tqdm
+            The tqdm progress bar to update.
+        """
+        write = partial(write_file, fhandle=fhandle, pbar=pbar)
+        self.connection.retrbinary(f"RETR {fname}", write, rest=fhandle.tell())
+        pbar.close()
 
     def _get_files(self):
         """Recursively list files from the FTP connection."""
         self.connect()
-        self._files, self._dirs = self._parse_files()
+        self._files, self._dirs = self._with_reconnects(self._parse_files)
         self._depth = 0
         self.quit()
 
