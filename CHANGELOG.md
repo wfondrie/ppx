@@ -1,5 +1,21 @@
 # Changelog for ppx
 
+## [1.2.0] - 2021-09-14
+### Added
+- New `timeout` parameter for most functions and classes. This specifies the 
+  maximum amount of time to wait for a response from the server.
+
+### Changed
+- The backend for MassIVE now uses the GNPS API to list files and projects,
+  only falling back to scraping the FTP server on failure. This should make 
+  it much faster. Thanks @mwang87!
+- Files and projects are now returned in sorted order.
+
+### Fixed
+- Poor connections with PRIDE were leading to a number of occasional errors. 
+  Multiple reconnect attempts are now tried for a wider variety of FTP 
+  operations.
+
 ## [1.1.1] - 2021-07-02
 ### Fixed
 - Downloading files is now more robust. ppx will now retry FTP connections up

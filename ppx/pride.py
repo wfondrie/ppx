@@ -136,10 +136,15 @@ def get(url, **kwargs):
     return res.json()
 
 
-def list_projects():
+def list_projects(timeout=10.0):
     """List all available projects on PRIDE
 
     PRIDE Archive: `<https://www.ebi.ac.uk/pride/archive/>`_
+
+    Parameters
+    ----------
+    timeout : float, optional
+        The maximum amount of time to wait for a response from the server.
 
     Returns
     -------
@@ -147,9 +152,11 @@ def list_projects():
         A list of PRIDE identifiers.
     """
     url = "https://www.ebi.ac.uk/pride/ws/archive/v2/misc/sitemap"
-    res = requests.get(url)
+    res = requests.get(url, timeout=timeout)
     if res.status_code != 200:
         raise requests.HTTPError(f"Error {res.status_code}: {res.text})")
 
     res = [p.split("/")[-1] for p in res.text.splitlines()]
-    return [p for p in res if re.match("P[RX]D[0-9]{6}", p)]
+    projects = [p for p in res if re.match("P[RX]D[0-9]{6}", p)]
+    projects.sort()
+    return projects

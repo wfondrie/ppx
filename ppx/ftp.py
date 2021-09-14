@@ -85,7 +85,7 @@ class FTPParser:
     def quit(self):
         """Close the connection."""
         if self.connection is not None:
-            self.connection.quit()
+            self.connection.close()
             self.connection = None
 
     def _with_reconnects(self, func, *args, **kwargs):
@@ -242,6 +242,7 @@ class FTPParser:
         """List the files form the FTP connection"""
         if self._files is None:
             self._get_files()
+            self._files.sort()
 
         return self._files
 
@@ -250,6 +251,7 @@ class FTPParser:
         """List the directories form the FTP connection"""
         if self._dirs is None:
             self._get_files()
+            self._dirs.sort()
 
         return self._dirs
 

@@ -52,6 +52,19 @@ def test_pride_download(tmp_path):
     assert proj._parser_state is None
 
 
+def test_massive_api(tmp_path):
+    """Test that the MassIVE API call is working"""
+    proj = ppx.MassiveProject(MSVID, fetch=True)
+    proj._url = None
+    remote_files = proj.remote_files()
+    assert len(remote_files) == 12
+
+    proj = ppx.MassiveProject(MSVID, fetch=True)
+    proj._api = "blah"
+    remote_files = proj.remote_files()
+    assert len(remote_files) == 12
+
+
 def test_massive_download(tmp_path):
     """Test downloading data from massive"""
     proj = ppx.MassiveProject(MSVID)
