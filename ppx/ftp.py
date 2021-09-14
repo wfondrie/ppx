@@ -85,7 +85,7 @@ class FTPParser:
     def quit(self):
         """Close the connection."""
         if self.connection is not None:
-            self.connection.quit()
+            self.connection.close()
             self.connection = None
 
     def _with_reconnects(self, func, *args, **kwargs):
@@ -106,8 +106,7 @@ class FTPParser:
                 EOFError,
                 OSError,
             ) as err:
-                self.connection.close()
-                self.connection = None
+                self.quit()
                 last_err = err
 
         raise error_temp(

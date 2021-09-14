@@ -137,8 +137,14 @@ class MassiveProject(BaseProject):
                 OSError,
             ):
                 LOGGER.debug("Scraping the FTP server for files...")
+                self._remote_files = self._parser.files
 
-        return super().remote_files(glob=glob)
+        if glob is not None:
+            files = [f for f in self._remote_files if Path(f).match(glob)]
+        else:
+            files = self._remote_files
+
+        return files
 
 
 def list_projects(timeout=10.0):
