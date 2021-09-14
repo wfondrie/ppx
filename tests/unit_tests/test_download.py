@@ -14,7 +14,7 @@ MSVID = "MSV000087408"
 
 def test_no_internet(monkeypatch):
     """Test what happens when connection is blocked"""
-    proj = ppx.PrideProject(PXID)
+    proj = ppx.PrideProject(PXID, timeout=None)
     remote_files = proj.remote_files()
     fname = "F063721.dat-mztab.txt"
 
@@ -48,6 +48,9 @@ def test_pride_download(tmp_path):
     assert orig_sig[0] == new_size
     assert orig_sig[1] != new_mtime
 
+    proj.timeout = 10
+    assert proj._parser_state is None
+
 
 def test_massive_download(tmp_path):
     """Test downloading data from massive"""
@@ -70,6 +73,9 @@ def test_massive_download(tmp_path):
     new_size, new_mtime = sig(local_txt)
     assert orig_sig[0] == new_size
     assert orig_sig[1] != new_mtime
+
+    proj.timeout = 10
+    assert proj._parser_state is None
 
 
 def sig(f):

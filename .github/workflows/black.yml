@@ -17,8 +17,8 @@ jobs:
 
       - name: Check for debugging print statements
         run: |
-          if grep -rq "print(" mokapot; then
+          if grep -rq "print(" ppx; then
               echo "Found the following print statements:"
-              grep -r "print(" mokapot
+              grep -r "print(" ppx
               exit 1
           fi

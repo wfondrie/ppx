@@ -32,6 +32,12 @@ def test_init(tmp_path):
     proj = ppx.PrideProject(PXID, fetch=True)
     assert proj.fetch
 
+    proj = ppx.PrideProject(PXID, timeout=5)
+    assert proj.timeout == 5
+
+    proj.timeout = 10
+    assert proj.timeout == 10
+
 
 def test_env(monkeypatch, tmp_path):
     """Test that the environment variable works"""
