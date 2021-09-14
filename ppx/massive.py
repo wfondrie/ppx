@@ -3,7 +3,7 @@ import re
 import socket
 import logging
 import xml.etree.ElementTree as ET
-from path import Path
+from pathlib import Path
 
 import requests
 
