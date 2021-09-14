@@ -106,7 +106,8 @@ class FTPParser:
                 EOFError,
                 OSError,
             ) as err:
-                self.quit()
+                self.connection.close()
+                self.connection = None
                 last_err = err
 
         raise error_temp(
