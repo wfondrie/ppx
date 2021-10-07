@@ -123,11 +123,10 @@ class MassiveProject(BaseProject):
         """
         if self.fetch or self._remote_files is None:
             try:
-                self._remote_files = _get_files(
-                    self._api,
-                    self._params,
-                    self.timeout,
-                )
+                info = self.file_info().splitlines()[1:]
+                self._remote_files = [
+                    r.split(",")[0].split("/", 1)[1] for r in info
+                ]
             except (
                 ConnectionRefusedError,
                 ConnectionResetError,
@@ -146,6 +145,32 @@ class MassiveProject(BaseProject):
             files = self._remote_files
 
         return files
+
+    def file_info(self):
+        """Retrieve information about the project files.
+
+        Returns
+        -------
+        str
+            Information about the files in a CSV format.
+        """
+        file_info_path = self.local / ".file_info.csv"
+        if file_info_path.exists() and not self.fetch:
+            with file_info_path.open("r") as ref:
+                return ref.read()
+
+        res = requests.get(
+            self._api,
+            params=self._params,
+            timeout=self.timeout,
+        )
+        if res.status_code != 200:
+            raise requests.HTTPError(f"Error {res.status_code}: {res.text}")
+
+        with file_info_path.open("w+") as ref:
+            ref.write(res.text)
+
+        return res.text
 
 
 def list_projects(timeout=10.0):
