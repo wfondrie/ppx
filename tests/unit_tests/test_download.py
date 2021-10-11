@@ -59,9 +59,12 @@ def test_massive_api(tmp_path):
     remote_files = proj.remote_files()
     assert len(remote_files) == 12
 
+    remote_files = proj.remote_files("*.mzTab")
+    assert len(remote_files) == 1
+
     proj.fetch = False
-    info = proj.file_info().splitlines()
-    assert len(info) == 13
+    info = proj.file_info().split("\n")
+    assert len(info) == 14
 
     proj = ppx.MassiveProject(MSVID, fetch=True)
     proj._api = "blah"
