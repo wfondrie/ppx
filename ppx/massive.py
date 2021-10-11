@@ -164,6 +164,7 @@ class MassiveProject(BaseProject):
             params=self._params,
             timeout=self.timeout,
         )
+
         if res.status_code != 200:
             raise requests.HTTPError(f"Error {res.status_code}: {res.text}")
 
