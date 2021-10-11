@@ -1,5 +1,10 @@
 # Changelog for ppx
 
+## [1.2.1] - 2021-10-11
+### Added
+- New `file_info()` method for MassIVE projects uses the GNPS API to get
+  information about the files in a project.
+
 ## [1.2.0] - 2021-09-14
 ### Added
 - New `timeout` parameter for most functions and classes. This specifies the 
