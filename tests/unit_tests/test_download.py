@@ -3,10 +3,11 @@
 These tests are in a separate file because they all require internet access.
 """
 import filecmp
+from ftplib import FTP, error_temp
 
 import pytest
 import ppx
-from ftplib import FTP, error_temp
+import requests
 
 PXID = "PXD000001"
 MSVID = "MSV000087408"
@@ -59,10 +60,21 @@ def test_massive_api(tmp_path):
     remote_files = proj.remote_files()
     assert len(remote_files) == 12
 
+    remote_files = proj.remote_files("*.mzTab")
+    assert len(remote_files) == 1
+
+    proj.fetch = False
+    info = [l for l in proj.file_info().splitlines() if l]
+    print(info)
+    assert len(info) == 13
+
     proj = ppx.MassiveProject(MSVID, fetch=True)
     proj._api = "blah"
     remote_files = proj.remote_files()
     assert len(remote_files) == 12
+
+    proj._api = "https://api.github.com/user"  # A dummy URL...
+    proj.remote_files()
 
 
 def test_massive_download(tmp_path):
