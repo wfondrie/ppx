@@ -208,28 +208,3 @@ def list_projects(timeout=10.0):
 
     parser = FTPParser("ftp://massive.ucsd.edu/", max_depth=0, timeout=timeout)
     return parser.dirs
-
-
-def _get_files(url, params, timeout):
-    """Retrieve the files from the API URL.
-
-    Parameters
-    ----------
-    url : str
-        The API URL.
-    params : dict
-        The parameters to use.
-    timeout : float
-        The timeout for the request.
-
-    Returns
-    -------
-    list of str
-        The available files.
-    """
-    res = requests.get(url, params=params, timeout=timeout)
-    if res.status_code != 200:
-        raise requests.HTTPError(f"Error {res.status_code}: {res.text}")
-
-    res = res.text.splitlines()[1:]
-    return [r.split(",")[0].split("/", 1)[1] for r in res]
