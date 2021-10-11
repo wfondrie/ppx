@@ -75,7 +75,6 @@ def test_massive_api(tmp_path):
 
     proj._api = "https://api.github.com/user"  # A dummy URL...
     proj.remote_files()
-    raise
 
 
 def test_massive_download(tmp_path):
