@@ -1,4 +1,8 @@
 # Changelog for ppx
+## [1.2.2] - 2021-10-12
+### Changed
+- Lowered the Requests version requirement to 2.23.0. This resolves a problem
+  installing ppx in Google Colab environments.
 
 ## [1.2.1] - 2021-10-11
 ### Added
