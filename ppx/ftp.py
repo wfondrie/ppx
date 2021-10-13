@@ -6,7 +6,7 @@ from pathlib import Path
 from functools import partial
 from ftplib import FTP, error_temp, error_perm
 
-from tqdm import tqdm
+from tqdm.auto import tqdm
 
 from .utils import listify
 
