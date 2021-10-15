@@ -1,4 +1,11 @@
 # Changelog for ppx
+
+## [Unreleased]
+### Changed
+- ppx progress bars now work much better in Jupyter environments. Under the
+  hood we switched from `from tqdm import tqdm` to `from tqdm.auto import
+  tqdm`.
+
 ## [1.2.2] - 2021-10-12
 ### Changed
 - Lowered the Requests version requirement to 2.23.0. This resolves a problem
