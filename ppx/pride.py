@@ -74,6 +74,13 @@ class PrideProject(BaseProject):
         if self._url is None:
             self._url = self.metadata["_links"]["datasetFtpUrl"]["href"]
 
+            # Hotfix for the latest PRIDE FTP change. See issue #18.
+            # Hopefully we can delete this once the REST API is updated.
+            self._url = self._url.replace(
+                "pride/data/archive",
+                "pride-archive",
+            )
+
         return self._url
 
     @property
