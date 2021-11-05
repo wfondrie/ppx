@@ -11,7 +11,7 @@ PXID = "PXD000001"
 def test_init(tmp_path):
     """Test initialization"""
     proj = ppx.PrideProject(PXID)
-    url = "ftp://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001"
+    url = "ftp://ftp.pride.ebi.ac.uk/pride-archive/2012/03/PXD000001"
     assert proj.id == PXID
     assert proj.url == url
     assert proj.local == tmp_path / "PXD000001"

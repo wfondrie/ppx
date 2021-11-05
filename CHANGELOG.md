@@ -1,6 +1,9 @@
 # Changelog for ppx
 
-## [Unreleased]
+## [1.2.3] - 2021-11-05
+### Fixed
+- Hotfix for PRIDE's recent FTP URL change (see #18 for details).
+
 ### Changed
 - ppx progress bars now work much better in Jupyter environments. Under the
   hood we switched from `from tqdm import tqdm` to `from tqdm.auto import
