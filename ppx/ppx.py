@@ -12,11 +12,9 @@ LOGGER = logging.getLogger(__name__)
 
 def get_parser():
     """Parse the command line arguments"""
-    desc = f"""
-        ppx version {__version__}. Use this command line utility to download
-        files from the PRIDE and MassIVE proteomics repositories. The paths
-        to the downloaded files are written to stdout.
-    """
+    desc = f"""Use this command line utility to download files from the PRIDE and MassIVE
+    proteomics repositories. The paths to the downloaded files are written to
+    stdout."""
 
     epilog = "More documentation and examples at: https://ppx.readthedocs.io"
     parser = ArgumentParser(description=desc, epilog=epilog)
@@ -56,6 +54,13 @@ def get_parser():
     )
 
     parser.add_argument(
+        "-t",
+        "--timeout",
+        type=float,
+        help="The maximum amount of time to wait for a server response.",
+    )
+
+    parser.add_argument(
         "-f",
         "--force",
         default=False,
@@ -64,6 +69,13 @@ def get_parser():
             "Should ppx download files that are already present in the local "
             "data directory?"
         ),
+    )
+
+    parser.add_argument(
+        "--version",
+        action="version",
+        help="Get the version of ppx.",
+        version="%(prog)s " + __version__,
     )
 
     return parser
@@ -77,7 +89,7 @@ def main():
 
     parser = get_parser()
     args = parser.parse_args()
-    proj = find_project(args.identifier, args.local)
+    proj = find_project(args.identifier, args.local, timeout=args.timeout)
     remote_files = proj.remote_files()
 
     if len(args.files) > 0:
