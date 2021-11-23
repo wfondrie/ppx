@@ -1,5 +1,12 @@
 # Changelog for ppx
 
+## [1.2.4] - 2021-11-23
+### Added
+- New `--timeout` parameter for the command line interface, enabling custom
+  timeout durations introduced in v1.2.0
+- New `--version` parameter for the command line interface to get the version
+  number.
+
 ## [1.2.3] - 2021-11-05
 ### Fixed
 - Hotfix for PRIDE's recent FTP URL change (see #18 for details).
