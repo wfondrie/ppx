@@ -73,6 +73,10 @@ def test_massive_api(tmp_path):
     remote_files = proj.remote_files()
     assert len(remote_files) == 12
 
+    # Keep this to test for HTTPErrors
+    proj._api = "https://api.github.com/user"  # A dummy URL...
+    proj.remote_files()
+
     proj = ppx.MassiveProject(RMSVID, fetch=True)
     remote_files = proj.remote_files("2019-06-03_mnchoi_64a990d7/**/*")
     assert len(remote_files) == 10
