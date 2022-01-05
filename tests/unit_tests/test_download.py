@@ -11,6 +11,7 @@ import requests
 
 PXID = "PXD000001"
 MSVID = "MSV000087408"
+RMSVID = "RMSV000000253"
 
 
 def test_no_internet(monkeypatch):
@@ -65,7 +66,6 @@ def test_massive_api(tmp_path):
 
     proj.fetch = False
     info = [l for l in proj.file_info().splitlines() if l]
-    print(info)
     assert len(info) == 13
 
     proj = ppx.MassiveProject(MSVID, fetch=True)
@@ -73,8 +73,13 @@ def test_massive_api(tmp_path):
     remote_files = proj.remote_files()
     assert len(remote_files) == 12
 
+    # Keep this to test for HTTPErrors
     proj._api = "https://api.github.com/user"  # A dummy URL...
     proj.remote_files()
+
+    proj = ppx.MassiveProject(RMSVID, fetch=True)
+    remote_files = proj.remote_files("2019-06-03_mnchoi_64a990d7/**/*")
+    assert len(remote_files) == 10
 
 
 def test_massive_download(tmp_path):

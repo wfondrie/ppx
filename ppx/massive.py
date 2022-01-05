@@ -68,7 +68,7 @@ class MassiveProject(BaseProject):
             The validated identifier.
         """
         identifier = str(identifier).upper()
-        if not re.match("(MSV|RMS)[0-9]{9}", identifier):
+        if not re.match("(MSV|RMSV)[0-9]{9}", identifier):
             raise ValueError("Malformed MassIVE identifier.")
 
         return identifier
@@ -127,6 +127,7 @@ class MassiveProject(BaseProject):
                 self._remote_files = [
                     r.split(",")[0].split("/", 1)[1] for r in info
                 ]
+                assert self._remote_files
             except (
                 ConnectionRefusedError,
                 ConnectionResetError,
@@ -135,6 +136,7 @@ class MassiveProject(BaseProject):
                 socket.herror,
                 EOFError,
                 OSError,
+                AssertionError,
             ):
                 LOGGER.debug("Scraping the FTP server for files...")
                 self._remote_files = self._parser.files
