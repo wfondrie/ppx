@@ -1,5 +1,9 @@
 # Changelog for ppx
 
+## [1.2.5] - 2021-11-05
+### Added
+- Support for MassIVE reanalyses (accessions that start with `RMSV`)
+
 ## [1.2.4] - 2021-11-23
 ### Added
 - New `--timeout` parameter for the command line interface, enabling custom
