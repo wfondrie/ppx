@@ -58,6 +58,7 @@ def test_metadata(mock_pride_project_response):
 
     meta = proj.metadata
     assert (proj.local / ".pride-metadata").exists()
+    meta = proj.metadata
 
     with Path("tests/data/pride_project_response.json").open() as ref:
         true_meta = json.load(ref)

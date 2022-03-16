@@ -32,6 +32,6 @@ def test_url(url):
 
     res = requests.head(http_url)
     if res.status_code != 200:
-        raise ConnectionError(f"Unable to connect to URL: {url}")
+        raise requests.HTTPError(f"Unable to connect to URL: {url}")
 
     return url

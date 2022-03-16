@@ -81,7 +81,7 @@ class PrideProject(BaseProject):
                 url = url.replace(*fix)
                 try:
                     self._url = utils.test_url(url)
-                except ConnectionError as err:
+                except requests.HTTPError as err:
                     last_error = err
                     continue
 
