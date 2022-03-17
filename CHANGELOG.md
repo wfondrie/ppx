@@ -1,5 +1,10 @@
 # Changelog for ppx
 
+## [1.2.6] - 2022-03-16
+### Fixed
+- Some PRIDE projects were still not working due to their recent URL change.
+  This patch makes the our hotfix from v1.2.3 more robust.
+
 ## [1.2.5] - 2021-11-05
 ### Added
 - Support for MassIVE reanalyses (accessions that start with `RMSV`)
