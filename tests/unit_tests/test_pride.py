@@ -14,6 +14,7 @@ def test_init(tmp_path):
     url = "ftp://ftp.pride.ebi.ac.uk/pride-archive/2012/03/PXD000001"
     assert proj.id == PXID
     assert proj.url == url
+    assert proj.url == url  # Do again to get from cache
     assert proj.local == tmp_path / "PXD000001"
     assert not proj.fetch
 
@@ -58,6 +59,10 @@ def test_metadata(mock_pride_project_response):
 
     meta = proj.metadata
     assert (proj.local / ".pride-metadata").exists()
+
+    # Test retrieving it from cache:
+    proj._metadata = None
+    meta = proj.metadata
 
     with Path("tests/data/pride_project_response.json").open() as ref:
         true_meta = json.load(ref)

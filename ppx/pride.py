@@ -5,6 +5,7 @@ from pathlib import Path
 
 import requests
 
+from . import utils
 from .ftp import FTPParser
 from .config import config
 from .project import BaseProject
@@ -72,14 +73,21 @@ class PrideProject(BaseProject):
     def url(self):
         """The FTP address associated with this project."""
         if self._url is None:
-            self._url = self.metadata["_links"]["datasetFtpUrl"]["href"]
+            url = self.metadata["_links"]["datasetFtpUrl"]["href"]
 
-            # Hotfix for the latest PRIDE FTP change. See issue #18.
-            # Hopefully we can delete this once the REST API is updated.
-            self._url = self._url.replace(
-                "pride/data/archive",
-                "pride-archive",
-            )
+            # Fix PRIDE URLs (Issue #18)
+            fixes = [("", ""), ("/data/", "-"), ("pride.", "")]
+            for fix in fixes:
+                url = url.replace(*fix)
+                try:
+                    self._url = utils.test_url(url)
+                except requests.HTTPError as err:
+                    last_error = err
+                    continue
+
+                return self._url
+
+            raise last_error
 
         return self._url
 
