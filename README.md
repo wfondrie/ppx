@@ -117,6 +117,23 @@ session, we can find our previous file easily:
 # [PosixPath('/Users/wfondrie/.ppx/PXD000001/README.txt')]
 ```
 
+### Downloading to cloud storage backend
+
+Requires [cloudpathlib](https://cloudpathlib.drivendata.org/stable/):
+
+```
+pip install cloudpathlib[s3,gs]
+```
+
+You should create the storage bucket beforehand, to avoid bucket name conflict issues.
+If you're using GCP storage:
+
+``` Python
+>>> proj = ppx.find_project("PXD000001", local="gs://$YOUR_BUCKET")
+>>> proj.download("README.txt")
+# [GSPath('gs://$YOUR_BUCKET/PXD000001/README.txt')]
+```
+
 ## If you are an R user...
 
 ppx was inspired the rpx R package by Laurent Gatto. Check it out on

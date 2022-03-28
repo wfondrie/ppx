@@ -146,8 +146,7 @@ class FTPParser:
             disable=silent,
         )
 
-        mode = "wb+" if force_ else "ab+"
-        with out_file.open(mode) as out:
+        with self.open_(out_file, force_) as out:
             start_pos = out.tell()
             pbar.update(start_pos)
 
@@ -165,6 +164,17 @@ class FTPParser:
             )
 
         self.quit()
+
+    @staticmethod
+    def open_(out_file, force_):
+        """
+        CloudPath does a check for file creation times, refusing to overwrite newer
+        files. force_overwrite_to_cloud is required.
+        """
+        if force_:
+            return out_file.open("wb+", force_overwrite_to_cloud=True)
+        else:
+            return out_file.open("ab+")
 
     def _transfer_file(self, fname, fhandle, pbar):
         """Perform the actual file transfer.
