@@ -1,11 +1,13 @@
 """General utilities for working with the repository FTP sites."""
-import re
 import logging
+import re
 import socket
-from pathlib import Path
-from functools import partial
 from ftplib import FTP, error_temp, error_perm
+from functools import partial
+from pathlib import Path
+from typing import Union, List
 
+from cloudpathlib import CloudPath
 from tqdm.auto import tqdm
 
 from .utils import listify
@@ -205,15 +207,21 @@ class FTPParser:
 
         return files + new_files, dirs + new_dirs
 
-    def download(self, files, dest_dir, force_=False, silent=False):
+    def download(
+        self,
+        files: Union[str, List[str]],
+        dest_dir: Union[Path, CloudPath],
+        force_=False,
+        silent=False,
+    ):
         """Download the files
 
         Parameters
         ----------
-        remote_file : str
-            The file to download.
-        out_file : pathlib.Path object
-            The local file.
+        files : [str]
+            The file(s) to download.
+        dest_dir : pathlib.Path or cloudpathlib.CloudPath object
+            The destination directory. Can be a cloud storage bucket.
         force_ : bool
             Force the files to be redownloaded, even they already exist.
         silent : bool
@@ -230,7 +238,7 @@ class FTPParser:
         )
 
         for fname in overall_pbar(files):
-            out_file = Path(dest_dir, fname)
+            out_file = dest_dir / fname
             out_files.append(out_file)
             out_file.parent.mkdir(parents=True, exist_ok=True)
             self._download_file(fname, out_file, silent=silent, force_=force_)

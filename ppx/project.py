@@ -1,5 +1,6 @@
 """A base dataset class"""
 from pathlib import Path
+from cloudpathlib import CloudPath
 from abc import ABC, abstractmethod
 
 from . import utils
@@ -102,8 +103,9 @@ class BaseProject(ABC):
         if path is None:
             if config.path == Path(Path.home(), ".ppx"):
                 config.path.mkdir(exist_ok=True)
-
             self._local = Path(config.path, self.id)
+        elif path.startswith("gs://") or path.startswith("s3://"):
+            self._local = CloudPath(path) / self.id
         else:
             self._local = Path(path)
 
