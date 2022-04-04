@@ -119,11 +119,7 @@ session, we can find our previous file easily:
 
 ### Downloading to cloud storage backend
 
-Requires [cloudpathlib](https://cloudpathlib.drivendata.org/stable/):
-
-```
-pip install cloudpathlib[s3,gs]
-```
+Uses [CloudPathlib](https://cloudpathlib.drivendata.org/stable/) backend.
 
 You should create the storage bucket beforehand, to avoid bucket name conflict issues.
 If you're using GCP storage:

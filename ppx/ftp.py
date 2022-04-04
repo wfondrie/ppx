@@ -4,10 +4,7 @@ import re
 import socket
 from ftplib import FTP, error_temp, error_perm
 from functools import partial
-from pathlib import Path
-from typing import Union, List
 
-from cloudpathlib import CloudPath
 from tqdm.auto import tqdm
 
 from .utils import listify
@@ -217,18 +214,12 @@ class FTPParser:
 
         return files + new_files, dirs + new_dirs
 
-    def download(
-        self,
-        files: Union[str, List[str]],
-        dest_dir: Union[Path, CloudPath],
-        force_=False,
-        silent=False,
-    ):
+    def download(self, files, dest_dir, force_=False, silent=False):
         """Download the files
 
         Parameters
         ----------
-        files : [str]
+        files : list of str
             The file(s) to download.
         dest_dir : pathlib.Path or cloudpathlib.CloudPath object
             The destination directory. Can be a cloud storage bucket.

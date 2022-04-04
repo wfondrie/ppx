@@ -104,7 +104,7 @@ class BaseProject(ABC):
             if config.path == Path(Path.home(), ".ppx"):
                 config.path.mkdir(exist_ok=True)
             self._local = Path(config.path, self.id)
-        elif path.startswith("gs://") or path.startswith("s3://"):
+        elif CloudPath.is_valid_cloudpath(path):
             self._local = CloudPath(path) / self.id
         else:
             self._local = Path(path)
