@@ -1,5 +1,7 @@
 """A base dataset class"""
 from pathlib import Path
+
+import cloudpathlib.exceptions
 from cloudpathlib import CloudPath
 from abc import ABC, abstractmethod
 
@@ -100,14 +102,15 @@ class BaseProject(ABC):
     @local.setter
     def local(self, path):
         """Set the local data directory for this project."""
-        if path is None:
-            if config.path == Path(Path.home(), ".ppx"):
-                config.path.mkdir(exist_ok=True)
-            self._local = Path(config.path, self.id)
-        elif CloudPath.is_valid_cloudpath(path):
+        try:
             self._local = CloudPath(path) / self.id
-        else:
-            self._local = Path(path)
+        except cloudpathlib.exceptions.InvalidPrefixError:
+            if path is None:
+                if config.path == Path(Path.home(), ".ppx"):
+                    config.path.mkdir(exist_ok=True)
+                self._local = Path(config.path, self.id)
+            else:
+                self._local = Path(path)
 
         self._local.mkdir(exist_ok=True)
 
