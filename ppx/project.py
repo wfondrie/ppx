@@ -106,9 +106,10 @@ class BaseProject(ABC):
             self._local = CloudPath(path) / self.id
         except cloudpathlib.exceptions.InvalidPrefixError:
             if path is None:
-                if config.path == Path(Path.home(), ".ppx"):
+                if config.path == (Path.home() / ".ppx"):
                     config.path.mkdir(exist_ok=True)
-                self._local = Path(config.path, self.id)
+
+                self._local = config.path / self.id
             else:
                 self._local = Path(path)
 

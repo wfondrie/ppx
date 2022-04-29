@@ -5,6 +5,7 @@ import socket
 from ftplib import FTP, error_temp, error_perm
 from functools import partial
 
+from cloudpathlib import CloudPath
 from tqdm.auto import tqdm
 
 from .utils import listify
@@ -168,10 +169,11 @@ class FTPParser:
         CloudPath does a check for file creation times, refusing to overwrite newer
         files. force_overwrite_to_cloud is required.
         """
-        if force_:
-            return out_file.open("wb+", force_overwrite_to_cloud=True)
-        else:
-            return out_file.open("ab+")
+        open_kwargs = {"mode": "wb+" if force_ else "ab+"}
+        if isinstance(out_file, CloudPath):
+            open_kwargs["force_overwrite_to_cloud"] = force_
+
+        return out_file.open(**open_kwargs)
 
     def _transfer_file(self, fname, fhandle, pbar):
         """Perform the actual file transfer.
