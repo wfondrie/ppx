@@ -29,7 +29,7 @@ Blob Storage. To use a cloud storage provider, simply set the data directory to
 a cloud URI, such as :code:`s3://my-data-bucket/ppx` using any of the methods
 above. Please note that you'll also need to setup credentials for your cloud
 provider---see the `CloudPathLib documentation
-<https://cloudpathlib.drivendata.org/v0.6/authentication/>_` for details.
+<https://cloudpathlib.drivendata.org/v0.6/authentication/>`_ for details.
 
 Examples
 --------
@@ -88,7 +88,7 @@ documentation for the :py:class:`~ppx.PrideProject` and
 Using Cloud Storage
 +++++++++++++++++++
 
-We use `CloudPathlib <https://cloudpathlib.drivendata.org/stable/>_` to power
+We use `CloudPathlib <https://cloudpathlib.drivendata.org/stable/>`_ to power
 support for AWS S3, Google Cloud Storage, and Azure Blob Storage. To use a
 cloud storage provider, create the bucket for ppx to use and set it as the ppx
 data directory.
