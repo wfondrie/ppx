@@ -14,6 +14,14 @@ import ftplib
 import pytest
 import requests
 
+from cloudpathlib import implementation_registry
+from cloudpathlib.local import (
+    LocalS3Client,
+    LocalS3Path,
+    local_s3_implementation,
+)
+
+
 import ppx
 
 # Set the PPX_DATA_DIRECTORY --------------------------------------------------
@@ -22,6 +30,24 @@ def ppx_data_dir(monkeypatch, tmp_path):
     """Set the PPX_DATA_DIR environment variable"""
     monkeypatch.setenv("PPX_DATA_DIR", str(tmp_path))
     ppx.set_data_dir()
+
+
+# Mock cloud resources --------------------------------------------------------
+@pytest.fixture
+def cloud_bucket(monkeypatch):
+    """Fixture that patches CloudPath dispatch and also sets up test assets in
+    LocalS3Client's local storage directory.
+
+    Adapted from the cloudpathlib docs:
+    https://cloudpathlib.drivendata.org/v0.6/testing_mocked_cloudpathlib/
+    """
+    monkeypatch.setitem(implementation_registry, "s3", local_s3_implementation)
+    s3_bucket = LocalS3Path("s3://ppx-test-bucket/ppx/.init")
+    s3_bucket.touch()
+    assert s3_bucket.exists()
+    yield
+
+    LocalS3Client.reset_default_storage_dir()
 
 
 # PRIDE projects/<accession>/files endpoint -----------------------------------

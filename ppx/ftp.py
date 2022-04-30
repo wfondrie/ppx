@@ -1,11 +1,12 @@
 """General utilities for working with the repository FTP sites."""
-import re
 import logging
+import re
 import socket
-from pathlib import Path
-from functools import partial
 from ftplib import FTP, error_temp, error_perm
+from functools import partial
 
+from cloudpathlib import CloudPath
+from cloudpathlib.exceptions import OverwriteNewerCloudError
 from tqdm.auto import tqdm
 
 from .utils import listify
@@ -144,8 +145,7 @@ class FTPParser:
             disable=silent,
         )
 
-        mode = "wb+" if force_ else "ab+"
-        with out_file.open(mode) as out:
+        with self.open_(out_file, force_) as out:
             start_pos = out.tell()
             pbar.update(start_pos)
 
@@ -163,6 +163,31 @@ class FTPParser:
             )
 
         self.quit()
+
+    @staticmethod
+    def open_(out_file, force_):
+        """Open a Path or CloudPath file object.
+
+        CloudPath does a check for file creation times, refusing to overwrite
+        newer files. force_overwrite_to_cloud is required.
+
+        Parameters
+        ----------
+        out_file : pathlib.Path or cloudpathlib.CloudPath
+            The output file.
+        force_ : bool
+            Force the file to be overwritten?
+
+        Returns
+        -------
+        file object
+            The opened for the file.
+        """
+        open_kwargs = {"mode": "wb+" if force_ else "ab+"}
+        if isinstance(out_file, CloudPath):
+            open_kwargs["force_overwrite_to_cloud"] = force_
+
+        return out_file.open(**open_kwargs)
 
     def _transfer_file(self, fname, fhandle, pbar):
         """Perform the actual file transfer.
@@ -210,10 +235,10 @@ class FTPParser:
 
         Parameters
         ----------
-        remote_file : str
-            The file to download.
-        out_file : pathlib.Path object
-            The local file.
+        files : list of str
+            The file(s) to download.
+        dest_dir : pathlib.Path or cloudpathlib.CloudPath object
+            The destination directory. Can be a cloud storage bucket.
         force_ : bool
             Force the files to be redownloaded, even they already exist.
         silent : bool
@@ -230,10 +255,19 @@ class FTPParser:
         )
 
         for fname in overall_pbar(files):
-            out_file = Path(dest_dir, fname)
+            out_file = dest_dir / fname
             out_files.append(out_file)
             out_file.parent.mkdir(parents=True, exist_ok=True)
-            self._download_file(fname, out_file, silent=silent, force_=force_)
+            try:
+                self._download_file(
+                    fname,
+                    out_file,
+                    silent=silent,
+                    force_=force_,
+                )
+            except OverwriteNewerCloudError:
+                if force_:
+                    raise
 
         return out_files
 

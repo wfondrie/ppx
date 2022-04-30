@@ -1,5 +1,9 @@
 """Utility Functions"""
+from pathlib import Path
+
 import requests
+from cloudpathlib import CloudPath
+from cloudpathlib.exceptions import CloudPathNotImplementedError
 
 
 def listify(obj):
@@ -35,3 +39,22 @@ def test_url(url):
         raise requests.HTTPError(f"Unable to connect to URL: {url}")
 
     return url
+
+
+def glob(path, pattern=None):
+    """A function to glob.
+
+    Parameters
+    ----------
+    path : Path or CloudPath
+        The path to search.
+    pattern : str, optional
+        The glob pattern.
+
+    Returns
+    -------
+    list of Path or CloudPath
+        The sorted list of files.
+    """
+    pattern = "**/[!.]*" if pattern is None else pattern
+    return sorted(path.glob(pattern))
