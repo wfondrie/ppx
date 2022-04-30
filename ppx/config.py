@@ -40,7 +40,6 @@ class PPXConfig:
                 path = Path.home() / ".ppx"
         else:
             path = self._resolve_path(path)
-            print(path)
             if not path.exists():
                 raise FileNotFoundError(
                     f"The specified directory or bucket ({path}) "

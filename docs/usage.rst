@@ -23,6 +23,14 @@ Why does ppx set a default data directory? We found that this makes it easier
 to reuse the same proteomics data files in multiple tasks that we're working
 on.
 
+As of ppx v1.3.0, cloud paths can also be used as the data directory. This
+allows you to stream downloaded files to AWS S3, Google Cloud Storage, or Azure
+Blob Storage. To use a cloud storage provider, simply set the data directory to
+a cloud URI, such as :code:`s3://my-data-bucket/ppx` using any of the methods
+above. Please note that you'll also need to setup credentials for your cloud
+provider---see the `CloudPathLib documentation
+<https://cloudpathlib.drivendata.org/v0.6/authentication/>_` for details.
+
 Examples
 --------
 
@@ -68,7 +76,7 @@ repository in which the project data resides. If we start a new Python
 session, we can find our previous files easily:
 
     >>> import ppx
-    >>> proj = ppx.find_project("PXD000001", rep="PRIDE")
+    >>> proj = ppx.find_project("PXD000001", repo="PRIDE")
     >>> local_files = proj.local_files()
     >>> print(local_files)
     [PosixPath('/Users/wfondrie/.ppx/PXD000001/F063721.dat-mztab.txt')]
@@ -76,3 +84,23 @@ session, we can find our previous files easily:
 For more details about the available methods for a project, see our Python API
 documentation for the :py:class:`~ppx.PrideProject` and
 :py:class:`~ppx.MassiveProject` classes.
+
+Using Cloud Storage
++++++++++++++++++++
+
+We use `CloudPathlib <https://cloudpathlib.drivendata.org/stable/>_` to power
+support for AWS S3, Google Cloud Storage, and Azure Blob Storage. To use a
+cloud storage provider, create the bucket for ppx to use and set it as the ppx
+data directory.
+
+For example using AWS S3, we can save the files of a project to an S3 bucket:
+
+    >>> proj = ppx.find_project("PXD000001", local="s3://my-bucket/PXD000001")
+    >>> proj.download("README.txt")
+    [S3Path('s3://my-bucket/PXD000001/README.txt')]
+
+CloudPathLib then provides methods to download files from S3 when you need them:
+
+    >>> readme_on_s3 = proj.local_files("README.txt")[0]
+    >>> readme_on_s3.download_to("README.txt")
+    PosixPath(README.txt)

@@ -1,5 +1,9 @@
 # Changelog for ppx
 
+## [1.3.0] - 2022-04-39
+### Added
+- Support for cloud provider destinations. Thanks @sooheon! 
+
 ## [1.2.6] - 2022-03-16
 ### Fixed
 - Some PRIDE projects were still not working due to their recent URL change.
