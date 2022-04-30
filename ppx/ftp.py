@@ -6,6 +6,7 @@ from ftplib import FTP, error_temp, error_perm
 from functools import partial
 
 from cloudpathlib import CloudPath
+from cloudpathlib.exceptions import OverwriteNewerCloudError
 from tqdm.auto import tqdm
 
 from .utils import listify
@@ -165,9 +166,22 @@ class FTPParser:
 
     @staticmethod
     def open_(out_file, force_):
-        """
-        CloudPath does a check for file creation times, refusing to overwrite newer
-        files. force_overwrite_to_cloud is required.
+        """Open a Path or CloudPath file object.
+
+        CloudPath does a check for file creation times, refusing to overwrite
+        newer files. force_overwrite_to_cloud is required.
+
+        Parameters
+        ----------
+        out_file : pathlib.Path or cloudpathlib.CloudPath
+            The output file.
+        force_ : bool
+            Force the file to be overwritten?
+
+        Returns
+        -------
+        file object
+            The opened for the file.
         """
         open_kwargs = {"mode": "wb+" if force_ else "ab+"}
         if isinstance(out_file, CloudPath):
@@ -244,7 +258,16 @@ class FTPParser:
             out_file = dest_dir / fname
             out_files.append(out_file)
             out_file.parent.mkdir(parents=True, exist_ok=True)
-            self._download_file(fname, out_file, silent=silent, force_=force_)
+            try:
+                self._download_file(
+                    fname,
+                    out_file,
+                    silent=silent,
+                    force_=force_,
+                )
+            except OverwriteNewerCloudError:
+                if force_:
+                    raise
 
         return out_files
 

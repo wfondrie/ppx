@@ -1,9 +1,8 @@
 """A base dataset class"""
 from pathlib import Path
-
-import cloudpathlib.exceptions
-from cloudpathlib import CloudPath
 from abc import ABC, abstractmethod
+
+from cloudpathlib import AnyPath
 
 from . import utils
 from .config import config
@@ -17,9 +16,10 @@ class BaseProject(ABC):
     ---------
     identifier : str
         The identifier for the project in the repository
-    local : str or Path object, optional
+    local : str, pathlib.Path, or cloudpathlib.CloudPath, optional
         The local data directory in which this project's files will be
-        downloaded.
+        downloaded. In addition to local paths, paths to AWS S3,
+        Google Cloud Storage, or Azure Blob Storage can be used.
     fetch : bool, optional
         Should ppx check the remote repository for updated metadata?
     timeout : float, optional
@@ -102,16 +102,13 @@ class BaseProject(ABC):
     @local.setter
     def local(self, path):
         """Set the local data directory for this project."""
-        try:
-            self._local = CloudPath(path) / self.id
-        except cloudpathlib.exceptions.InvalidPrefixError:
-            if path is None:
-                if config.path == (Path.home() / ".ppx"):
-                    config.path.mkdir(exist_ok=True)
+        if path is None:
+            if config.path == (Path.home() / ".ppx"):
+                config.path.mkdir(exist_ok=True)
 
-                self._local = config.path / self.id
-            else:
-                self._local = Path(path)
+            self._local = config.path / self.id
+        else:
+            self._local = AnyPath(path)
 
         self._local.mkdir(exist_ok=True)
 
@@ -187,11 +184,7 @@ class BaseProject(ABC):
         list of str
             The local directories available for this project.
         """
-        if glob is None:
-            glob = "**/[!.]*"
-
-        dirs = self.local.glob(glob)
-        return sorted([d for d in dirs if d.is_dir()])
+        return [d for d in utils.glob(self.local, glob) if d.is_dir()]
 
     def local_files(self, glob=None):
         """List the local files associated with this project.
@@ -207,11 +200,7 @@ class BaseProject(ABC):
         list of str
             The local files available for this project.
         """
-        if glob is None:
-            glob = "**/[!.]*"
-
-        files = self.local.glob(glob)
-        return sorted([f for f in files if f.is_file()])
+        return [f for f in utils.glob(self.local, glob) if f.is_file()]
 
     def download(self, files, force_=False, silent=False):
         """Download files from the remote repository.

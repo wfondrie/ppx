@@ -3,6 +3,8 @@ import os
 import logging
 from pathlib import Path
 
+from cloudpathlib import AnyPath
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -29,21 +31,45 @@ class PPXConfig:
         """Set the current ppx data directory"""
         if path is None:
             try:
-                path = Path(os.environ["PPX_DATA_DIR"]).expanduser().resolve()
+                path = self._resolve_path(os.environ["PPX_DATA_DIR"])
                 if not path.exists():
                     raise FileNotFoundError(
                         f"The specified PPX_DATA_DIR ({path}) does not exist."
                     )
             except KeyError:
-                path = Path(Path.home(), ".ppx")
+                path = Path.home() / ".ppx"
         else:
-            path = Path(path).expanduser().resolve()
+            path = self._resolve_path(path)
+            print(path)
             if not path.exists():
                 raise FileNotFoundError(
-                    f"The specified directory ({path}) does not exist."
+                    f"The specified directory or bucket ({path}) "
+                    "does not exist."
                 )
 
         self._path = path
+
+    @staticmethod
+    def _resolve_path(path):
+        """Resolve a Path or CloudPath
+
+        Parameters
+        ----------
+        path : str
+            The path to resolve.
+
+        Returns
+        -------
+        Path or CloudPath
+            The resolved path.
+        """
+        path = AnyPath(path)
+        try:
+            path = path.expanduser().resolve()
+        except AttributeError:
+            pass
+
+        return path
 
 
 def get_data_dir():

@@ -1,13 +1,10 @@
 """A class for PRIDE datasets"""
 import re
 import json
-from pathlib import Path
 
 import requests
 
 from . import utils
-from .ftp import FTPParser
-from .config import config
 from .project import BaseProject
 
 
@@ -20,8 +17,10 @@ class PrideProject(BaseProject):
     ----------
     pride_id : str
         The PRIDE identifier.
-    local : str or pathlib.Path object, optional
-        The local data directory in which to download project files.
+    local : str, pathlib.Path, or cloudpathlib.CloudPath, optional
+        The local data directory in which the project files will be
+        downloaded. In addition to local paths, paths to AWS S3,
+        Google Cloud Storage, or Azure Blob Storage can be used.
     fetch : bool, optional
         Should ppx check the remote repository for updated metadata?
     timeout : float, optional

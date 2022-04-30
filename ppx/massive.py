@@ -22,8 +22,10 @@ class MassiveProject(BaseProject):
     ----------
     msv_id : str
         The MassIVE identifier.
-    local : str or pathlib.Path object, optional
-        The local data directory in which to download project files.
+    local : str, pathlib.Path, or cloudpathlib.CloudPath, optional
+        The local data directory in which the project files will be
+        downloaded. In addition to local paths, paths to AWS S3,
+        Google Cloud Storage, or Azure Blob Storage can be used.
     fetch : bool, optional
         Should ppx check the remote repository for updated metadata?
     timeout : float, optional

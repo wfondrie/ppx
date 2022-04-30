@@ -21,9 +21,10 @@ class PXDFactory:
     ----------
     pxid : str
         A ProteomeXchange identifier.
-    local : str or Path object, optional
-        The local data directory in which this project's files will be
-        downloaded.
+    local : str, pathlib.Path, or cloudpathlib.CloudPath, optional
+        The local data directory in which the project files will be
+        downloaded. In addition to local paths, paths to AWS S3,
+        Google Cloud Storage, or Azure Blob Storage can be used.
     fetch : bool, optional
         Should ppx check the remote repository for updated metadata?
     timeout : float, optional
@@ -138,9 +139,11 @@ def find_project(identifier, local=None, repo=None, fetch=False, timeout=10.0):
     ----------
     identifier : str
         The project identifier.
-    local : str or Path-like object, optional
-        The directory where ppx will look for and download files from this
-        project. The default is :code:`~/.ppx`
+    local :  str, pathlib.Path, or cloudpathlib.CloudPath, optional
+        The local data directory in which the project files will be
+        downloaded. In addition to local paths, paths to AWS S3,
+        Google Cloud Storage, or Azure Blob Storage can be used.
+        The default is :code:`~/.ppx`
     repo : {"pride", "massive"}, optional
         The repository in which to look for the project. If :code:`None`,
         ppx will try to figure it out.
