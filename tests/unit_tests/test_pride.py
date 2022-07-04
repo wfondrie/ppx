@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 import ppx
+import requests
 
 PXID = "PXD000001"
 
@@ -197,3 +198,21 @@ def test_local_files(local_files, tmp_path):
 
     res = proj.local_dirs("*0")
     assert res == [tmp_path / "test_dir0"]
+
+
+def test_broken_pride_links(tmp_path, monkeypatch):
+    """Test other types of links that PRIDE might use."""
+    proj = ppx.PrideProject(PXID)
+    url = "ftp://ftp.ebi.ac.uk/pride-archive/2012/03/PXD000001"
+    _ = proj.metadata
+
+    # Monkey patch test_url:
+    def mock_test_url(url):
+        if not "ftp.ebi.ac.uk" in url:
+            raise requests.HTTPError
+
+        return url
+
+    monkeypatch.setattr(ppx.utils, "test_url", mock_test_url)
+    print(proj.url)
+    assert proj.url == url
