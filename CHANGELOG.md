@@ -1,5 +1,9 @@
 # Changelog for ppx
 
+## [Unreleased]
+### Fixed
+- Updated unit tests with new PRIDE FTP URLs.
+
 ## [1.3.0] - 2022-04-39
 ### Added
 - Support for cloud provider destinations. Thanks @sooheon! 
