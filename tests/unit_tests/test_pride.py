@@ -214,5 +214,4 @@ def test_broken_pride_links(tmp_path, monkeypatch):
         return url
 
     monkeypatch.setattr(ppx.utils, "test_url", mock_test_url)
-    print(proj.url)
     assert proj.url == url
