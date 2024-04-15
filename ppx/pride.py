@@ -74,6 +74,9 @@ class PrideProject(BaseProject):
         if self._url is None:
             url = self.metadata["_links"]["datasetFtpUrl"]["href"]
 
+            # For whatever reason, this is added now mistakenly to some URLs...
+            url = url.replace("/generated", "")
+
             # Fix PRIDE URLs (Issue #18)
             fixes = [("", ""), ("/data/", "-"), ("pride.", "")]
             for fix in fixes:

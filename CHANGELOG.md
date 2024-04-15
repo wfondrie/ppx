@@ -1,7 +1,9 @@
 # Changelog for ppx
 
-## [Unreleased]
+## [1.4.0]
 ### Fixed
+- Fixed MassIVE FTP URLs using the MassIVE PROXI API.
+- Fixed PRIDE FTP URLs... again.
 - Updated unit tests with new PRIDE FTP URLs.
 
 ## [1.3.0] - 2022-04-39

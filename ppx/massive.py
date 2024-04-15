@@ -44,11 +44,11 @@ class MassiveProject(BaseProject):
     """
 
     _api = "https://gnps-datasetcache.ucsd.edu/datasette/database/filename.csv"
+    _proxy_api = "https://massive.ucsd.edu/ProteoSAFe/proxi/v0.1/datasets/"
 
     def __init__(self, msv_id, local=None, fetch=False, timeout=10.0):
         """Instantiate a MSVDataset object"""
         super().__init__(msv_id, local, fetch, timeout)
-        self._url = f"ftp://massive.ucsd.edu/{self.id}"
         self._params = dict(
             _stream="on",
             _sort="filepath",
@@ -74,6 +74,22 @@ class MassiveProject(BaseProject):
             raise ValueError("Malformed MassIVE identifier.")
 
         return identifier
+
+    @property
+    def url(self):
+        """The FTP URL of the dataset."""
+        if self._url is not None:
+            return self._url
+
+        res = requests.get(self._proxy_api + self.id, timeout=self.timeout)
+        print(res)
+        print(res.json())
+        for link in res.json()["datasetLink"]:
+            if link["accession"] == "MS:1002852":
+                self._url = link["value"]
+                return self._url
+
+        raise ValueError(f"No FTP link was found for {self.id}")
 
     @property
     def metadata(self):
@@ -211,5 +227,5 @@ def list_projects(timeout=10.0):
     ):
         LOGGER.debug("Scraping the FTP server for projects...")
 
-    parser = FTPParser("ftp://massive.ucsd.edu/", max_depth=0, timeout=timeout)
-    return parser.dirs
+    parser = FTPParser("ftp://massive.ucsd.edu/", max_depth=1, timeout=timeout)
+    return [d.split("/")[1] for d in parser.dirs if "/" in d]

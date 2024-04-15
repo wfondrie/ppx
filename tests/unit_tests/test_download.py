@@ -77,6 +77,10 @@ def test_massive_api(tmp_path):
     proj._api = "https://api.github.com/user"  # A dummy URL...
     proj.remote_files()
 
+
+@pytest.mark.skip("MassIVE API is currently broken for renalyses.")
+def test_massive_reanalysis(tmp_path):
+    """Test reanalyses."""
     proj = ppx.MassiveProject(RMSVID, fetch=True)
     remote_files = proj.remote_files("2019-06-03_mnchoi_64a990d7/**/*")
     assert len(remote_files) == 10
