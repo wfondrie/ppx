@@ -1,7 +1,8 @@
 """Test the utility functions"""
-import ppx
 import pytest
 import requests
+
+import ppx
 
 
 def test_listify():

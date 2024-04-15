@@ -1,6 +1,6 @@
 """A base dataset class"""
-from pathlib import Path
 from abc import ABC, abstractmethod
+from pathlib import Path
 
 from cloudpathlib import AnyPath
 
@@ -135,6 +135,7 @@ class BaseProject(ABC):
         -------
         list of str
             The remote directories available for this project.
+
         """
         if self.fetch or self._remote_dirs is None:
             self._remote_dirs = self._parser.dirs
@@ -159,6 +160,7 @@ class BaseProject(ABC):
         -------
         list of str
             The remote files available for this project.
+
         """
         if self.fetch or self._remote_files is None:
             self._remote_files = self._parser.files
@@ -183,6 +185,7 @@ class BaseProject(ABC):
         -------
         list of str
             The local directories available for this project.
+
         """
         return [d for d in utils.glob(self.local, glob) if d.is_dir()]
 
@@ -199,6 +202,7 @@ class BaseProject(ABC):
         -------
         list of str
             The local files available for this project.
+
         """
         return [f for f in utils.glob(self.local, glob) if f.is_file()]
 
@@ -235,9 +239,7 @@ class BaseProject(ABC):
                 f"{', '.join(missing)}"
             )
 
-        return self._parser.download(
-            files, self.local, force_=force_, silent=silent
-        )
+        return self._parser.download(files, self.local, force_=force_, silent=silent)
 
 
 def cache(files, cache_file, fetch):
@@ -256,6 +258,7 @@ def cache(files, cache_file, fetch):
     -------
     list of str
         The newly cached or loaded files.
+
     """
     if not fetch and files is None:
         if cache_file.exists():

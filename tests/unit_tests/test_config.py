@@ -1,10 +1,10 @@
 """Test the configuration"""
-import os
 from pathlib import Path
 
 import pytest
-import ppx
 from cloudpathlib import CloudPath
+
+import ppx
 
 PXID = "PXD000001"
 

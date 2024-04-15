@@ -1,15 +1,15 @@
+"""The PXDataset class and its associated methods.
+
+This is the foundation of the ppx package.
 """
-This module contains the PXDataset class and its associated methods,
-which are the foundation of the ppx package.
-"""
-import re
 import logging
+import re
 from urllib.parse import urlparse
 
 import requests
 
-from .pride import PrideProject
 from .massive import MassiveProject
+from .pride import PrideProject
 
 LOGGER = logging.getLogger(__name__)
 
@@ -29,6 +29,7 @@ class PXDFactory:
         Should ppx check the remote repository for updated metadata?
     timeout : float, optional
         The maximum amount of time to wait for a server response.
+
     """
 
     rest = "http://proteomecentral.proteomexchange.org/cgi/GetDataset"
@@ -156,6 +157,7 @@ def find_project(identifier, local=None, repo=None, fetch=False, timeout=10.0):
     -------
     :py:class:`~ppx.PrideProject` or :py:class:`~ppx.MassiveProject`
         An object to interact with the project data in the repository.
+
     """
     identifier = str(identifier).upper()
     if repo is not None:

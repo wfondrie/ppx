@@ -1,18 +1,17 @@
 """The command line entry point for ppx"""
-import sys
 import logging
-from pathlib import Path
+import sys
 from argparse import ArgumentParser
+from pathlib import Path
 
-from . import __version__
-from . import find_project
+from . import __version__, find_project
 
 LOGGER = logging.getLogger(__name__)
 
 
 def get_parser():
     """Parse the command line arguments"""
-    desc = f"""Use this command line utility to download files from the PRIDE and MassIVE
+    desc = """Use this command line utility to download files from the PRIDE and MassIVE
     proteomics repositories. The paths to the downloaded files are written to
     stdout."""
 
@@ -22,10 +21,7 @@ def get_parser():
     parser.add_argument(
         "identifier",
         type=str,
-        help=(
-            "The ProteomeXchange, PRIDE, or MassIVE identifier for the "
-            "project."
-        ),
+        help=("The ProteomeXchange, PRIDE, or MassIVE identifier for the " "project."),
     )
 
     parser.add_argument(
@@ -83,9 +79,7 @@ def get_parser():
 
 def main():
     """Run ppx"""
-    logging.basicConfig(
-        level=logging.INFO, format="[%(levelname)s]: %(message)s"
-    )
+    logging.basicConfig(level=logging.INFO, format="[%(levelname)s]: %(message)s")
 
     parser = get_parser()
     args = parser.parse_args()
@@ -96,26 +90,21 @@ def main():
         matches = set()
         passed = []
         for pat in args.files:
-            pat_match = set(f for f in remote_files if Path(f).match(pat))
+            pat_match = {f for f in remote_files if Path(f).match(pat)}
             passed.append(bool(pat_match))
             matches.update(pat_match)
 
         if not all(passed):
-            failed = "  \n".join(
-                [f for f, p in zip(args.files, passed) if not p]
-            )
+            failed = "  \n".join([f for f, p in zip(args.files, passed) if not p])
 
             raise FileNotFoundError(
-                "Unable to find one or more of the files or patterns:"
-                f"\n  {failed}"
+                "Unable to find one or more of the files or patterns:" f"\n  {failed}"
             )
 
     else:
         matches = remote_files
 
-    LOGGER.info(
-        "Downloading %i files from %s...", len(matches), args.identifier
-    )
+    LOGGER.info("Downloading %i files from %s...", len(matches), args.identifier)
     downloaded = proj.download(matches)
 
     for local_file in downloaded:

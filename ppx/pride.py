@@ -1,6 +1,6 @@
 """A class for PRIDE datasets"""
-import re
 import json
+import re
 
 import requests
 
@@ -39,6 +39,7 @@ class PrideProject(BaseProject):
     metadata : dict
     fetch : bool
     timeout : float
+
     """
 
     rest = "https://www.ebi.ac.uk/pride/ws/archive/v2/projects/"
@@ -61,6 +62,7 @@ class PrideProject(BaseProject):
         -------
         str
             The validated identifier
+
         """
         identifier = str(identifier).upper()
         if not re.match("P[RX]D[0-9]{6}", identifier):
@@ -167,6 +169,7 @@ def list_projects(timeout=10.0):
     -------
     list of str
         A list of PRIDE identifiers.
+
     """
     url = "https://www.ebi.ac.uk/pride/ws/archive/v2/misc/sitemap"
     res = requests.get(url, timeout=timeout)

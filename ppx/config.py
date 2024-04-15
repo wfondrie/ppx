@@ -1,6 +1,6 @@
 """This module contains the configuration details for ppx"""
-import os
 import logging
+import os
 from pathlib import Path
 
 from cloudpathlib import AnyPath
@@ -14,6 +14,7 @@ class PPXConfig:
     Attributes
     ----------
     path : pathlib.Path object
+
     """
 
     def __init__(self):
@@ -42,8 +43,7 @@ class PPXConfig:
             path = self._resolve_path(path)
             if not path.exists():
                 raise FileNotFoundError(
-                    f"The specified directory or bucket ({path}) "
-                    "does not exist."
+                    f"The specified directory or bucket ({path}) " "does not exist."
                 )
 
         self._path = path
@@ -61,6 +61,7 @@ class PPXConfig:
         -------
         Path or CloudPath
             The resolved path.
+
         """
         path = AnyPath(path)
         try:
@@ -83,6 +84,7 @@ def set_data_dir(path=None):
     ----------
     path : str or pathlib.Path object, optional
         The path for ppx to use as its data directory.
+
     """
     config.path = path
 

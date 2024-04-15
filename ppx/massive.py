@@ -1,8 +1,8 @@
 """MassIVE datasets."""
+import logging
 import re
 import socket
-import logging
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET  # noqa: N817
 from pathlib import Path
 
 import requests
@@ -41,6 +41,7 @@ class MassiveProject(BaseProject):
     metadata : dict
     fetch : bool
     timeout : float
+
     """
 
     _api = "https://gnps-datasetcache.ucsd.edu/datasette/database/filename.csv"
@@ -68,6 +69,7 @@ class MassiveProject(BaseProject):
         -------
         str
             The validated identifier.
+
         """
         identifier = str(identifier).upper()
         if not re.match("(MSV|RMSV)[0-9]{9}", identifier):
@@ -82,8 +84,6 @@ class MassiveProject(BaseProject):
             return self._url
 
         res = requests.get(self._proxy_api + self.id, timeout=self.timeout)
-        print(res)
-        print(res.json())
         for link in res.json()["datasetLink"]:
             if link["accession"] == "MS:1002852":
                 self._url = link["value"]
@@ -138,18 +138,17 @@ class MassiveProject(BaseProject):
         -------
         list of str
             The remote files available for this project.
+
         """
         if self.fetch or self._remote_files is None:
             try:
                 info = self.file_info().splitlines()[1:]
-                self._remote_files = [
-                    r.split(",")[0].split("/", 1)[1] for r in info
-                ]
+                self._remote_files = [r.split(",")[0].split("/", 1)[1] for r in info]
                 assert self._remote_files
             except (
+                TimeoutError,
                 ConnectionRefusedError,
                 ConnectionResetError,
-                socket.timeout,
                 socket.gaierror,
                 socket.herror,
                 EOFError,
@@ -173,6 +172,7 @@ class MassiveProject(BaseProject):
         -------
         str
             Information about the files in a CSV format.
+
         """
         file_info_path = self.local / ".file_info.csv"
         if file_info_path.exists() and not self.fetch:
@@ -208,6 +208,7 @@ def list_projects(timeout=10.0):
     -------
     list of str
         A list of MassIVE identifiers.
+
     """
     url = "https://gnps-datasetcache.ucsd.edu/datasette/database.csv"
     params = dict(sql="select distinct dataset from filename", _size="max")
@@ -217,9 +218,9 @@ def list_projects(timeout=10.0):
         return res
 
     except (
+        TimeoutError,
         ConnectionRefusedError,
         ConnectionResetError,
-        socket.timeout,
         socket.gaierror,
         socket.herror,
         EOFError,
