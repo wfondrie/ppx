@@ -1,6 +1,49 @@
 [build-system]
-requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=3.4"]
+requires = ["setuptools>=61", "wheel", "setuptools_scm[toml]>=3.4"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "ppx"
+authors = [{name = "William E. Fondrie", email = "fondriew@gmail.com"}]
+description = "A Python interface to proteomics data repostitories."
+license = {text = "Apache 2.0"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.23.0",
+    "tqdm>=4.60.0",
+    "cloudpathlib[all]>=0.7.1",
+]
+dynamic = ["version"]
+
+[project.readme]
+file = "REAMDE.md"
+content-type = "text/markdown"
+
+[project.urls]
+Homepage = "https://github.com/wfondrie/ppx"
+Documentation = "https://ppx.readthedocs.io"
+
+[project.optional-dependencies]
+docs = [
+    "numpydoc>=1.0.0",
+    "sphinx-argparse>=0.2.5",
+    "sphinx-rtd-theme>=0.5.0",
+    "nbsphinx>=0.7.1",
+    "ipykernel>=5.3.0",
+    "recommonmark>=0.5.0",
+]
+dev = [
+    "pre-commit>=2.7.1"
+]
+
+[project.scripts]
+ppx = "ppx.ppx:main"
 
 [tool.setuptools]
 include-package-data = false
