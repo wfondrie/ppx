@@ -7,6 +7,7 @@ We need:
 - A mock FTP server response from PRIDE
 - A mock FTP server response from MassIVE
 """
+
 import ftplib
 import json
 import socket

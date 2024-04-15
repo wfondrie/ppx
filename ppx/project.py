@@ -1,4 +1,5 @@
 """A base dataset class"""
+
 from abc import ABC, abstractmethod
 from pathlib import Path
 
@@ -239,7 +240,9 @@ class BaseProject(ABC):
                 f"{', '.join(missing)}"
             )
 
-        return self._parser.download(files, self.local, force_=force_, silent=silent)
+        return self._parser.download(
+            files, self.local, force_=force_, silent=silent
+        )
 
 
 def cache(files, cache_file, fetch):

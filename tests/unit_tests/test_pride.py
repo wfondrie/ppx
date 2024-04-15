@@ -1,4 +1,5 @@
 """Test PRIDE functionality w/o internet access"""
+
 import json
 from pathlib import Path
 
@@ -71,7 +72,9 @@ def test_metadata(mock_pride_project_response):
 
     assert meta == true_meta
 
-    title = "TMT spikes -  Using R and Bioconductor for proteomics data analysis"
+    title = (
+        "TMT spikes -  Using R and Bioconductor for proteomics data analysis"
+    )
     assert proj.title == title
 
     desc = (

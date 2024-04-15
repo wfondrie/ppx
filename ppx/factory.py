@@ -2,6 +2,7 @@
 
 This is the foundation of the ppx package.
 """
+
 import logging
 import re
 from urllib.parse import urlparse
@@ -78,11 +79,11 @@ class PXDFactory:
 
     def find(self):
         """Find the dataset at the partner repository"""
-        kwargs = dict(
-            local=self._local,
-            fetch=self._fetch,
-            timeout=self._timeout,
-        )
+        kwargs = {
+            "local": self._local,
+            "fetch": self._fetch,
+            "timeout": self._timeout,
+        }
 
         if self._repo == "PRIDE":
             return PrideProject(self._repo_id, **kwargs)
@@ -164,7 +165,7 @@ def find_project(identifier, local=None, repo=None, fetch=False, timeout=10.0):
         repo = str(repo).lower()
 
     # User-specified:
-    kwargs = dict(local=local, fetch=fetch, timeout=timeout)
+    kwargs = {"local": local, "fetch": fetch, "timeout": timeout}
     if repo == "pride":
         return PrideProject(identifier, **kwargs)
 

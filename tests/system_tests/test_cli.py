@@ -1,4 +1,5 @@
 """Test the command line interface"""
+
 import subprocess
 
 PXID = "PXD000001"

@@ -1,4 +1,5 @@
 """Test the utility functions"""
+
 import pytest
 import requests
 

@@ -1,4 +1,5 @@
 """Test the configuration"""
+
 from pathlib import Path
 
 import pytest

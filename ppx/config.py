@@ -1,4 +1,5 @@
 """This module contains the configuration details for ppx"""
+
 import logging
 import os
 from pathlib import Path
@@ -43,7 +44,8 @@ class PPXConfig:
             path = self._resolve_path(path)
             if not path.exists():
                 raise FileNotFoundError(
-                    f"The specified directory or bucket ({path}) " "does not exist."
+                    f"The specified directory or bucket ({path}) "
+                    "does not exist."
                 )
 
         self._path = path

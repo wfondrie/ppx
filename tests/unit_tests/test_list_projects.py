@@ -1,4 +1,5 @@
 """Test that the list_projects() functions work"""
+
 import pytest
 import requests
 

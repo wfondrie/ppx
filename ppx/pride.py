@@ -1,4 +1,5 @@
 """A class for PRIDE datasets"""
+
 import json
 import re
 

@@ -1,4 +1,5 @@
 """See the README for detailed documentation and examples."""
+
 try:
     from importlib.metadata import PackageNotFoundError, version
 

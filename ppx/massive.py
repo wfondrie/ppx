@@ -1,4 +1,5 @@
 """MassIVE datasets."""
+
 import logging
 import re
 import socket
@@ -50,12 +51,12 @@ class MassiveProject(BaseProject):
     def __init__(self, msv_id, local=None, fetch=False, timeout=10.0):
         """Instantiate a MSVDataset object"""
         super().__init__(msv_id, local, fetch, timeout)
-        self._params = dict(
-            _stream="on",
-            _sort="filepath",
-            dataset__exact=self.id,
-            _size="max",
-        )
+        self._params = {
+            "_stream": "on",
+            "_sort": "filepath",
+            "dataset__exact": self.id,
+            "_size": "max",
+        }
 
     def _validate_id(self, identifier):
         """Validate a MassIVE identifier.
@@ -143,7 +144,9 @@ class MassiveProject(BaseProject):
         if self.fetch or self._remote_files is None:
             try:
                 info = self.file_info().splitlines()[1:]
-                self._remote_files = [r.split(",")[0].split("/", 1)[1] for r in info]
+                self._remote_files = [
+                    r.split(",")[0].split("/", 1)[1] for r in info
+                ]
                 assert self._remote_files
             except (
                 TimeoutError,
@@ -211,7 +214,7 @@ def list_projects(timeout=10.0):
 
     """
     url = "https://gnps-datasetcache.ucsd.edu/datasette/database.csv"
-    params = dict(sql="select distinct dataset from filename", _size="max")
+    params = {"sql": "select distinct dataset from filename", "_size": "max"}
     try:
         res = requests.get(url, params, timeout=timeout).text.splitlines()[1:]
         res.sort()

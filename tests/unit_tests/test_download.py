@@ -2,6 +2,7 @@
 
 These tests are in a separate file because they all require internet access.
 """
+
 from ftplib import FTP, error_temp
 
 import pytest
