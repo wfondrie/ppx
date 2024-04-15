@@ -3,6 +3,7 @@
 ## [1.4.0]
 ### Changed
 - Linting and formatting is now performed with Ruff.
+- Migrated to pyproject.toml based build.
 
 ### Fixed
 - Fixed MassIVE FTP URLs using the MassIVE PROXI API.
