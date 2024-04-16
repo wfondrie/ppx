@@ -1,5 +1,11 @@
 # Changelog for ppx
 
+## [Unreleased]
+
+## [1.4.1]
+### Fixed
+- Updated the ReadTheDocs configuration.
+
 ## [1.4.0]
 ### Changed
 - Linting and formatting is now performed with Ruff.
