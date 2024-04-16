@@ -1,20 +1,20 @@
 """The command line entry point for ppx"""
-import sys
-import logging
-from pathlib import Path
-from argparse import ArgumentParser
 
-from . import __version__
-from . import find_project
+import logging
+import sys
+from argparse import ArgumentParser
+from pathlib import Path
+
+from . import __version__, find_project
 
 LOGGER = logging.getLogger(__name__)
 
 
 def get_parser():
     """Parse the command line arguments"""
-    desc = f"""Use this command line utility to download files from the PRIDE and MassIVE
-    proteomics repositories. The paths to the downloaded files are written to
-    stdout."""
+    desc = """Use this command line utility to download files from the PRIDE
+    and MassIVE proteomics repositories. The paths to the downloaded files are
+    written to stdout."""
 
     epilog = "More documentation and examples at: https://ppx.readthedocs.io"
     parser = ArgumentParser(description=desc, epilog=epilog)
@@ -96,7 +96,7 @@ def main():
         matches = set()
         passed = []
         for pat in args.files:
-            pat_match = set(f for f in remote_files if Path(f).match(pat))
+            pat_match = {f for f in remote_files if Path(f).match(pat)}
             passed.append(bool(pat_match))
             matches.update(pat_match)
 

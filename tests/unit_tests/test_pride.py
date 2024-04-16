@@ -1,10 +1,12 @@
 """Test PRIDE functionality w/o internet access"""
+
 import json
 from pathlib import Path
 
 import pytest
-import ppx
 import requests
+
+import ppx
 
 PXID = "PXD000001"
 
@@ -123,7 +125,6 @@ def test_remote_files(mock_pride_project_response):
     assert files == true_files
 
     gzipped = proj.remote_files("*.gz")
-    print(gzipped)
     true_gzipped = [
         "PRIDE_Exp_Complete_Ac_22134.xml.gz",
         "PRIDE_Exp_mzData_Ac_22134.xml.gz",
@@ -143,7 +144,7 @@ def test_remote_files(mock_pride_project_response):
     assert proj.remote_files("blah") == []
 
 
-def test_remote_files(mock_pride_project_response):
+def test_remote_dirs(mock_pride_project_response):
     """Test that listing remote directories works"""
     proj = ppx.PrideProject(PXID)
     dirs = proj.remote_dirs()
@@ -208,7 +209,7 @@ def test_broken_pride_links(tmp_path, monkeypatch):
 
     # Monkey patch test_url:
     def mock_test_url(url):
-        if not "ftp.ebi.ac.uk" in url:
+        if "ftp.ebi.ac.uk" not in url:
             raise requests.HTTPError
 
         return url

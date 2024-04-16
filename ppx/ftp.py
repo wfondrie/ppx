@@ -1,8 +1,9 @@
 """General utilities for working with the repository FTP sites."""
+
 import logging
 import re
 import socket
-from ftplib import FTP, error_temp, error_perm
+from ftplib import FTP, error_perm, error_temp
 from functools import partial
 
 from cloudpathlib import CloudPath
@@ -51,6 +52,7 @@ class FTPParser:
         The maximum number of reconnects to attempt during downloads.
     timeout : float, optional
         The maximum amount of time to wait for a response from the server.
+
     """
 
     def __init__(self, url, max_depth=4, max_reconnects=10, timeout=10.0):
@@ -97,9 +99,9 @@ class FTPParser:
                 return func(*args, **kwargs)
 
             except (
+                TimeoutError,
                 ConnectionRefusedError,
                 ConnectionResetError,
-                socket.timeout,
                 socket.gaierror,
                 socket.herror,
                 error_temp,
@@ -131,6 +133,7 @@ class FTPParser:
             Disable the progress bar?
         force_ : bool
             Force the file to be redownloaded, even if it exists.
+
         """
         self.connect()
         size = self.connection.size(remote_file)
@@ -182,6 +185,7 @@ class FTPParser:
         -------
         file object
             The opened for the file.
+
         """
         open_kwargs = {"mode": "wb+" if force_ else "ab+"}
         if isinstance(out_file, CloudPath):
@@ -200,6 +204,7 @@ class FTPParser:
             The opened file object where the data will be written.
         pbar : tqdm.tqdm
             The tqdm progress bar to update.
+
         """
         write = partial(write_file, fhandle=fhandle, pbar=pbar)
         self.connection.retrbinary(f"RETR {fname}", write, rest=fhandle.tell())
@@ -243,6 +248,7 @@ class FTPParser:
             Force the files to be redownloaded, even they already exist.
         silent : bool
             Disable the progress bar?
+
         """
         files = listify(files)
         out_files = []
@@ -302,13 +308,14 @@ def parse_response(conn):
 
     Parameters
     ----------
-    url : str
-        The url of the FTP server.
+    conn : Connection
+        The FTP server connection
 
     Returns
     -------
     files : list of str
     directories : list of str
+
     """
     lines = []
     conn.dir(lines.append)
@@ -341,6 +348,7 @@ def parse_line(line):
         The file or directory name.
     date : date
         The modification date.
+
     """
     match = UNIX.fullmatch(line)
     is_dir = match[1] == "d" or match[1] == "l"

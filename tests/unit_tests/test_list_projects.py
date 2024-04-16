@@ -1,7 +1,9 @@
 """Test that the list_projects() functions work"""
+
 import pytest
-import ppx
 import requests
+
+import ppx
 
 
 def test_pride():

@@ -1,8 +1,9 @@
 """Test finding projects"""
-import pytest
-import ppx
 
+import pytest
 from requests.exceptions import ConnectTimeout, ReadTimeout
+
+import ppx
 
 PXID = "PXD000001"
 MSVID = "MSV000087408"
@@ -43,18 +44,19 @@ def test_massive_offline(block_internet, tmp_path):
 
 # The following require internet access! --------------------------------------
 def test_pride_online():
-    """Test pride project resolution"""
+    """Test pride project resolution."""
     proj = ppx.find_project(PXID, timeout=10)
     assert isinstance(proj, ppx.PrideProject)
 
 
 def test_massive_project():
-    """Test massive project resolution"""
+    """Test massive project resolution."""
     proj = ppx.find_project(MSVID, timeout=10)
     assert isinstance(proj, ppx.MassiveProject)
 
 
 def test_massive_project_with_pxd():
+    """Test finding massive project with a PXD."""
     proj = ppx.find_project(MSVPXD, timeout=10)
     assert isinstance(proj, ppx.MassiveProject)
     assert proj.id == MSVID
@@ -63,4 +65,4 @@ def test_massive_project_with_pxd():
 def test_timeout():
     """Try a value that is too small."""
     with pytest.raises((ConnectTimeout, ReadTimeout)):
-        proj = ppx.find_project(PXID, timeout=0.0000000000001)
+        ppx.find_project(PXID, timeout=0.0000000000001)

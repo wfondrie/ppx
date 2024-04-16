@@ -1,9 +1,6 @@
 """Utility Functions"""
-from pathlib import Path
 
 import requests
-from cloudpathlib import CloudPath
-from cloudpathlib.exceptions import CloudPathNotImplementedError
 
 
 def listify(obj):
@@ -29,6 +26,7 @@ def test_url(url):
     -------
     str
         The input URL.
+
     """
     http_url = url.replace("ftp://", "http://")
     if http_url[-1] != "/":
@@ -55,6 +53,7 @@ def glob(path, pattern=None):
     -------
     list of Path or CloudPath
         The sorted list of files.
+
     """
     pattern = "**/[!.]*" if pattern is None else pattern
     return sorted(path.glob(pattern))

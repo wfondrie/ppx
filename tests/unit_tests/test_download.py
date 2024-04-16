@@ -2,9 +2,11 @@
 
 These tests are in a separate file because they all require internet access.
 """
+
 from ftplib import FTP, error_temp
 
 import pytest
+
 import ppx
 
 from . import utils
@@ -17,7 +19,7 @@ RMSVID = "RMSV000000253"
 def test_no_internet(monkeypatch):
     """Test what happens when connection is blocked"""
     proj = ppx.PrideProject(PXID, timeout=None)
-    remote_files = proj.remote_files()
+    proj.remote_files()
     fname = "F063721.dat-mztab.txt"
 
     def retrbinary(*args, **kwargs):
@@ -25,7 +27,7 @@ def test_no_internet(monkeypatch):
 
     monkeypatch.setattr(FTP, "retrbinary", retrbinary)
     with pytest.raises(error_temp):
-        txt = proj.download(fname)
+        proj.download(fname)
 
 
 def test_pride_download(tmp_path):
@@ -65,7 +67,7 @@ def test_massive_api(tmp_path):
     assert len(remote_files) == 1
 
     proj.fetch = False
-    info = [l for l in proj.file_info().splitlines() if l]
+    info = [a for a in proj.file_info().splitlines() if a]
     assert len(info) == 13
 
     proj = ppx.MassiveProject(MSVID, fetch=True)
@@ -77,6 +79,10 @@ def test_massive_api(tmp_path):
     proj._api = "https://api.github.com/user"  # A dummy URL...
     proj.remote_files()
 
+
+@pytest.mark.skip("MassIVE API is currently broken for renalyses.")
+def test_massive_reanalysis(tmp_path):
+    """Test reanalyses."""
     proj = ppx.MassiveProject(RMSVID, fetch=True)
     remote_files = proj.remote_files("2019-06-03_mnchoi_64a990d7/**/*")
     assert len(remote_files) == 10

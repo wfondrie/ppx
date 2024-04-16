@@ -7,13 +7,13 @@ We need:
 - A mock FTP server response from PRIDE
 - A mock FTP server response from MassIVE
 """
+
+import ftplib
 import json
 import socket
-import ftplib
 
 import pytest
 import requests
-
 from cloudpathlib import implementation_registry
 from cloudpathlib.local import (
     LocalS3Client,
@@ -21,8 +21,8 @@ from cloudpathlib.local import (
     local_s3_implementation,
 )
 
-
 import ppx
+
 
 # Set the PPX_DATA_DIRECTORY --------------------------------------------------
 @pytest.fixture(autouse=True)

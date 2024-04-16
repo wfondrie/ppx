@@ -1,5 +1,7 @@
 """Test using cloud locations"""
+
 from cloudpathlib import CloudPath
+
 import ppx
 
 from . import utils

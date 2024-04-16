@@ -1,29 +1,74 @@
 [build-system]
-requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=3.4"]
+requires = ["setuptools>=61", "wheel", "setuptools_scm[toml]>=3.4"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "ppx"
+authors = [{name = "William E. Fondrie", email = "fondriew@gmail.com"}]
+description = "A Python interface to proteomics data repostitories."
+license = {text = "Apache 2.0"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.23.0",
+    "tqdm>=4.60.0",
+    "cloudpathlib[all]>=0.7.1",
+]
+dynamic = ["version"]
+
+[project.readme]
+file = "REAMDE.md"
+content-type = "text/markdown"
+
+[project.urls]
+Homepage = "https://github.com/wfondrie/ppx"
+Documentation = "https://ppx.readthedocs.io"
+
+[project.optional-dependencies]
+docs = [
+    "numpydoc>=1.0.0",
+    "sphinx-argparse>=0.2.5",
+    "sphinx-rtd-theme>=0.5.0",
+    "nbsphinx>=0.7.1",
+    "ipykernel>=5.3.0",
+    "recommonmark>=0.5.0",
+]
+dev = [
+    "pre-commit>=2.7.1"
+]
+
+[project.scripts]
+ppx = "ppx.ppx:main"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages]
+find = {namespaces = false}
 
 [tool.setuptools_scm]
 
-[tool.black]
+[tool.ruff]
 line-length = 79
-target-version = ['py37']
-include = '\.pyi?$'
-exclude = '''
+target-version = "py310"
 
-(
-  /(
-      \.eggs         # exclude a few common directories in the
-    | \.git          # root of the project
-    | \.hg
-    | \.mypy_cache
-    | \.tox
-    | \.venv
-    | _build
-    | buck-out
-    | build
-    | dist
-  )/
-  | foo.py           # also separately exclude a file named foo.py in
-                     # the root of the project
-)
-'''
+[tool.ruff.lint]
+select = ["E", "F", "W", "C", "I", "D", "UP", "N", "T20"]
+
+# ANN101 Missing type annotation for `self` in method
+# D213 Multi-line docstring summary should start at the second lin
+# D203 1 blank line required before class docstring
+# D100 Missing docstring in public module
+# ANN102 Missing type annotation for `cls` in classmethod
+# D401 First line of docstring should be in imperative mood
+ignore = ["D213", "ANN", "D203", "D100", "D401", "D404", "D400", "D415"]
+
+[tool.ruff.lint.per-file-ignores]
+"*tests/*.py" = ["ANN", "N806", "D102", "D205"]
+"__init__.py" = ["F401", "D104"]
+"docs/*.py" = ["F", "E"]

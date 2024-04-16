@@ -1,8 +1,9 @@
 """MassIVE datasets."""
+
+import logging
 import re
 import socket
-import logging
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET  # noqa: N817
 from pathlib import Path
 
 import requests
@@ -41,20 +42,21 @@ class MassiveProject(BaseProject):
     metadata : dict
     fetch : bool
     timeout : float
+
     """
 
     _api = "https://gnps-datasetcache.ucsd.edu/datasette/database/filename.csv"
+    _proxy_api = "https://massive.ucsd.edu/ProteoSAFe/proxi/v0.1/datasets/"
 
     def __init__(self, msv_id, local=None, fetch=False, timeout=10.0):
         """Instantiate a MSVDataset object"""
         super().__init__(msv_id, local, fetch, timeout)
-        self._url = f"ftp://massive.ucsd.edu/{self.id}"
-        self._params = dict(
-            _stream="on",
-            _sort="filepath",
-            dataset__exact=self.id,
-            _size="max",
-        )
+        self._params = {
+            "_stream": "on",
+            "_sort": "filepath",
+            "dataset__exact": self.id,
+            "_size": "max",
+        }
 
     def _validate_id(self, identifier):
         """Validate a MassIVE identifier.
@@ -68,12 +70,27 @@ class MassiveProject(BaseProject):
         -------
         str
             The validated identifier.
+
         """
         identifier = str(identifier).upper()
         if not re.match("(MSV|RMSV)[0-9]{9}", identifier):
             raise ValueError("Malformed MassIVE identifier.")
 
         return identifier
+
+    @property
+    def url(self):
+        """The FTP URL of the dataset."""
+        if self._url is not None:
+            return self._url
+
+        res = requests.get(self._proxy_api + self.id, timeout=self.timeout)
+        for link in res.json()["datasetLink"]:
+            if link["accession"] == "MS:1002852":
+                self._url = link["value"]
+                return self._url
+
+        raise ValueError(f"No FTP link was found for {self.id}")
 
     @property
     def metadata(self):
@@ -122,6 +139,7 @@ class MassiveProject(BaseProject):
         -------
         list of str
             The remote files available for this project.
+
         """
         if self.fetch or self._remote_files is None:
             try:
@@ -131,9 +149,9 @@ class MassiveProject(BaseProject):
                 ]
                 assert self._remote_files
             except (
+                TimeoutError,
                 ConnectionRefusedError,
                 ConnectionResetError,
-                socket.timeout,
                 socket.gaierror,
                 socket.herror,
                 EOFError,
@@ -157,6 +175,7 @@ class MassiveProject(BaseProject):
         -------
         str
             Information about the files in a CSV format.
+
         """
         file_info_path = self.local / ".file_info.csv"
         if file_info_path.exists() and not self.fetch:
@@ -192,18 +211,19 @@ def list_projects(timeout=10.0):
     -------
     list of str
         A list of MassIVE identifiers.
+
     """
     url = "https://gnps-datasetcache.ucsd.edu/datasette/database.csv"
-    params = dict(sql="select distinct dataset from filename", _size="max")
+    params = {"sql": "select distinct dataset from filename", "_size": "max"}
     try:
         res = requests.get(url, params, timeout=timeout).text.splitlines()[1:]
         res.sort()
         return res
 
     except (
+        TimeoutError,
         ConnectionRefusedError,
         ConnectionResetError,
-        socket.timeout,
         socket.gaierror,
         socket.herror,
         EOFError,
@@ -211,5 +231,5 @@ def list_projects(timeout=10.0):
     ):
         LOGGER.debug("Scraping the FTP server for projects...")
 
-    parser = FTPParser("ftp://massive.ucsd.edu/", max_depth=0, timeout=timeout)
-    return parser.dirs
+    parser = FTPParser("ftp://massive.ucsd.edu/", max_depth=1, timeout=timeout)
+    return [d.split("/")[1] for d in parser.dirs if "/" in d]
