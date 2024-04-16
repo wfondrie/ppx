@@ -4,9 +4,12 @@
 
 [![conda](https://img.shields.io/conda/vn/bioconda/ppx?color=green)](http://bioconda.github.io/recipes/ppx/README.html)
 [![PyPI](https://img.shields.io/pypi/v/ppx?color=green)](https://pypi.org/project/ppx/)
-[![tests](https://github.com/wfondrie/ppx/workflows/tests/badge.svg?branch=master)](https://github.com/wfondrie/ppx/actions?query=workflow%3Atests)[![Documentation Status](https://readthedocs.org/projects/ppx/badge/?version=latest)](https://ppx.readthedocs.io/en/latest/?badge=latest)  
+[![tests](https://github.com/wfondrie/ppx/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/wfondrie/ppx/actions/workflows/tests.yml)
+[![Documentation Status](https://readthedocs.org/projects/ppx/badge/?version=latest)](https://ppx.readthedocs.io/en/latest/?badge=latest)
 
-## Overview  
+https://github.com/wfondrie/ppx/workflows/tests/badge.svg?branch=master
+
+## Overview
 ppx provides a simple, programmatic means to access proteomics data that are
 publicly available in [ProteomeXchange](http://www.proteomexchange.org) partner
 repositories. ppx allows users to easily find and download files associated
@@ -16,11 +19,11 @@ ppx promotes the reproducible analysis of proteomics data.
 
 For full documentation and examples, visit: https://ppx.readthedocs.io
 
-## Installation  
+## Installation
 ppx requires Python 3.6+ and depends upon the
 [requests](https://docs.python-requests.org/en/master/) and
 [tqdm](https://tqdm.github.io/) Python packages. ppx and any missing
-dependencies are easily installed with `pip` or with `conda` through the 
+dependencies are easily installed with `pip` or with `conda` through the
 [bioconda](https://bioconda.github.io/index.html) channel.
 
 Install with `conda`:
@@ -41,7 +44,7 @@ By default, ppx will download project files in the `.ppx` directory under the
 current user's home directory (`~/.ppx` on Linux and MacOS). There are several
 ways to specify different data directories:
 
-1. Change the ppx data directory for all future Python sessions by setting the 
+1. Change the ppx data directory for all future Python sessions by setting the
 `PPX_DATA_DIR` environment variable to your preferred directory.
 
 2. Change the ppx data directory for a Python session using the
@@ -112,7 +115,7 @@ Then we can download one or more files to the projects local data directory:
 ```
 
 Once we've downloaded files, ppx no longer needs an internet connection to
-retrieve a project's local data. However, you will need to specify the 
+retrieve a project's local data. However, you will need to specify the
 repository in which the project data resides. If we start a new Python
 session, we can find our previous file easily:
 

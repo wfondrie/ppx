@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.4.2]
+### Fixed
+- Fix Test status badge.
+
 ## [1.4.1]
 ### Fixed
 - Updated the ReadTheDocs configuration.
