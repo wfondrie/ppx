@@ -69,7 +69,7 @@ class FTPParser:
         self._dirs = None
         self._depth = 0
 
-    def _connect(self):
+    def _connect(self, path=None):
         """Connect to the FTP server"""
         if self.connection is not None and self.connection.file is None:
             self.connection.close()
@@ -79,11 +79,11 @@ class FTPParser:
             self.connection = FTP(timeout=self.timeout)
             self.connection.connect(self.server)
             self.connection.login()
-            self.connection.cwd(self.path)
+            self.connection.cwd(self.path if path is None else path)
 
-    def connect(self):
+    def connect(self, path=None):
         """Connect to the FTP server, with reconnects on failure."""
-        self._with_reconnects(self._connect)
+        self._with_reconnects(self._connect, path=path)
 
     def quit(self):
         """Close the connection."""
@@ -93,9 +93,10 @@ class FTPParser:
 
     def _with_reconnects(self, func, *args, **kwargs):
         """Try and execute a function, reconnecting on failure."""
+        path = kwargs.get("path", None)
         for _ in range(self.max_reconnects):
             try:
-                self._connect()
+                self._connect(path)
                 return func(*args, **kwargs)
 
             except (
@@ -135,7 +136,14 @@ class FTPParser:
             Force the file to be redownloaded, even if it exists.
 
         """
-        self.connect()
+        if remote_file.startswith("ccms_peak"):
+            # Special case for: https://github.com/CCMS-UCSD/MassIVEDocumentation/issues/30#issue
+            path = "z01/" + self.path.split("/", 1)[1]
+        else:
+            path = None
+
+        self.connect(path)
+
         size = self.connection.size(remote_file)
         pbar = tqdm(
             desc=str(remote_file),

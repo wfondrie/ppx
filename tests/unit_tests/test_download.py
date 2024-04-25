@@ -112,3 +112,16 @@ def test_massive_download(tmp_path):
 
     proj.timeout = 10
     assert proj._parser_state is None
+
+
+def test_massive_ccms_peak(tmp_path):
+    """Test a ccms_peak file."""
+    # TODO: Find a smaller file.
+    proj = ppx.MassiveProject("MSV000080544")
+    files = proj.local_files()
+    assert files == []
+
+    fname = "ccms_peak/RAW/01709a_GA9-TUM_second_pool_1_01_01-ETD-1h-R2.mzXML"
+    proj.download(fname)
+    files = proj.local_files()
+    assert len(files) > 0
