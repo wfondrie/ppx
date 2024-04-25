@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [1.4.4]
+- Fix links to MassIVE `ccms_peak` files. See [this issue](https://github.com/CCMS-UCSD/MassIVEDocumentation/issues/30#issue) for details.
+
+## [1.4.3]
+### Fixed
+- MassIVE and PRIDE links...again
+
 ## [1.4.2]
 ### Fixed
 - Fix Test status badge.
