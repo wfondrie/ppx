@@ -36,6 +36,7 @@ class BaseProject(ABC):
         self._url = None
         self._parser_state = None
         self._metadata = None
+        self._files_metadata = None
         self._remote_files = None
         self._remote_dirs = None
 

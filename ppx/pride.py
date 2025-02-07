@@ -43,13 +43,16 @@ class PrideProject(BaseProject):
 
     """
 
-    rest = "https://www.ebi.ac.uk/pride/ws/archive/v2/projects/"
-    file_rest = "https://www.ebi.ac.uk/pride/ws/archive/v2/files/byProject"
+    rest = "https://www.ebi.ac.uk/pride/ws/archive/v3/projects/"
+    files_rest = (
+        "https://www.ebi.ac.uk/pride/ws/archive/v3/projects/files-path/"
+    )
 
     def __init__(self, pride_id, local=None, fetch=False, timeout=10.0):
         """Instantiate a PrideDataset object"""
         super().__init__(pride_id, local, fetch, timeout)
         self._rest_url = self.rest + self.id
+        self._files_rest_url = self.files_rest + self.id
 
     def _validate_id(self, identifier):
         """Validate a PRIDE identifier.
@@ -75,7 +78,7 @@ class PrideProject(BaseProject):
     def url(self):
         """The FTP address associated with this project."""
         if self._url is None:
-            url = self.metadata["_links"]["datasetFtpUrl"]["href"]
+            url = self.files_metadata["ftp"]
 
             # For whatever reason, this is added now mistakenly to some URLs...
             url = url.replace("/generated", "")
@@ -120,6 +123,31 @@ class PrideProject(BaseProject):
                     self._metadata = json.load(ref)
 
         return self._metadata
+
+    @property
+    def files_metadata(self):
+        """The files metadata as a nested dictionary."""
+        if self._files_metadata is None:
+            files_metadata_file = self.local / ".pride-files-metadata"
+            # Try to update files metadata first:
+            try:
+                # Only fetch file if it doesn't exist and self.fetch is true:
+                if files_metadata_file.exists():
+                    assert self.fetch
+
+                # Fetch the data from the remote repository
+                self._files_metadata = get(self._files_rest_url)
+                with files_metadata_file.open("w+") as ref:
+                    json.dump(self._files_metadata, ref)
+
+            except (AssertionError, requests.ConnectionError) as err:
+                if not files_metadata_file.exists():
+                    raise err
+
+                with files_metadata_file.open() as ref:
+                    self._files_metadata = json.load(ref)
+
+        return self._files_metadata
 
     @property
     def title(self):
@@ -172,12 +200,14 @@ def list_projects(timeout=10.0):
         A list of PRIDE identifiers.
 
     """
-    url = "https://www.ebi.ac.uk/pride/ws/archive/v2/misc/sitemap"
+    url = "https://www.ebi.ac.uk/pride/ws/archive/v3/projects/all"
     res = requests.get(url, timeout=timeout)
     if res.status_code != 200:
         raise requests.HTTPError(f"Error {res.status_code}: {res.text})")
 
-    res = [p.split("/")[-1] for p in res.text.splitlines()]
-    projects = [p for p in res if re.match("P[RX]D[0-9]{6}", p)]
+    data = json.loads(res.text)
+    accessions = [entry["accession"] for entry in data if "accession" in entry]
+
+    projects = [p for p in accessions if re.match("P[RX]D[0-9]{6}", p)]
     projects.sort()
     return projects

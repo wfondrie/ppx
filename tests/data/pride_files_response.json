@@ -31,16 +31,11 @@
     "fileSizeBytes": 497985,
     "fileName": "PRIDE_Exp_Complete_Ac_22134.pride.mztab.gz",
     "compress": false,
-    "submissionDate": 1331596800000,
-    "publicationDate": 1331078400000,
-    "updatedDate": 1497970626000,
+    "submissionDate": "2012-03-13T00:00:00.000+00:00",
+    "publicationDate": "2012-03-07T00:00:00.000+00:00",
+    "updatedDate": "2017-06-20T14:57:06.000+00:00",
     "additionalAttributes": [],
-    "links": [
-      {
-        "rel": "self",
-        "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/files/5bda360133398f66021c8889e01dce921cb51300c7269e1f2b0f20368ab20af6"
-      }
-    ]
+    "totalDownloads": 524
   },
   {
     "projectAccessions": [
@@ -74,16 +69,11 @@
     "fileSizeBytes": 16448103,
     "fileName": "PRIDE_Exp_Complete_Ac_22134.pride.mgf.gz",
     "compress": false,
-    "submissionDate": 1331596800000,
-    "publicationDate": 1331078400000,
-    "updatedDate": 1497970626000,
+    "submissionDate": "2012-03-13T00:00:00.000+00:00",
+    "publicationDate": "2012-03-07T00:00:00.000+00:00",
+    "updatedDate": "2017-06-20T14:57:06.000+00:00",
     "additionalAttributes": [],
-    "links": [
-      {
-        "rel": "self",
-        "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/files/ca2e3dea18950a328b7dc8303911961267a2c19058e67bfe49ab0d6784c3f62b"
-      }
-    ]
+    "totalDownloads": 524
   },
   {
     "projectAccessions": [
@@ -117,16 +107,11 @@
     "fileSizeBytes": 243031280,
     "fileName": "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzXML",
     "compress": false,
-    "submissionDate": 1331596800000,
-    "publicationDate": 1331078400000,
-    "updatedDate": 1497970626000,
+    "submissionDate": "2012-03-13T00:00:00.000+00:00",
+    "publicationDate": "2012-03-07T00:00:00.000+00:00",
+    "updatedDate": "2017-06-20T14:57:06.000+00:00",
     "additionalAttributes": [],
-    "links": [
-      {
-        "rel": "self",
-        "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/files/8ce43227bda837e3cad6c4fa1b11c4094291c48d76ca469c66e0a4e1efebd7e7"
-      }
-    ]
+    "totalDownloads": 551
   },
   {
     "projectAccessions": [
@@ -160,16 +145,11 @@
     "fileSizeBytes": 1657668,
     "fileName": "erwinia_carotovora.fasta",
     "compress": false,
-    "submissionDate": 1331596800000,
-    "publicationDate": 1331078400000,
-    "updatedDate": 1497970626000,
+    "submissionDate": "2012-03-13T00:00:00.000+00:00",
+    "publicationDate": "2012-03-07T00:00:00.000+00:00",
+    "updatedDate": "2017-06-20T14:57:06.000+00:00",
     "additionalAttributes": [],
-    "links": [
-      {
-        "rel": "self",
-        "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/files/34476b308bb9dab10edab047891e2ef5ded65f458ba5c24022cfab3e1f757e90"
-      }
-    ]
+    "totalDownloads": 2754
   },
   {
     "projectAccessions": [
@@ -203,16 +183,11 @@
     "fileSizeBytes": 220475548,
     "fileName": "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.raw",
     "compress": false,
-    "submissionDate": 1331596800000,
-    "publicationDate": 1331078400000,
-    "updatedDate": 1497970626000,
+    "submissionDate": "2012-03-13T00:00:00.000+00:00",
+    "publicationDate": "2012-03-07T00:00:00.000+00:00",
+    "updatedDate": "2017-06-20T14:57:06.000+00:00",
     "additionalAttributes": [],
-    "links": [
-      {
-        "rel": "self",
-        "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/files/ffdea08e7981243dbf92b1cc6076edc8f481ba3e6db0d1e0ad641c8faa544b90"
-      }
-    ]
+    "totalDownloads": 524
   },
   {
     "projectAccessions": [
@@ -246,16 +221,11 @@
     "fileSizeBytes": 304798,
     "fileName": "F063721.dat-mztab.txt",
     "compress": false,
-    "submissionDate": 1331596800000,
-    "publicationDate": 1331078400000,
-    "updatedDate": 1497970626000,
+    "submissionDate": "2012-03-13T00:00:00.000+00:00",
+    "publicationDate": "2012-03-07T00:00:00.000+00:00",
+    "updatedDate": "2017-06-20T14:57:06.000+00:00",
     "additionalAttributes": [],
-    "links": [
-      {
-        "rel": "self",
-        "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/files/8e9f031d8e56f5026860a1b116cbb8769787993c35f72b1d449254963c787b65"
-      }
-    ]
+    "totalDownloads": 524
   },
   {
     "projectAccessions": [
@@ -289,16 +259,11 @@
     "fileSizeBytes": 10677205,
     "fileName": "PRIDE_Exp_Complete_Ac_22134.xml.gz",
     "compress": false,
-    "submissionDate": 1331596800000,
-    "publicationDate": 1331078400000,
-    "updatedDate": 1497970626000,
+    "submissionDate": "2012-03-13T00:00:00.000+00:00",
+    "publicationDate": "2012-03-07T00:00:00.000+00:00",
+    "updatedDate": "2017-06-20T14:57:06.000+00:00",
     "additionalAttributes": [],
-    "links": [
-      {
-        "rel": "self",
-        "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/files/146448a5a94636a2564a48082859cefac47c5e490fdc97b092a45c49c0a183ed"
-      }
-    ]
+    "totalDownloads": 53
   },
   {
     "projectAccessions": [
@@ -332,15 +297,10 @@
     "fileSizeBytes": 21185462,
     "fileName": "F063721.dat",
     "compress": false,
-    "submissionDate": 1331596800000,
-    "publicationDate": 1331078400000,
-    "updatedDate": 1497970626000,
+    "submissionDate": "2012-03-13T00:00:00.000+00:00",
+    "publicationDate": "2012-03-07T00:00:00.000+00:00",
+    "updatedDate": "2017-06-20T14:57:06.000+00:00",
     "additionalAttributes": [],
-    "links": [
-      {
-        "rel": "self",
-        "href": "https://www.ebi.ac.uk/pride/ws/archive/v2/files/4b46ae91064697f1c8df768df676ffaf7c6f0dad4f29523003be62fa09e7826c"
-      }
-    ]
+    "totalDownloads": 524
   }
 ]
