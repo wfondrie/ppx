@@ -102,7 +102,9 @@ def test_metadata(mock_pride_project_response):
     assert proj.doi == "10.6019/PXD000001"
 
 
-def test_remote_files(mock_pride_project_response):
+def test_remote_files(
+    mock_pride_project_response, mock_pride_files_path_response
+):
     """Test that listing remote files works"""
     proj = ppx.PrideProject(PXID)
     files = proj.remote_files()
@@ -144,14 +146,18 @@ def test_remote_files(mock_pride_project_response):
     assert proj.remote_files("blah") == []
 
 
-def test_remote_dirs(mock_pride_project_response):
+def test_remote_dirs(
+    mock_pride_project_response, mock_pride_files_path_response
+):
     """Test that listing remote directories works"""
     proj = ppx.PrideProject(PXID)
     dirs = proj.remote_dirs()
     assert dirs == ["generated"]
 
 
-def test_cached_remote_files(tmp_path, mock_pride_project_response):
+def test_cached_remote_files(
+    tmp_path, mock_pride_project_response, mock_pride_files_path_response
+):
     """Test that caching remote files works"""
     cached = tmp_path / ".remote_files"
 
@@ -168,7 +174,9 @@ def test_cached_remote_files(tmp_path, mock_pride_project_response):
     assert files != test_files
 
 
-def test_cached_remote_dirs(tmp_path, mock_pride_project_response):
+def test_cached_remote_dirs(
+    tmp_path, mock_pride_project_response, mock_pride_files_path_response
+):
     """Test that caching remote directories works"""
     cached = tmp_path / ".remote_dirs"
 

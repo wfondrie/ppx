@@ -50,7 +50,31 @@ def cloud_bucket(monkeypatch):
     LocalS3Client.reset_default_storage_dir()
 
 
-# PRIDE projects/<accession>/files endpoint -----------------------------------
+# PRIDE projects/files-path/<accession> endpoint ------------------------------
+class MockPrideFilesPathResponse:
+    """A mock of the PRIDE files path REST response"""
+
+    status_code = 200
+
+    @staticmethod
+    def json():
+        with open("tests/data/pride_files_path_response.json") as ref:
+            out = json.load(ref)
+
+        return out
+
+
+@pytest.fixture
+def mock_pride_files_path_response(monkeypatch):
+    """Patch requests.get() to use a local file."""
+
+    def mock_get(*args, **kwargs):
+        return MockPrideFilesPathResponse()
+
+    monkeypatch.setattr(requests, "get", mock_get)
+
+
+# PRIDE projects/<accession>/files/all endpoint -------------------------------
 class MockPrideFilesResponse:
     """A mock of the PRIDE files REST response"""
 
@@ -74,7 +98,7 @@ def mock_pride_files_response(monkeypatch):
     monkeypatch.setattr(requests, "get", mock_get)
 
 
-# PRIDE projects/<accession? endpoint -----------------------------------------
+# PRIDE projects/<accession> endpoint -----------------------------------------
 class MockPrideProjectResponse:
     """A mock of the PRIDE projects REST response"""
 

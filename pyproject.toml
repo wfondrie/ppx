@@ -56,6 +56,9 @@ find = {namespaces = false}
 [tool.ruff]
 line-length = 79
 target-version = "py310"
+exclude = [
+    "ann_solo.ipynb",
+]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "C", "I", "D", "UP", "N", "T20"]
