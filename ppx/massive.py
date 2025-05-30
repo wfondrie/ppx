@@ -87,7 +87,10 @@ class MassiveProject(BaseProject):
         res = requests.get(self._proxy_api + self.id, timeout=self.timeout)
         for link in res.json()["datasetLink"]:
             if link["accession"] == "MS:1002852":
-                self._url = link["value"]
+                # Fix the incorrect arrival of FTP hostname
+                # (some datasets' metadata may still have it)
+                self._url = (link["value"]
+                             .replace("massive.ucsd.edu", "massive-ftp.ucsd.edu"))
                 return self._url
 
         raise ValueError(f"No FTP link was found for {self.id}")
@@ -231,5 +234,7 @@ def list_projects(timeout=10.0):
     ):
         LOGGER.debug("Scraping the FTP server for projects...")
 
-    parser = FTPParser("ftp://massive-ftp.ucsd.edu/", max_depth=1, timeout=timeout)
+    parser = FTPParser("ftp://massive-ftp.ucsd.edu/",
+                       max_depth=1,
+                       timeout=timeout)
     return [d.split("/")[1] for d in parser.dirs if "/" in d]
