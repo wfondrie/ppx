@@ -13,7 +13,7 @@ MSVID = "MSV000087408"
 def test_init(tmp_path):
     """Test initialization"""
     proj = ppx.MassiveProject(MSVID)
-    url = f"ftp://massive.ucsd.edu/v03/{MSVID}"
+    url = f"ftp://massive-ftp.ucsd.edu/v03/{MSVID}"
     assert proj.id == MSVID
     assert proj.url == url
     assert proj.local == tmp_path / MSVID

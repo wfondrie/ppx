@@ -44,7 +44,7 @@ class PXDFactory:
 
     ftp_map = {
         "ftp.pride.ebi.ac.uk": "PRIDE",
-        "massive.ucsd.edu": "MassIVE",
+        "massive-ftp.ucsd.edu": "MassIVE",
     }
 
     def __init__(self, pxid, local=None, fetch=False, timeout=10.0):

@@ -231,5 +231,5 @@ def list_projects(timeout=10.0):
     ):
         LOGGER.debug("Scraping the FTP server for projects...")
 
-    parser = FTPParser("ftp://massive.ucsd.edu/", max_depth=1, timeout=timeout)
+    parser = FTPParser("ftp://massive-ftp.ucsd.edu/", max_depth=1, timeout=timeout)
     return [d.split("/")[1] for d in parser.dirs if "/" in d]
