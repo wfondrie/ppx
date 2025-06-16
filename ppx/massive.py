@@ -146,7 +146,8 @@ class MassiveProject(BaseProject):
             The remote files available for this project.
 
         """
-        if self.fetch or self._remote_files is None:
+        if (self.fetch or self._remote_files is None or
+                len(self._remote_files) == 0):
             try:
                 self.remote_files_from_info()
             except (
