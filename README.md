@@ -7,8 +7,6 @@
 [![tests](https://github.com/wfondrie/ppx/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/wfondrie/ppx/actions/workflows/tests.yml)
 [![Documentation Status](https://readthedocs.org/projects/ppx/badge/?version=latest)](https://ppx.readthedocs.io/en/latest/?badge=latest)
 
-https://github.com/wfondrie/ppx/workflows/tests/badge.svg?branch=master
-
 ## Overview
 ppx provides a simple, programmatic means to access proteomics data that are
 publicly available in [ProteomeXchange](http://www.proteomexchange.org) partner
