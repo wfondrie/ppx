@@ -37,14 +37,14 @@ First, we need to import the ppx and BioServices packages. The
 :code:`PRIDE` module in the BioServices package will allow us to find
 datasets that match out query:
 
-.. 
+..
     >>> import re
     >>> import ppx
     >>> from bioservices import PRIDE
 
 Next, we retrieve a list of ProteomeXchange identifiers for:
 
-.. 
+..
     >>> # Find datasets about honey bees (Apis mellifera) that used a Q-Exactive.
     >>> pride = PRIDE()
     >>> datasets = pride.get_project_list(speciesFilter="Apis mellifera",
@@ -60,7 +60,7 @@ Note that there are a number of additional filters for
 :code:`get_project_list()` and that it returns several fields about the
 dataset. For example, look at the first element of :code:`datasets`:
 
-.. 
+..
     >>> print(datasets[0])
     {'accession': 'PXD007824', 'title': 'Apis mellifera,Hemolymph,LC-MSMS', 'projectDescription': 'We characterized and compared hemolymph proteome of Royal Jelly ', 'publicationDate': '2017-11-30', 'submissionType': 'PARTIAL', 'numAssays': 0, 'species': ['Apis mellifera (Honeybee)'], 'tissues': ['blood'], 'ptmNames': ['iodoacetamide derivatized residue', 'monohydroxylated residue'], 'instrumentNames': ['Q Exactive'], 'projectTags': ['Biological']}
 
@@ -102,7 +102,7 @@ each dataset. In this case, we could do:
 Alternatively, we could just download all of the README files (This download
 is much smaller):
 
-.. 
+..
     >>> for dat in pxdat:
     ...     readme_files = [f for f in dat.list_files() if f.endswith(".raw")]
     ...     dir_name = dat.id + "_data"

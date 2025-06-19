@@ -19,7 +19,7 @@ There are three exceptions to this:
 
 2. The Vignettes are created from Jupyter notebooks.
 
-3. The Code of Conduct, Release Notes, and this Contributing document are 
+3. The Code of Conduct, Release Notes, and this Contributing document are
    markdown files that live in the root of the ppx repository.
 
 ### Editing most documents

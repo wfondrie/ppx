@@ -13,6 +13,9 @@ from .project import BaseProject
 
 LOGGER = logging.getLogger(__name__)
 
+UCSD_EDU = "massive.ucsd.edu"
+FTP_UCSD_EDU = "massive-ftp.ucsd.edu"
+
 
 class MassiveProject(BaseProject):
     """Retrieve information about a MassIVE project.
@@ -45,7 +48,7 @@ class MassiveProject(BaseProject):
 
     """
 
-    _api = "https://gnps-datasetcache.ucsd.edu/datasette/database/filename.csv"
+    _api = "https://datasetcache.gnps2.org/datasette/database.csv"
     _proxy_api = "https://massive.ucsd.edu/ProteoSAFe/proxi/v0.1/datasets/"
 
     def __init__(self, msv_id, local=None, fetch=False, timeout=10.0):
@@ -54,8 +57,8 @@ class MassiveProject(BaseProject):
         self._params = {
             "_stream": "on",
             "_sort": "filepath",
-            "dataset__exact": self.id,
             "_size": "max",
+            "sql": f'SELECT * FROM filename WHERE dataset = "{self.id}"',
         }
 
     def _validate_id(self, identifier):
@@ -87,7 +90,9 @@ class MassiveProject(BaseProject):
         res = requests.get(self._proxy_api + self.id, timeout=self.timeout)
         for link in res.json()["datasetLink"]:
             if link["accession"] == "MS:1002852":
-                self._url = link["value"]
+                # Fix the incorrect arrival of FTP hostname
+                # (some datasets' metadata may still have it)
+                self._url = link["value"].replace(UCSD_EDU, FTP_UCSD_EDU)
                 return self._url
 
         raise ValueError(f"No FTP link was found for {self.id}")
@@ -141,13 +146,13 @@ class MassiveProject(BaseProject):
             The remote files available for this project.
 
         """
-        if self.fetch or self._remote_files is None:
+        if (
+            self.fetch
+            or self._remote_files is None
+            or len(self._remote_files) == 0
+        ):
             try:
-                info = self.file_info().splitlines()[1:]
-                self._remote_files = [
-                    r.split(",")[0].split("/", 1)[1] for r in info
-                ]
-                assert self._remote_files
+                self.remote_files_from_info()
             except (
                 TimeoutError,
                 ConnectionRefusedError,
@@ -167,6 +172,35 @@ class MassiveProject(BaseProject):
             files = self._remote_files
 
         return files
+
+    def remote_files_from_info(self):
+        """Retrieves files list from project's files info"""
+        # First line is a CSV header
+        # we are interested in the `filepath` column.
+        header = self.file_info().splitlines()[0].split(",")
+
+        # The column position is not guaranteed to be the next one (usi,
+        # filepath,dataset,collection...),
+        # so we need to detect it
+        pos = header.index("filepath")
+
+        info = self.file_info().splitlines()[1:]
+
+        result = []
+        sep = self.id + "/"
+        for r in info:
+            parts = r.split(",")
+            path = parts[pos]
+            # the MassiVE ID might be present in a path (not always)
+            # handle it
+            if sep in path:
+                result.append(path.split(sep, 1)[1])
+            else:
+                result.append(path)
+
+        self._remote_files = result
+
+        assert self._remote_files
 
     def file_info(self):
         """Retrieve information about the project files.
@@ -191,7 +225,7 @@ class MassiveProject(BaseProject):
         if res.status_code != 200:
             raise requests.HTTPError(f"Error {res.status_code}: {res.text}")
 
-        with file_info_path.open("w+") as ref:
+        with file_info_path.open("w+", newline="") as ref:
             ref.write(res.text)
 
         return res.text
@@ -213,7 +247,7 @@ def list_projects(timeout=10.0):
         A list of MassIVE identifiers.
 
     """
-    url = "https://gnps-datasetcache.ucsd.edu/datasette/database.csv"
+    url = "https://datasetcache.gnps2.org/datasette/database.csv"
     params = {"sql": "select distinct dataset from filename", "_size": "max"}
     try:
         res = requests.get(url, params, timeout=timeout).text.splitlines()[1:]
@@ -231,5 +265,5 @@ def list_projects(timeout=10.0):
     ):
         LOGGER.debug("Scraping the FTP server for projects...")
 
-    parser = FTPParser("ftp://massive.ucsd.edu/", max_depth=1, timeout=timeout)
+    parser = FTPParser(f"ftp://{FTP_UCSD_EDU}/", max_depth=1, timeout=timeout)
     return [d.split("/")[1] for d in parser.dirs if "/" in d]
