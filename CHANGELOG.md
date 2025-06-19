@@ -2,7 +2,16 @@
 
 ## [Unreleased]
 
+## [1.5.0]
+### Fixed
+- Fixed MassIVE and PRIDE links.
+- Updated configurations for ReadTheDocs
+
+### Changed
+- Bumped versions of pre-commit hooks
+
 ## [1.4.4]
+### Fixed
 - Fix links to MassIVE `ccms_peak` files. See [this issue](https://github.com/CCMS-UCSD/MassIVEDocumentation/issues/30#issue) for details.
 
 ## [1.4.3]
