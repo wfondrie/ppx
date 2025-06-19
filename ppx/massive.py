@@ -16,6 +16,7 @@ LOGGER = logging.getLogger(__name__)
 UCSD_EDU = "massive.ucsd.edu"
 FTP_UCSD_EDU = "massive-ftp.ucsd.edu"
 
+
 class MassiveProject(BaseProject):
     """Retrieve information about a MassIVE project.
 
@@ -57,7 +58,7 @@ class MassiveProject(BaseProject):
             "_stream": "on",
             "_sort": "filepath",
             "_size": "max",
-            "sql": f"SELECT * FROM filename WHERE dataset = \"{self.id}\""
+            "sql": f'SELECT * FROM filename WHERE dataset = "{self.id}"',
         }
 
     def _validate_id(self, identifier):
@@ -91,8 +92,7 @@ class MassiveProject(BaseProject):
             if link["accession"] == "MS:1002852":
                 # Fix the incorrect arrival of FTP hostname
                 # (some datasets' metadata may still have it)
-                self._url = (link["value"]
-                             .replace(UCSD_EDU, FTP_UCSD_EDU))
+                self._url = link["value"].replace(UCSD_EDU, FTP_UCSD_EDU)
                 return self._url
 
         raise ValueError(f"No FTP link was found for {self.id}")
@@ -146,8 +146,11 @@ class MassiveProject(BaseProject):
             The remote files available for this project.
 
         """
-        if (self.fetch or self._remote_files is None or
-                len(self._remote_files) == 0):
+        if (
+            self.fetch
+            or self._remote_files is None
+            or len(self._remote_files) == 0
+        ):
             try:
                 self.remote_files_from_info()
             except (
@@ -222,7 +225,7 @@ class MassiveProject(BaseProject):
         if res.status_code != 200:
             raise requests.HTTPError(f"Error {res.status_code}: {res.text}")
 
-        with file_info_path.open("w+", newline='') as ref:
+        with file_info_path.open("w+", newline="") as ref:
             ref.write(res.text)
 
         return res.text
@@ -262,7 +265,5 @@ def list_projects(timeout=10.0):
     ):
         LOGGER.debug("Scraping the FTP server for projects...")
 
-    parser = FTPParser(f"ftp://{FTP_UCSD_EDU}/",
-                       max_depth=1,
-                       timeout=timeout)
+    parser = FTPParser(f"ftp://{FTP_UCSD_EDU}/", max_depth=1, timeout=timeout)
     return [d.split("/")[1] for d in parser.dirs if "/" in d]
