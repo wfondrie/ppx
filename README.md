@@ -7,8 +7,6 @@
 [![tests](https://github.com/wfondrie/ppx/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/wfondrie/ppx/actions/workflows/tests.yml)
 [![Documentation Status](https://readthedocs.org/projects/ppx/badge/?version=latest)](https://ppx.readthedocs.io/en/latest/?badge=latest)
 
-https://github.com/wfondrie/ppx/workflows/tests/badge.svg?branch=master
-
 ## Overview
 ppx provides a simple, programmatic means to access proteomics data that are
 publicly available in [ProteomeXchange](http://www.proteomexchange.org) partner
@@ -67,8 +65,7 @@ allows you to stream downloaded files to AWS S3, Google Cloud Storage, or Azure
 Blob Storage. To use a cloud storage provider, simply set the data directory to
 a cloud URI, such as :code:`s3://my-data-bucket/ppx` using any of the methods
 above. Please note that you'll also need to setup credentials for your cloud
-provider---see the `CloudPathLib documentation
-<https://cloudpathlib.drivendata.org/v0.6/authentication/>_` for details.
+provider---see the [CloudPathLib documentation](https://cloudpathlib.drivendata.org/v0.6/authentication/) for details.
 
 ## Examples
 First, find a project using its ProteomeXchange or MassIVE identifier:
